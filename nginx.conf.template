@@ -1,0 +1,96 @@
+# 10.0.1.x
+# 192.168.1.x
+
+events {
+  worker_connections  1024;
+}
+http {
+    upstream frontend {
+        server {your_local_ip}:3001;
+    }
+
+    upstream backend {
+        server {your_local_ip}:3000;
+    }
+
+    upstream proxy {
+        server {your_local_ip}:3128;
+    }
+
+    map $http_content_type $pool {
+         default "frontend";
+         "application/vnd.api+json" "backend";
+    }
+
+    server {
+        listen      3031;
+        listen      443 ssl;
+        server_name argu.local;
+
+        ssl_certificate /etc/nginx/ssl/nginx.crt;
+        ssl_certificate_key /etc/nginx/ssl/nginx.key;
+        add_header    Content-Security-Policy  "default-src 'self'; img-src *; style-src https://maxcdn.bootstrapcdn.com";
+
+        proxy_set_header    Host            '{your_local_ip}:3031';
+        proxy_set_header    X-Real-IP       $remote_addr;
+        proxy_set_header    X-Forwarded-for $remote_addr;
+        proxy_set_header    X-Forwarded-Proto https;
+        proxy_pass_request_headers      on;
+
+        merge_slashes off;
+
+        location /aod_search/ {
+            proxy_pass https://aod-search.argu.co/aod_search/;
+        }
+        location /proxy/ {
+            rewrite ^/proxy/([\w\W]*)$ $1 break;
+            proxy_pass http://proxy;
+        }
+        location /squid-internal-static/ {
+            proxy_pass http://proxy;
+        }
+        location /api/ {
+            proxy_pass http://{your_local_ip}:3030/api/;
+        }
+        location /comparevotes/ {
+          proxy_pass http://frontend;
+        }
+        location /motions/ {
+          proxy_pass http://frontend;
+        }
+        location /events/ {
+          proxy_pass http://frontend;
+        }
+        location /parties/ {
+          proxy_pass http://frontend;
+        }
+        location /politicians/ {
+          proxy_pass http://frontend;
+        }
+        location /profile/ {
+          proxy_pass http://frontend;
+        }
+        location /search/ {
+          proxy_pass http://frontend;
+        }
+        location /dist/ {
+          proxy_pass http://frontend;
+        }
+        location /static/ {
+          proxy_pass http://frontend;
+        }
+        location /__webpack_hmr {
+          proxy_pass http://frontend;
+        }
+        location ~* ^\/od {
+          proxy_pass http://$pool;
+        }
+        location ~* ^\/(m|q|a|u)\/ {
+          proxy_pass http://$pool;
+        }
+        location / {
+            proxy_pass http://backend;
+        }
+    }
+}
+
