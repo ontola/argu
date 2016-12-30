@@ -85,8 +85,17 @@ http {
         location ~* ^\/od {
           proxy_pass http://$pool;
         }
+        location ~* .(json|json_api)$ {
+            proxy_pass http://backend;
+        }
+        location ~* ^\/(m|q|a|u)\/[0-9]*\/(new|edit|delete) {
+           proxy_pass http://backend;
+        }
         location ~* ^\/(m|q|a|u)\/ {
-          proxy_pass http://$pool;
+            if ($request_method = GET ) {
+               proxy_pass http://$pool;
+            }
+            proxy_pass http://backend;
         }
         location / {
             proxy_pass http://backend;
