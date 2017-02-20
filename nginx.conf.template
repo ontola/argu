@@ -15,7 +15,7 @@ http {
 
 	server {
 		listen				3031 http2;
-		listen				443 ssl http2 deferred;
+		listen				443 ssl http2;
 		server_name			beta.argu.local;
 
 		root				/etc/nginx/www;
