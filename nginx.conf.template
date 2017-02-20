@@ -2,104 +2,76 @@
 # 192.168.1.x
 
 events {
-  worker_connections  1024;
+	worker_connections 1024;
 }
 http {
-    upstream frontend {
-        server {your_local_ip}:3001;
-    }
+	upstream frontend {
+		server {your_local_ip}:3001;
+	}
 
-    upstream backend {
-        server {your_local_ip}:3000;
-    }
+	upstream backend {
+		server {your_local_ip}:3000;
+	}
 
-    upstream proxy {
-        server {your_local_ip}:3128;
-    }
+	server {
+		listen				3031 http2;
+		listen				443 ssl http2 deferred;
+		server_name			beta.argu.local;
 
-    map $http_content_type $pool {
-         default "frontend";
-         "application/vnd.api+json" "backend";
-    }
+		root				/etc/nginx/www;
+		error_log			/dev/fd/1;
 
-    server {
-        listen      3031;
-        listen      443 ssl;
-        server_name argu.local;
+		ssl_certificate		/etc/nginx/ssl/nginx.crt;
+		ssl_certificate_key	/etc/nginx/ssl/nginx.key;
+		
+		add_header	Content-Security-Policy	"default-src 'self'; child-src 'self' blob:; img-src *; script-src 'self' 'unsafe-eval' 'unsafe-inline' cdn.polyfill.io; style-src 'self' 'unsafe-inline' maxcdn.bootstrapcdn.com fonts.googleapis.com; font-src 'self' 'data:' maxcdn.bootstrapcdn.com fonts.googleapis.com fonts.gstatic.com";
 
-        ssl_certificate /etc/nginx/ssl/nginx.crt;
-        ssl_certificate_key /etc/nginx/ssl/nginx.key;
-        add_header    Content-Security-Policy  "default-src 'self'; img-src *; script-src 'self' 'unsafe-eval' 'unsafe-inline' cdn.polyfill.io; style-src 'self' 'unsafe-inline' maxcdn.bootstrapcdn.com fonts.googleapis.com; font-src 'self' fonts.googleapis.com fonts.gstatic.com";
+		proxy_set_header	Host				$host;
+		proxy_set_header	X-Real-IP			$remote_addr;
+		proxy_set_header	X-Forwarded-for		$proxy_add_x_forwarded_for;
+		proxy_set_header	X-Forwarded-Proto	https;
+		proxy_set_header	X-Forwarded-Ssl		on;
+		proxy_pass_request_headers				on;
 
-        proxy_set_header    Host            $http_host;
-        proxy_set_header    X-Real-IP       $remote_addr;
-        proxy_set_header    X-Forwarded-for $remote_addr;
-        proxy_set_header    X-Forwarded-Proto https;
-        proxy_pass_request_headers      on;
+		merge_slashes off;
 
-        merge_slashes off;
+		location /aod_search/ {
+			proxy_pass https://aod-search.argu.co/aod_search/;
+		}
 
-        location /aod_search/ {
-            proxy_pass https://aod-search.argu.co/aod_search/;
-        }
-        location /proxy/ {
-            rewrite ^/proxy/([\w\W]*)$ $1 break;
-            proxy_pass http://proxy;
-        }
-        location /squid-internal-static/ {
-            proxy_pass http://proxy;
-        }
-        location /api/ {
-            proxy_pass http://{your_local_ip}:3030/api/;
-        }
-        location /comparevotes/ {
-          proxy_pass http://frontend;
-        }
-        location /motions/ {
-          proxy_pass http://frontend;
-        }
-        location /events/ {
-          proxy_pass http://frontend;
-        }
-        location /parties/ {
-          proxy_pass http://frontend;
-        }
-        location /politicians/ {
-          proxy_pass http://frontend;
-        }
-        location /profile/ {
-          proxy_pass http://frontend;
-        }
-        location /search/ {
-          proxy_pass http://frontend;
-        }
-        location /dist/ {
-          proxy_pass http://frontend;
-        }
-        location /static/ {
-          proxy_pass http://frontend;
-        }
-        location /__webpack_hmr {
-          proxy_pass http://frontend;
-        }
-        location ~* ^\/od {
-          proxy_pass http://$pool;
-        }
-        location ~* .(json|json_api)$ {
-            proxy_pass http://backend;
-        }
-        location ~* ^\/(m|q|a|u)\/[0-9]*\/(new|edit|delete) {
-           proxy_pass http://backend;
-        }
-        location ~* ^\/(m|q|a|u)\/ {
-            if ($request_method = GET ) {
-               proxy_pass http://$pool;
-            }
-            proxy_pass http://backend;
-        }
-        location / {
-            proxy_pass http://backend;
-        }
-    }
+		location / {
+			proxy_pass http://frontend;
+		}
+	}
+
+	server {
+		listen				3031 http2;
+		listen				443 ssl http2 deferred;
+		server_name			argu.local;
+
+		root				/etc/nginx/www;
+		error_log			/dev/fd/1;
+		sendfile			on;
+
+		ssl_certificate		/etc/nginx/ssl/nginx.crt;
+		ssl_certificate_key	/etc/nginx/ssl/nginx.key;
+		add_header			Content-Security-Policy	"default-src 'self'; img-src *; script-src 'self' 'unsafe-eval' 'unsafe-inline' cdn.polyfill.io; style-src 'self' 'unsafe-inline' maxcdn.bootstrapcdn.com fonts.googleapis.com; font-src 'self' fonts.googleapis.com fonts.gstatic.com";
+
+		proxy_set_header	Host				$host;
+		proxy_set_header	X-Real-IP			$remote_addr;
+		proxy_set_header	X-Forwarded-for		$proxy_add_x_forwarded_for;
+		proxy_set_header	X-Forwarded-Proto	https;
+		proxy_set_header	X-Forwarded-Ssl		on;
+		proxy_pass_request_headers				on;
+
+		merge_slashes off;
+
+		location / {
+			try_files $uri $uri/ @backend;
+		}
+		location @backend {
+			proxy_pass http://backend;
+		}
+	}
 }
 
