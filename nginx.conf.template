@@ -5,6 +5,7 @@ events {
 	worker_connections 1024;
 }
 http {
+	log_format upstreamlog '[$time_iso8601] $remote_addr - $server_name 	=> $upstream_addr:	$request [tUps: $upstream_response_time tReq: $request_time]';
 	upstream frontend {
 		server {your_local_ip}:3001;
 	}
@@ -19,6 +20,7 @@ http {
 		server_name			beta.argu.local;
 
 		root				/etc/nginx/www;
+		access_log			/dev/fd/1 upstreamlog;
 		error_log			/dev/fd/1;
 
 		ssl_certificate		/etc/nginx/ssl/nginx.crt;
@@ -50,6 +52,7 @@ http {
 		server_name			argu.local;
 
 		root				/etc/nginx/www;
+		access_log			/dev/fd/1 upstreamlog;
 		error_log			/dev/fd/1;
 		sendfile			on;
 
