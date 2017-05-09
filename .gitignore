@@ -1,4 +1,9 @@
 nginx.conf
 *.key
 *.crt
+*.pem
+*.txt
+*.old
+*.attr
+serial
 www/

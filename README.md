@@ -1,12 +1,9 @@
-# Usage
+# Installation
+1. [Click here](https://bitbucket.org/arguweb/devproxy/downloads/install.sh) or clone/download this repo.
+1. Run `$ install.sh`
 
-## First time setup
-1. If the `nginx.conf` file is present, remove it (minding your local changes).
-1. Add `127.0.0.1	argu.dev` to your hosts file
-1. Add `::1		argu.dev` to your hosts file
-1. Add `127.0.0.1	beta.argu.dev` to your hosts file
-1. Add `::1		beta.argu.dev` to your hosts file
-1. Run `$ ./setup.sh`
+# Usage
+1. Run `./run.sh` to start devproxy and re-read the `nginx.conf` file.
 
 If you run into a `sed: 1: "s/{your_local_ip}/10.0. ...": unescaped newline inside substitute pattern` error, try to manually add your local IP address to `setup.sh`:
 
@@ -17,6 +14,3 @@ If you run into a `sed: 1: "s/{your_local_ip}/10.0. ...": unescaped newline insi
 # And add your IP address
 IP=10.0.1.5
 ````
-
-## Run
-1. Run `./run.sh` to start devproxy and re-read the `nginx.conf` file.
