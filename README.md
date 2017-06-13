@@ -20,3 +20,6 @@ IP=10.0.1.5
 
 ## Run
 1. Run `./run.sh` to start devproxy and re-read the `nginx.conf` file.
+
+## Hosting local files
+Add files to `/www` to make them available. The files will be accessible at `argu.dev/filename`. You can put files in folders to simulate routes.

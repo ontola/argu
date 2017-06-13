@@ -31,6 +31,18 @@ http {
 	tcp_nodelay			on;
 	tcp_nopush			on;
 
+	# Enable hosting local files from /www
+	types {
+		text/html                       html;
+		image/gif                       gif;
+		image/jpeg                      jpg;
+		application/json                json;
+		application/vnd.api+json        json_api;
+		text/n3                         n3;
+		text/turtle                     ttl;
+		application/rdf+xml             rdf;
+	}
+
 	upstream frontend {
 		server {your_local_ip}:3001;
 	}
@@ -96,11 +108,12 @@ http {
 		merge_slashes off;
 
 		location / {
-			try_files $uri $uri/ @backend;
+			default_type "text/n3";
+			try_files $uri $uri.n3 $uri.json $uri.json_api $uri.ttl @backend;
 		}
+
 		location @backend {
 			proxy_pass http://backend;
 		}
 	}
 }
-
