@@ -39,6 +39,18 @@ http {
 		server {your_local_ip}:3000;
 	}
 
+	upstream mail_service {
+		server {your_local_ip}:3002;
+	}
+
+	upstream token_service {
+		server {your_local_ip}:3003;
+	}
+
+	upstream vote_compare_service {
+		server {your_local_ip}:3004;
+	}
+
 	map $cookie_beta $selected_frontend {
 		default		http://backend;
 		true		http://$backend_filter;
@@ -73,6 +85,15 @@ http {
 
 		merge_slashes off;
 
+		location /email {
+			proxy_pass http://mail_service;
+		}
+		location /tokens {
+			proxy_pass http://token_service;
+		}
+		location /compare/votes {
+			proxy_pass http://vote_compare_service;
+		}
 		location / {
 			try_files $uri $uri/ @backend;
 		}
