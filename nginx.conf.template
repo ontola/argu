@@ -51,7 +51,7 @@ http {
 		ssl_certificate		/etc/nginx/ssl/nginx.crt;
 		ssl_certificate_key	/etc/nginx/ssl/nginx.key;
 
-		add_header		Content-Security-Policy	"default-src 'self'; child-src 'self' blob:; img-src *; script-src 'self' 'unsafe-eval' 'unsafe-inline' cdn.polyfill.io; style-src 'self' 'unsafe-inline' maxcdn.bootstrapcdn.com fonts.googleapis.com; font-src 'self' 'data:' maxcdn.bootstrapcdn.com fonts.googleapis.com fonts.gstatic.com";
+		add_header		Content-Security-Policy	"default-src 'self'; child-src 'self' blob:; img-src * blob:; script-src 'self' 'unsafe-eval' 'unsafe-inline' cdn.polyfill.io; style-src 'self' 'unsafe-inline' maxcdn.bootstrapcdn.com fonts.googleapis.com; font-src 'self' 'data:' maxcdn.bootstrapcdn.com fonts.googleapis.com fonts.gstatic.com";
 
 		proxy_set_header	Host			$host;
 		proxy_set_header	X-Real-IP		$remote_addr;
@@ -84,7 +84,7 @@ http {
 		ssl_certificate		/etc/nginx/ssl/nginx.crt;
 		ssl_certificate_key	/etc/nginx/ssl/nginx.key;
 
-		add_header			Content-Security-Policy	"default-src 'self'; img-src *; script-src 'self' 'unsafe-eval' 'unsafe-inline' cdn.polyfill.io; style-src 'self' 'unsafe-inline' maxcdn.bootstrapcdn.com fonts.googleapis.com; font-src 'self' fonts.googleapis.com fonts.gstatic.com";
+		add_header			Content-Security-Policy	"default-src 'self'; img-src * blob:; script-src 'self' 'unsafe-eval' 'unsafe-inline' cdn.polyfill.io; style-src 'self' 'unsafe-inline' maxcdn.bootstrapcdn.com fonts.googleapis.com; font-src 'self' fonts.googleapis.com fonts.gstatic.com";
 
 		proxy_set_header	Host			$host;
 		proxy_set_header	X-Real-IP		$remote_addr;
@@ -103,4 +103,3 @@ http {
 		}
 	}
 }
-
