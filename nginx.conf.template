@@ -56,6 +56,10 @@ http {
 		server {your_local_ip}:3006;
 	}
 
+	upstream subscribe_service {
+		server {your_local_ip}:3005;
+	}
+
 	map $cookie_beta $selected_frontend {
 		default		http://backend;
 		true		http://$backend_filter;
@@ -106,6 +110,11 @@ http {
 		}
 		location ~ ^\/\w*\/\w*\/od\/?.*$ {
 			proxy_pass http://$deku_filter;
+		}
+		location /subscribe {
+			proxy_pass http://subscribe_service;
+			proxy_set_header Upgrade $http_upgrade;
+			proxy_set_header Connection "Upgrade";
 		}
 		location / {
 			try_files $uri @backend;
