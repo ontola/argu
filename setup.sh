@@ -16,7 +16,7 @@ if [ ! -f /usr/share/ca-certificates/devproxy.crt ]; then
   sudo openssl req -x509 -nodes -days 365 \
        -config openssl.cfg \
        -newkey rsa:4096 \
-       -subj "/C=NL/ST=Utrecht/L=Utrecht/O=Argu/OU=Argu Root/CN=argu.dev" \
+       -subj "/C=NL/ST=Utrecht/L=Utrecht/O=Argu/OU=Argu Root/CN=argu.localdev" \
        -keyout devproxyCA/private/cakey.pem \
        -out devproxyCA/cacert.pem
   # Install in system
@@ -48,9 +48,9 @@ sudo openssl req \
   -nodes \
   -newkey rsa:2048 \
   -keyout ssl/nginx.key \
-  -subj "/C=NL/ST=Utrecht/L=Utrecht/O=Argu/OU=Argu Development/CN=argu.dev" \
+  -subj "/C=NL/ST=Utrecht/L=Utrecht/O=Argu/OU=Argu Development/CN=argu.localdev" \
   -new -sha256 \
-  -out ssl/argu.dev.csr.pem
+  -out ssl/argu.localdev.csr.pem
 
 # Create signed server cert
 sudo openssl ca \
@@ -58,7 +58,7 @@ sudo openssl ca \
   -extensions server_cert -days 365 -notext -md sha256 \
   -key devproxyCA/private/cakey.pem \
   -outdir ssl \
-  -in ssl/argu.dev.csr.pem \
+  -in ssl/argu.localdev.csr.pem \
   -out ssl/nginx.crt
 
 if [ ! -f ./nginx.conf ]; then
