@@ -52,6 +52,10 @@ http {
 		server {your_local_ip}:3004;
 	}
 
+	upstream deku_service {
+		server {your_local_ip}:3006;
+	}
+
 	map $cookie_beta $selected_frontend {
 		default		http://backend;
 		true		http://$backend_filter;
@@ -60,6 +64,11 @@ http {
 	map $http_X_Argu_Back $backend_filter {
 		default		frontend;
 		true		backend;
+	}
+
+	map $http_accept $deku_filter {
+		default         frontend;
+		"~*text/n3*"    deku_service;
 	}
 
 	server {
@@ -94,6 +103,9 @@ http {
 		}
 		location /compare/votes {
 			proxy_pass http://vote_compare_service;
+		}
+		location ~ ^\/\w*\/\w*\/od\/?.*$ {
+			proxy_pass http://$deku_filter;
 		}
 		location / {
 			try_files $uri @backend;
