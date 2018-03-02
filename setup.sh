@@ -29,7 +29,7 @@ if [ ! -f /usr/share/ca-certificates/devproxy.crt ]; then
        -keyout devproxyCA/private/cakey.pem \
        -out devproxyCA/cacert.pem
   # Install in system
-  sudo ln $PWD/devproxyCA/cacert.pem /usr/share/ca-certificates/devproxy.crt
+  sudo ln -s $PWD/devproxyCA/cacert.pem /usr/share/ca-certificates/devproxy.crt
   sudo dpkg-reconfigure ca-certificates
   # Install in firefox
   for certDB in $(find  ~/.mozilla* -name "cert8.db")
