@@ -9,7 +9,16 @@ else
   IP=$(hostname -I | awk -F" " '{print $1}')
 fi
 
+NGINXIP=$(head -1 ./nginx.conf 2>/dev/null | tr -d '# ')
+
 echo "IP: $IP"
+echo "NGINX IP: $NGINXIP"
+
+# Exit if script if host IP matches nginx config IP
+if [ -f ./nginx.conf ] && [ $IP=$NGINXIP ]; then
+  echo "Host IP matches the IP configured in nginx.conf, skipping certs creation."
+  exit 0
+fi
 
 # Generate root certificate
 if [ ! -f /usr/share/ca-certificates/devproxy.crt ]; then
