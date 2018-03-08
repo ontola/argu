@@ -63,6 +63,7 @@ sudo openssl req \
 
 # Create signed server cert
 sudo openssl ca \
+  -batch \
   -config openssl.cfg \
   -extensions server_cert -days 365 -notext -md sha256 \
   -key devproxyCA/private/cakey.pem \
