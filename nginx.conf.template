@@ -11,6 +11,9 @@ events {
 }
 
 http {
+	log_format debuglog '[$time_iso8601] $remote_addr - $server_name 	=> $upstream_addr:	'
+                        '"$request" $status $body_bytes_sent '
+                        '"$http_referer" "$http_user_agent" "$http_x_forwarded_for" "$request_body" "$http_Authorization" cookie: "$http_Cookie" x-argu-back: "$http_X_Argu_Back" uri: "$uri" backend: "$backend" proxy_pass: "$proxy_pass"';
 	log_format upstreamlog '[$time_iso8601] $remote_addr - $server_name 	=> $upstream_addr:	$request [tUps: $upstream_response_time tReq: $request_time]';
 
 	client_body_buffer_size		128K;
@@ -32,15 +35,15 @@ http {
 	tcp_nodelay			on;
 	tcp_nopush			on;
 
-	upstream frontend {
+	upstream frontend_service {
 		server {your_local_ip}:3001;
 	}
 
-	upstream backend {
+	upstream argu_service {
 		server {your_local_ip}:3000;
 	}
 
-	upstream mail_service {
+	upstream email_service {
 		server {your_local_ip}:3002;
 	}
 
@@ -60,20 +63,45 @@ http {
 		server {your_local_ip}:3005;
 	}
 
-	map $cookie_beta $selected_frontend {
-		default		http://backend;
-		true		http://$backend_filter;
-	}
+    map $uri $backend {
+        ~/compare/votes			vote_compare_service;
+        ~/tokens				token_service;
+        ~/email					email_service;
+        ~^\/\w*\/\w*\/od\/?.*$	deku_service;
+        ~/subscribe				subscribe_service;
+        default					argu_service;
+    }
 
-	map $http_X_Argu_Back $backend_filter {
-		default		frontend;
-		true		backend;
-	}
+	server {
+		listen			443 ssl http2;
+		server_name		app.argu.localdev;
 
-	map $http_accept $deku_filter {
-		default         frontend;
-		"~*text/n3*"    deku_service;
-	}
+		root			/etc/nginx/www;
+		access_log		/dev/fd/1 upstreamlog;
+		error_log		/dev/fd/1;
+		sendfile		on;
+
+		ssl_certificate		/etc/nginx/ssl/nginx.crt;
+		ssl_certificate_key	/etc/nginx/ssl/nginx.key;
+
+		add_header			Content-Security-Policy	"default-src 'self'; img-src *; script-src 'self' 'unsafe-eval' 'unsafe-inline' cdn.polyfill.io; style-src 'self' 'unsafe-inline' maxcdn.bootstrapcdn.com fonts.googleapis.com; font-src 'self' fonts.googleapis.com fonts.gstatic.com maxcdn.bootstrapcdn.com";
+
+		proxy_set_header	Host			$host;
+		proxy_set_header	X-Real-IP		$remote_addr;
+		proxy_set_header	X-Forwarded-For		$proxy_add_x_forwarded_for;
+		proxy_set_header	X-Forwarded-Proto	https;
+		proxy_set_header	X-Forwarded-Ssl		on;
+		proxy_set_header	Upgrade				$http_upgrade;
+		proxy_set_header	Connection			"Upgrade";
+
+		proxy_pass_request_headers			on;
+
+		merge_slashes off;
+
+        location / {
+            proxy_pass http://frontend_service;
+        }
+    }
 
 	server {
 		listen			3032 http2;
@@ -92,36 +120,18 @@ http {
 
 		proxy_set_header	Host			$host;
 		proxy_set_header	X-Real-IP		$remote_addr;
-		proxy_set_header	X-Forwarded-for		$proxy_add_x_forwarded_for;
+		proxy_set_header	X-Forwarded-For		$proxy_add_x_forwarded_for;
 		proxy_set_header	X-Forwarded-Proto	https;
 		proxy_set_header	X-Forwarded-Ssl		on;
+		proxy_set_header	Upgrade				$http_upgrade;
+		proxy_set_header	Connection			"Upgrade";
+
 		proxy_pass_request_headers			on;
 
 		merge_slashes off;
 
-		location /email {
-			proxy_pass http://mail_service;
-		}
-		location /tokens {
-			proxy_pass http://token_service;
-		}
-		location /compare/votes {
-			proxy_pass http://vote_compare_service;
-		}
-		location ~ ^\/\w*\/\w*\/od\/?.*$ {
-			proxy_pass http://$deku_filter;
-		}
-		location /subscribe {
-			proxy_pass http://subscribe_service;
-			proxy_set_header Upgrade $http_upgrade;
-			proxy_set_header Connection "Upgrade";
-		}
 		location / {
-			try_files $uri @backend;
-		}
-		location @backend {
-			proxy_pass $selected_frontend;
+			proxy_pass http://$backend;
 		}
 	}
 }
-
