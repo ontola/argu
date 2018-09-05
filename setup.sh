@@ -14,8 +14,56 @@ NGINXIP=$(head -1 ./nginx.conf 2>/dev/null | tr -d '# ')
 echo "IP: $IP"
 echo "NGINX IP: $NGINXIP"
 
+# Create nginx.conf
+BACKEND_HOST=${BACKEND_HOST:-$IP:3000}
+FRONTEND_HOST=${FRONTEND_HOST:-frontend:8080}
+sed "s/{your_local_ip}/$IP/g" nginx.conf.template > ./nginx.conf
+sed -i "s/{frontend_host}/$FRONTEND_HOST/g" nginx.conf
+sed -i "s/{backend_host}/$BACKEND_HOST/g" nginx.conf
+
+# Set postgres vars once
+PG_USERNAME=$(openssl rand -hex 32)
+PG_PASSWORD=$(openssl rand -hex 32)
+
+write_env() {
+    echo "writing .env for $1"
+    sed "s/{postgres_user}/$PG_USERNAME/g" .env.template > ./.env.$1
+    sed -i "s/{postgres_password}/$PG_PASSWORD/g" ./.env.$1
+    sed -i "s/{argu_client_id}/$ARGU_CLIENT_ID/g" ./.env.$1
+    sed -i "s/{argu_client_secret}/$ARGU_CLIENT_SECRET/g" ./.env.$1
+    sed -i "s/{frontend_token}/$FRONTEND_TOKEN/g" ./.env.$1
+    sed -i "s/{service_token}/$SERVICE_TOKEN/g" ./.env.$1
+    sed -i "s/{database_suffix}/$DB_SUFFIX/g" ./.env.$1
+    sed -i "s/{secret}/$(openssl rand -hex 32)/g" ./.env.$1
+    sed -i "s/{tld}/local$1/g" ./.env.$1
+}
+
+# Create .env.dev
+if [ ! -f ./.env.dev ]; then
+    echo argu_client_id:
+    read -s ARGU_CLIENT_ID
+    echo argu_client_secret:
+    read -s ARGU_CLIENT_SECRET
+    echo frontend_token:
+    read -s FRONTEND_TOKEN
+    echo service_token:
+    read -s SERVICE_TOKEN
+    DB_SUFFIX=production
+    write_env dev;
+fi
+
+# Create .env.test
+if [ ! -f ./.env.test ]; then
+    ARGU_CLIENT_ID=client_id
+    ARGU_CLIENT_SECRET=client_secret
+    DB_SUFFIX=test
+    FRONTEND_TOKEN=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpYXQiOiIyMDE4LTAzLTE2VDA5OjM0OjA3LjI0NDQ5WiIsInVzZXIiOnsidHlwZSI6InVzZXIiLCJAaWQiOiJodHRwczovL2FyZ3UuY28vdS9jb21tdW5pdHkiLCJpZCI6MSwiZW1haWwiOiJjb21tdW5pdHlAYXJndS5jbyJ9fQ.r3Lp7TDGmCCdV5nlXWgjvCWmvEXYm4G7rjWmfoturzoNv73P9lyZN0Snyc6Tml_ZMMJHkm0kiFrJWEX1XdhZZg
+    SERVICE_TOKEN=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpYXQiOiIyMDE4LTAzLTE2VDA5OjM0OjA3LjI0NDQ5WiIsInVzZXIiOnsidHlwZSI6InVzZXIiLCJAaWQiOiJodHRwczovL2FyZ3UuY28vdS9jb21tdW5pdHkiLCJpZCI6MCwiZW1haWwiOiJjb21tdW5pdHlAYXJndS5jbyJ9fQ.YGpt8CSkxtO7ZNgZtUns5-NO5l1yNoHDStSafqo9e2zNbPJD38QZYHbcbr4-bdOnl3O455b5g7wtjBjvvV7ADQ
+    write_env test;
+fi
+
 # Exit if script if host IP matches nginx config IP
-if [ -f ./nginx.conf ] && [ $IP=$NGINXIP ]; then
+if [ $IP = $NGINXIP ]; then
   echo "Host IP matches the IP configured in nginx.conf, skipping certs creation."
   exit 0
 fi
@@ -30,7 +78,8 @@ if [ ! -f /usr/share/ca-certificates/devproxy.crt ]; then
        -out devproxyCA/cacert.pem
   # Install in system
   sudo ln -s $PWD/devproxyCA/cacert.pem /usr/share/ca-certificates/devproxy.crt
-  sudo dpkg-reconfigure ca-certificates
+  sudo dpkg-reconfigure p critical ca-certificates
+  echo "4"
   # Install in firefox
   for certDB in $(find  ~/.mozilla* -name "cert8.db")
   do
@@ -70,8 +119,3 @@ sudo openssl ca \
   -outdir ssl \
   -in ssl/argu.localdev.csr.pem \
   -out ssl/nginx.crt
-
-if [ ! -f ./nginx.conf ]; then
-    sed "s/{your_local_ip}/$IP/g" nginx.conf.template > ./nginx.conf
-fi
-wait

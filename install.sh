@@ -109,6 +109,10 @@ install_hosts() {
   ensure_hosts '127.0.0.1' 'app.argu.localdev'
   ensure_hosts '::1' 'argu.localdev'
   ensure_hosts '::1' 'app.argu.localdev'
+  ensure_hosts '127.0.0.1' 'argu.localtest'
+  ensure_hosts '127.0.0.1' 'app.argu.localtest'
+  ensure_hosts '::1' 'argu.localtest'
+  ensure_hosts '::1' 'app.argu.localtest'
 }
 
 setup_path() {
@@ -146,6 +150,6 @@ install_compose
 if [ ! -f ./setup.sh ]; then
   cd $DEV_HOME/bitbucket.org/arguweb/devproxy
 fi
-./setup.sh
+./dev.sh
 # done?
 echo "done?"

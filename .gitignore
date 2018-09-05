@@ -9,3 +9,6 @@ nginx.conf
 serial
 www/
 .idea
+.env
+.env.dev
+.env.test

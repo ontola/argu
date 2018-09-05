@@ -13,7 +13,7 @@ events {
 http {
 	log_format debuglog '[$time_iso8601] $remote_addr - $server_name 	=> $upstream_addr:	'
                         '"$request" $status $body_bytes_sent '
-                        '"$http_referer" "$http_user_agent" "$http_x_forwarded_for" "$request_body" "$http_Authorization" cookie: "$http_Cookie" x-argu-back: "$http_X_Argu_Back" uri: "$uri" backend: "$backend" proxy_pass: "$proxy_pass"';
+                        '"$http_referer" "$http_user_agent" "$http_x_forwarded_for" "$request_body" "$http_Authorization" cookie: "$http_Cookie" x-argu-back: "$http_X_Argu_Back" uri: "$uri" backend: "$backend"';
 	log_format upstreamlog '[$time_iso8601] $remote_addr - $server_name 	=> $upstream_addr:	$request [tUps: $upstream_response_time tReq: $request_time]';
 
 	client_body_buffer_size		128K;
@@ -35,46 +35,43 @@ http {
 	tcp_nodelay			on;
 	tcp_nopush			on;
 
-	upstream frontend_service {
-		server {your_local_ip}:3001;
+	upstream frontend {
+		server {frontend_host};
 	}
 
-	upstream argu_service {
-		server {your_local_ip}:3000;
+	upstream argu {
+		server {backend_host};
 	}
 
-	upstream email_service {
-		server {your_local_ip}:3002;
+	upstream email {
+		server email.svc.cluster.local:2999;
 	}
 
-	upstream token_service {
-		server {your_local_ip}:3003;
+	upstream token {
+		server token.svc.cluster.local:2999;
 	}
 
-	upstream vote_compare_service {
-		server {your_local_ip}:3004;
+	upstream vote_compare {
+		server vote_compare.svc.cluster.local:2999;
 	}
 
-	upstream deku_service {
-		server {your_local_ip}:3006;
-	}
-
-	upstream subscribe_service {
-		server {your_local_ip}:3005;
+	upstream deku {
+		server deku.svc.cluster.local:2999;
 	}
 
     map $uri $backend {
-        ~/compare/votes			vote_compare_service;
-        ~/tokens				token_service;
-        ~/email					email_service;
-        ~^\/\w*\/\w*\/od\/?.*$	deku_service;
-        ~/subscribe				subscribe_service;
-        default					argu_service;
+        ~/compare/votes			vote_compare;
+        ~/tokens				token;
+        ~/email					email;
+        ~^\/\w*\/\w*\/od\/?.*$	deku;
+        ~/subscribe				subscribe;
+        default					argu;
     }
 
 	server {
 		listen			443 ssl http2;
 		server_name		app.argu.localdev;
+		server_name		app.argu.localtest;
 
 		root			/etc/nginx/www;
 		access_log		/dev/fd/1 upstreamlog;
@@ -99,7 +96,7 @@ http {
 		merge_slashes off;
 
         location / {
-            proxy_pass http://frontend_service;
+            proxy_pass http://frontend;
         }
     }
 
@@ -107,6 +104,7 @@ http {
 		listen			3032 http2;
 		listen			443 ssl http2 deferred;
 		server_name		argu.localdev;
+		server_name		argu.localtest;
 
 		root			/etc/nginx/www;
 		access_log		/dev/fd/1 upstreamlog;
@@ -134,4 +132,40 @@ http {
 			proxy_pass http://$backend;
 		}
 	}
+
+    server {
+        listen			2999;
+        server_name		argu.svc.cluster.local;
+        location / {
+            proxy_pass http://argu;
+        }
+    }
+    server {
+        listen			2999;
+        server_name		email.svc.cluster.local;
+        location / {
+            proxy_pass http://email;
+        }
+    }
+    server {
+        listen			2999;
+        server_name		token.svc.cluster.local;
+        location / {
+            proxy_pass http://token;
+        }
+    }
+    server {
+        listen			2999;
+        server_name		vote_compare.svc.cluster.local;
+        location / {
+            proxy_pass http://vote_compare;
+        }
+    }
+    server {
+        listen			2999;
+        server_name		deku.svc.cluster.local;
+        location / {
+            proxy_pass http://deku;
+        }
+    }
 }
