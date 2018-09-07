@@ -11,7 +11,9 @@ namespace :test do
   task :setup do
     include DockerHelper
     Mock.new.nominatim
-
+    env =
+      docker_container('argu').info['Config']['Env'].detect { |env| env.start_with?('FE_BUNDLE_NAME') }.split('=').last
+    raise "Trying to load test data in #{env} env" unless env == 'localtest'
     docker_setup('argu', seed: :test)
     docker_setup('token_service', seed: :test)
     docker_run('email_service', %w[bundle exec rake db:setup])
