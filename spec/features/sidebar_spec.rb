@@ -28,15 +28,15 @@ RSpec.describe 'Sidebar', type: :feature do
   it 'shows one forum for guest, two for staff' do
     as :guest, location: '/argu'
 
-    expect(sidebar.find('.MenuSectionLabel')).to have_content 'FORUM'
-    expect(sidebar).not_to have_content 'Freetown'
-    expect(sidebar).not_to have_content 'Holland'
+    expect(sidebar_top.find('.MenuSectionLabel')).to have_content 'FORUM'
+    expect(sidebar_top).not_to have_content 'Freetown'
+    expect(sidebar_top).not_to have_content 'Holland'
 
     login('staff@example.com')
 
-    expect(sidebar('.MenuSectionLabel')).to have_content 'FORUMS'
-    expect(sidebar).to have_content 'Freetown'
-    expect(sidebar).to have_content 'Holland'
+    expect(sidebar_top('.MenuSectionLabel')).to have_content 'FORUMS'
+    expect(sidebar_top).to have_content 'Freetown'
+    expect(sidebar_top).to have_content 'Holland'
   end
 
   private

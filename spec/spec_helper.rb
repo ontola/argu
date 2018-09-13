@@ -34,8 +34,8 @@ RSpec.configure do |config|
         raise "Container '#{service}' is not found. Did you run `./test.sh`?"
       end
       puts "- Container ready"
-      unless docker_container('postgres').exec(['psql', "#{service}_test", '--username', 'postgres'])[2] == 0
-        raise "Database '#{service}' does not exist. Did you run `bundle exec rake test:setup`?"
+      unless docker_container('postgres').exec(['psql', '-tAc', "SELECT 1 FROM pg_database WHERE datname='#{service}_test'", '--username', 'postgres'])[0] == ["1\n"]
+        raise "Database '#{service}_test' does not exist. Did you run `bundle exec rake test:setup`?"
       end
       puts "- Database ready"
     end
