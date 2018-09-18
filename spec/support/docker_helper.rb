@@ -7,7 +7,7 @@ module DockerHelper
 
   def docker_reset_databases
     SERVICES.each { |db| docker_drop_database(db) }
-    docker_postgres_command('-f', '/tmp/base_state', 'postgres')
+    docker_postgres_command('-f', '/var/lib/postgresql/data/dump', 'postgres')
   end
 
   def docker_drop_database(database)

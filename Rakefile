@@ -19,7 +19,7 @@ namespace :test do
     docker_run('email_service', %w[bundle exec rake db:setup])
     docker_run('vote_compare_service', %w[bundle exec rake db:setup])
 
-    docker_run('postgres', %w[pg_dumpall --username=postgres --file=/tmp/base_state])
+    docker_run('postgres', %w[pg_dumpall --username=postgres --file=/var/lib/postgresql/data/dump])
   end
 end
 
@@ -31,7 +31,5 @@ namespace :dev do
     docker_setup('token_service')
     docker_run('email_service', %w[bundle exec rake db:setup])
     docker_run('vote_compare_service', %w[bundle exec rake db:setup])
-
-    docker_run('postgres', %w[pg_dumpall --username=postgres --file=/tmp/base_state])
   end
 end
