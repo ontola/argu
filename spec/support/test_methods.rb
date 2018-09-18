@@ -10,6 +10,8 @@ module TestMethods
   end
 
   def login(email, password = 'password')
+    wait_for(page).to have_content 'Log in / registreer'
+
     page.click_link('Log in / registreer')
 
     expect(page).to have_content 'inloggen of registreren'
