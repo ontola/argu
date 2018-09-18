@@ -133,37 +133,10 @@ http {
 
     server {
         listen			2999;
-        server_name		argu.svc.cluster.local;
+        access_log		/dev/fd/1 upstreamlog;
+        error_log		/dev/fd/1;
         location / {
-            proxy_pass http://argu;
-        }
-    }
-    server {
-        listen			2999;
-        server_name		email.svc.cluster.local;
-        location / {
-            proxy_pass http://email;
-        }
-    }
-    server {
-        listen			2999;
-        server_name		token.svc.cluster.local;
-        location / {
-            proxy_pass http://token;
-        }
-    }
-    server {
-        listen			2999;
-        server_name		vote_compare.svc.cluster.local;
-        location / {
-            proxy_pass http://vote_compare;
-        }
-    }
-    server {
-        listen			2999;
-        server_name		deku.svc.cluster.local;
-        location / {
-            proxy_pass http://deku;
+            proxy_pass http://$backend;
         }
     }
 }
