@@ -24,7 +24,7 @@ services:
   frontend:
     image: eu.gcr.io/active-gasket-113610/aod_demo:${RAILS_ENV:-staging}
     env_file:
-      - ${ENV_FILE:-./.env.dev}
+      - ${ENV_FILE:-./.env}
     environment:
       - REDIS_ADDRESS=redis://redis:6379
     command: node --use-openssl-ca ./dist/private/server.js
@@ -33,7 +33,7 @@ services:
   argu:
     image: eu.gcr.io/active-gasket-113610/argu:${RAILS_ENV:-staging}
     env_file:
-      - ${ENV_FILE:-./.env.dev}
+      - ${ENV_FILE:-./.env}
     volumes:
       - ./devproxyCA/cacert.pem:/etc/ssl/certs/cacert.pem
     command: bundle exec unicorn -l 0.0.0.0 -p 2999 -c /usr/src/app/config/unicorn.rb
@@ -46,14 +46,14 @@ services:
   sidekiq:
     image: eu.gcr.io/active-gasket-113610/argu:${RAILS_ENV:-staging}
     env_file:
-      - ${ENV_FILE:-./.env.dev}
+      - ${ENV_FILE:-./.env}
     command: bundle exec sidekiq
     volumes:
       - ./devproxyCA/cacert.pem:/etc/ssl/certs/cacert.pem
   token_service:
     image: eu.gcr.io/active-gasket-113610/token_service:${RAILS_ENV:-staging}
     env_file:
-      - ${ENV_FILE:-./.env.dev}
+      - ${ENV_FILE:-./.env}
     volumes:
       - ./devproxyCA/cacert.pem:/etc/ssl/certs/cacert.pem
     command: ./bin/rails server -b 0.0.0.0 -p 2999
@@ -66,7 +66,7 @@ services:
   vote_compare_service:
     image: eu.gcr.io/active-gasket-113610/vote_compare_service:${RAILS_ENV:-staging}
     env_file:
-      - ${ENV_FILE:-./.env.dev}
+      - ${ENV_FILE:-./.env}
     volumes:
       - ./devproxyCA/cacert.pem:/etc/ssl/certs/cacert.pem
     command: ./bin/rails server -b 0.0.0.0 -p 2999
@@ -79,14 +79,14 @@ services:
   vote_compare_service_sidekiq:
     image: eu.gcr.io/active-gasket-113610/vote_compare_service:${RAILS_ENV:-staging}
     env_file:
-      - ${ENV_FILE:-./.env.dev}
+      - ${ENV_FILE:-./.env}
     volumes:
       - ./devproxyCA/cacert.pem:/etc/ssl/certs/cacert.pem
     command: bundle exec sidekiq -e staging
   vote_compare_service_subscriber:
     image: eu.gcr.io/active-gasket-113610/vote_compare_service:${RAILS_ENV:-staging}
     env_file:
-      - ${ENV_FILE:-./.env.dev}
+      - ${ENV_FILE:-./.env}
     volumes:
       - ./devproxyCA/cacert.pem:/etc/ssl/certs/cacert.pem
     command: bundle exec rake broadcast:subscribe
@@ -96,7 +96,7 @@ services:
   email_service:
     image: eu.gcr.io/active-gasket-113610/email_service:${RAILS_ENV:-staging}
     env_file:
-      - ${ENV_FILE:-./.env.dev}
+      - ${ENV_FILE:-./.env}
     volumes:
       - ./devproxyCA/cacert.pem:/etc/ssl/certs/cacert.pem
     command: ./bin/rails server -b 0.0.0.0 -p 2999
@@ -109,7 +109,7 @@ services:
   email_service_subscriber:
     image: eu.gcr.io/active-gasket-113610/email_service:${RAILS_ENV:-staging}
     env_file:
-      - ${ENV_FILE:-./.env.dev}
+      - ${ENV_FILE:-./.env}
     volumes:
       - ./devproxyCA/cacert.pem:/etc/ssl/certs/cacert.pem
     command: bundle exec rake broadcast:subscribe
@@ -119,14 +119,14 @@ services:
   email_service_sidekiq:
     image: eu.gcr.io/active-gasket-113610/email_service:${RAILS_ENV:-staging}
     env_file:
-      - ${ENV_FILE:-./.env.dev}
+      - ${ENV_FILE:-./.env}
     volumes:
       - ./devproxyCA/cacert.pem:/etc/ssl/certs/cacert.pem
     command: bundle exec sidekiq -e staging
   deku_service:
     image: eu.gcr.io/active-gasket-113610/deku:${RAILS_ENV:-staging}
     env_file:
-      - ${ENV_FILE:-./.env.dev}
+      - ${ENV_FILE:-./.env}
     volumes:
       - ./devproxyCA/cacert.pem:/etc/ssl/certs/cacert.pem
     command: ./bin/rails server -b 0.0.0.0 -p 2999
@@ -139,14 +139,14 @@ services:
   deku_service_sidekiq:
     image: eu.gcr.io/active-gasket-113610/deku:${RAILS_ENV:-staging}
     env_file:
-      - ${ENV_FILE:-./.env.dev}
+      - ${ENV_FILE:-./.env}
     volumes:
       - ./devproxyCA/cacert.pem:/etc/ssl/certs/cacert.pem
     command: bundle exec sidekiq -e staging
   postgres:
     image: postgres:9.5.5
     env_file:
-      - ${ENV_FILE:-./.env.dev}
+      - ${ENV_FILE:-./.env}
     networks:
       default:
       external:

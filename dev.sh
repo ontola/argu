@@ -1,4 +1,8 @@
 #!/bin/bash
+
+rm .env
+ln -s .env.dev .env
+
 ./setup.sh
 
 docker-compose down
