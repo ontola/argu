@@ -21,7 +21,7 @@ module MailCatcherHelper
 
   def mailcatcher_email(opts = {})
     mailcatcher_mailbox
-      .messages
+      .messages(reload: true)
       .detect { |m| opts.all? { |key, value| m.send(key) == value } }
   end
 end
