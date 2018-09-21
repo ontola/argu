@@ -46,6 +46,13 @@ RSpec.configure do |config|
     docker_reset_databases
     mailcatcher_clear
   end
+
+  config.after(:each) do |example|
+    if example.exception && @mailcatcher_expectation
+      catched = mailcatcher_mailbox.messages(reload: true).map { |m| "#{m.to}: #{m.subject}" }.join("\n")
+      catched.empty? ? raise('No emails catched') : raise("Catched emails:\n#{catched}")
+    end
+  end
 end
 
 Capybara.configure do |config|

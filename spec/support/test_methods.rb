@@ -70,4 +70,9 @@ module TestMethods
   def use_legacy_frontend?
     @use_legacy_frontend == true
   end
+
+  def expect_email(email_name)
+    @mailcatcher_expectation = true
+    wait(20).for { send(email_name) }.to be_truthy, "#{email_name} has not been catched"
+  end
 end

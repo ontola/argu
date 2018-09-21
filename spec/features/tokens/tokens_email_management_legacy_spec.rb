@@ -20,7 +20,7 @@ RSpec.describe 'Token email show legacy', type: :feature do
 
     click_button('Send invites')
 
-    wait(30).for { invite_email }.to be_truthy
+    expect_email(:invite_email)
 
     expect(invite_email.body).to include("I invite you to join the group 'Members'.")
 
