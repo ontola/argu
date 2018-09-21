@@ -21,6 +21,11 @@ namespace :test do
 
     docker_run('postgres', %w[pg_dumpall --username=postgres --file=/var/lib/postgresql/data/dump])
   end
+
+  task :reset do
+    include DockerHelper
+    docker_reset_databases
+  end
 end
 
 namespace :dev do
