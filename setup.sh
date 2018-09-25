@@ -14,12 +14,7 @@ NGINXIP=$(head -1 ./nginx.conf 2>/dev/null | tr -d '# ')
 echo "IP: $IP"
 echo "NGINX IP: $NGINXIP"
 
-# Create nginx.conf
-BACKEND_HOST=${BACKEND_HOST:-$IP:3000}
-FRONTEND_HOST=${FRONTEND_HOST:-frontend:8080}
-sed "s/{your_local_ip}/$IP/g" nginx.conf.template > ./nginx.conf
-sed -i "s/{frontend_host}/$FRONTEND_HOST/g" nginx.conf
-sed -i "s/{backend_host}/$BACKEND_HOST/g" nginx.conf
+IP=$IP ENV=$ENV ./setup_environment.rb
 
 # Set postgres vars once
 PG_USERNAME=$(openssl rand -hex 32)

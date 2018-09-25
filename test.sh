@@ -1,9 +1,6 @@
 #!/bin/bash
 
-rm .env
-ln -s .env.test .env
-
-BACKEND_HOST=argu:3000 ./setup.sh
+ENV=test ./setup.sh
 
 docker-compose down
 

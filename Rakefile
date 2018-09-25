@@ -11,13 +11,11 @@ namespace :test do
   task :setup do
     include DockerHelper
     Mock.new.nominatim
-    env =
-      docker_container('argu').info['Config']['Env'].detect { |env| env.start_with?('FE_BUNDLE_NAME') }.split('=').last
-    raise "Trying to load test data in #{env} env" unless env == 'localtest'
+    raise "Trying to load test data in #{env} env" unless File.readlink(File.expand_path('.env')).end_with?('test')
     docker_setup('argu', seed: :test)
-    docker_setup('token_service', seed: :test)
-    docker_run('email_service', %w[bundle exec rake db:setup])
-    docker_run('vote_compare_service', %w[bundle exec rake db:setup])
+    docker_setup('token', seed: :test)
+    docker_run('email', %w[bundle exec rake db:setup])
+    docker_run('vote_compare', %w[bundle exec rake db:setup])
 
     docker_run('postgres', %w[pg_dumpall --username=postgres --file=/var/lib/postgresql/data/dump])
   end
@@ -33,8 +31,8 @@ namespace :dev do
   task :setup do
     include DockerHelper
     docker_setup('argu')
-    docker_setup('token_service')
-    docker_run('email_service', %w[bundle exec rake db:setup])
-    docker_run('vote_compare_service', %w[bundle exec rake db:setup])
+    docker_setup('token')
+    docker_run('email', %w[bundle exec rake db:setup])
+    docker_run('vote_compare', %w[bundle exec rake db:setup])
   end
 end

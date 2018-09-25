@@ -12,3 +12,5 @@ www/
 .env
 .env.dev
 .env.test
+docker-compose.yml
+local_ports.yml

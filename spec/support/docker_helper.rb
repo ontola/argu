@@ -3,10 +3,14 @@
 require 'docker-api'
 
 module DockerHelper
-  SERVICES = %w[argu token_service email_service]
+  SERVICES = {
+    argu: :argu,
+    token: :token_service,
+    email: :email_service
+  }
 
   def docker_reset_databases
-    SERVICES.each { |db| docker_drop_database(db) }
+    SERVICES.keys.each { |db| docker_drop_database(db) }
     docker_postgres_command('-f', '/var/lib/postgresql/data/dump', 'postgres')
   end
 
@@ -23,7 +27,8 @@ module DockerHelper
   end
 
   def docker_container(name)
-    Docker::Container.get("devproxy_#{name}_1", filters: {status: ['running']}.to_json)
+    container = Docker::Container.get("devproxy_#{name}_1")
+    container if container.info['State']['Running']
   rescue Docker::Error::NotFoundError
     nil
   end
@@ -39,11 +44,19 @@ module DockerHelper
   end
 
   def docker_run(container, commands)
-    result = docker_container(container).exec(commands)
-    return result if result[-1] == 0
-    result[0].each { |message| puts message }
-    result[1].each { |message| puts message }
-    raise "#{container} results in exit code #{result[2]}"
+    if docker_container(container).nil?
+      path = File.expand_path("../#{SERVICES[container.to_sym]}")
+      system(
+        "cd #{path}; "\
+        "BUNDLE_GEMFILE=#{path}/Gemfile #{commands.join(' ').gsub('bundle exec ', "bundle exec #{path}/bin/")}"
+      )
+    else
+      result = docker_container(container).exec(commands)
+      return result if result[-1] == 0
+      result[0].each { |message| puts message }
+      result[1].each { |message| puts message }
+      raise "#{container} results in exit code #{result[2]}"
+    end
   end
 
   def docker_postgres_command(*args)

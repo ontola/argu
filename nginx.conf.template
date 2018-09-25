@@ -40,23 +40,23 @@ http {
 	}
 
 	upstream argu {
-		server {backend_host};
+		server {argu_host};
 	}
 
 	upstream email {
-		server email.svc.cluster.local:2999;
+		server {email_host};
 	}
 
 	upstream token {
-		server token.svc.cluster.local:2999;
+		server {token_host};
 	}
 
 	upstream vote_compare {
-		server vote_compare.svc.cluster.local:2999;
+		server {vote_compare_host};
 	}
 
 	upstream deku {
-		server deku.svc.cluster.local:2999;
+		server {deku_host};
 	}
 
     map $uri $backend {

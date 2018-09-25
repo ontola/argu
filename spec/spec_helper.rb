@@ -28,12 +28,8 @@ RSpec.configure do |config|
   config.shared_context_metadata_behavior = :apply_to_host_groups
 
   config.before(:suite) do
-    DockerHelper::SERVICES.each do |service|
+    DockerHelper::SERVICES.keys.each do |service|
       puts "Checking #{service}"
-      unless docker_container(service) && docker_container(service).info['State']['Running']
-        raise "Container '#{service}' is not found. Did you run `./test.sh`?"
-      end
-      puts "- Container ready"
       unless docker_container('postgres').exec(['psql', '-tAc', "SELECT 1 FROM pg_database WHERE datname='#{service}_test'", '--username', 'postgres'])[0] == ["1\n"]
         raise "Database '#{service}_test' does not exist. Did you run `bundle exec rake test:setup`?"
       end
