@@ -9,6 +9,10 @@ module TestMethods
     use_legacy_frontend? ? login_legacy(actor, password) : login(actor, password)
   end
 
+  def wait_until_loaded
+    wait_for { page.evaluate_script('LRS.api.requestMap.size === 0') }.to be_truthy
+  end
+
   def login(email, password = 'password')
     wait_for(page).to have_content 'Log in / registreer'
 
@@ -31,6 +35,12 @@ module TestMethods
       fill_in 'user_password', with: password
       click_button 'Log in'
     end
+  end
+
+  def logout
+    current_user_section('.SideBarCollapsible__toggle').click
+    wait_for { current_user_section }.to have_content 'Sign out'
+    current_user_section(:link, 'Sign out').click
   end
 
   def fill_in_login_form(email = 'user1@example.com', password = 'password')

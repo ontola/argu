@@ -32,4 +32,11 @@ module Selectors
     return found if element.nil?
     found.find(element)
   end
+
+  def current_user_section(*args)
+    wait_for { page }.to have_css 'div[resource="https://app.argu.localtest/c_a"]'
+    found = page.find('.NavBarContent__footer div[resource="https://app.argu.localtest/c_a"]')
+    return found if args.empty?
+    found.find(*args)
+  end
 end
