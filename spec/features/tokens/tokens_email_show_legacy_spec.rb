@@ -48,9 +48,7 @@ RSpec.describe 'Token email show legacy', type: :feature do
       expect(page).to have_content('OTHER EMAIL ADDRESS')
       click_button 'Add invitee@example.com'
 
-      wait_for { page }.to have_content('Holland')
-      expect(page).to have_content("You have joined the group 'Members'")
-      expect(page).not_to have_content('Add to my forums')
+      expect_joined
     end
   end
 
