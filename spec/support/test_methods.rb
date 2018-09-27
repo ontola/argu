@@ -14,16 +14,9 @@ module TestMethods
 
     expect(page).to have_content 'inloggen of registreren'
 
-    fill_in placeholder: 'email@example.com', with: email
-
-    click_button 'Ga verder'
-
-    fill_in type: :password, with: password
-
-    click_button 'Verder'
+    fill_in_login_form email, password
 
     verify_logged_in
-    expect(page).not_to have_content 'inloggen of registreren'
   end
 
   def login_legacy(email, password = 'password')
@@ -36,6 +29,30 @@ module TestMethods
       fill_in 'user_password', with: password
       click_button 'Log in'
     end
+  end
+
+  def fill_in_login_form(email = 'user1@example.com', password = 'password')
+    wait_for(page).to have_content('inloggen of registreren')
+
+    fill_in placeholder: 'email@example.com', with: email, fill_options: {clear: :backspace}
+
+    click_button 'Ga verder'
+
+    fill_in type: :password, with: password
+
+    click_button 'Verder'
+  end
+
+  def fill_in_registration_form(email = 'new_user@example.com')
+    wait_for(page).to have_content('inloggen of registreren')
+
+    fill_in placeholder: 'email@example.com', with: email
+
+    click_button 'Ga verder'
+
+    expect(page).to have_content 'Door je te registreren ga je akkoord met de algemene voorwaarden en de privacy policy.'
+
+    click_button 'Bevestig'
   end
 
   # Helper to aid in picking an option in a Selectize dropdown
