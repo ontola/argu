@@ -122,13 +122,13 @@ RSpec.describe 'Token email show legacy', type: :feature do
   private
 
   def expect_joined
-    expect(page).to have_content('Holland')
+    wait_for(page).to have_content('Holland')
     expect(page).to have_content("You have joined the group 'Members'")
     expect(page).not_to have_content('Add to my forums')
   end
 
   def expect_member_already
-    expect(page).to have_content('Holland')
+    wait_for(page).to have_content('Holland')
     expect(page).to have_content('You are already member of this group')
     expect(page).not_to have_content('Add to my forums')
   end

@@ -2,6 +2,7 @@
 
 module Selectors
   def count_bubble_count(element = nil)
+    wait_for(page).to have_css('.CountBubble__number')
     found = page.find('.CountBubble__number')
     return found if element.nil?
     found.find(element)

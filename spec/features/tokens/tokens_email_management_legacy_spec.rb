@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Token email show legacy', type: :feature do
+RSpec.describe 'Token email management legacy', type: :feature do
   before do
     use_legacy_frontend
   end
@@ -15,7 +15,7 @@ RSpec.describe 'Token email show legacy', type: :feature do
     expect(page).to have_css '.email-token-management table tbody tr', count: 3
 
     within('.select-users-and-emails') do
-      fill_in_select with: 'first_name_4 last_name_4'
+      fill_in_select with: 'first_name_5 last_name_5'
     end
 
     click_button('Send invites')

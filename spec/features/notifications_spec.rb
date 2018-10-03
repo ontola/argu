@@ -11,8 +11,8 @@ RSpec.describe 'Notifications', type: :feature do
     end
     click_link 'Notifications'
 
-    expect(page).to have_content 'first_name_31 last_name_31 posted a challenge in Freetown'
-    expect(page).to have_content 'first_name_29 last_name_29 posted a idea in Freetown'
+    expect(page).to have_content 'first_name_32 last_name_32 posted a challenge in Freetown'
+    expect(page).to have_content 'first_name_30 last_name_30 posted a idea in Freetown'
 
     expect(page.all('[data-test="Notification-Unread"]').count).to eq(2)
     page.all('[data-test="Notification-Unread"]').first.click

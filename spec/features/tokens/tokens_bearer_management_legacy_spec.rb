@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Token bearer show legacy', type: :feature do
+RSpec.describe 'Token bearer management legacy', type: :feature do
   before do
     use_legacy_frontend
   end
