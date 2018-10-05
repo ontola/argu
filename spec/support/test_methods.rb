@@ -58,7 +58,7 @@ module TestMethods
   def fill_in_registration_form(email = 'new_user@example.com')
     wait_for(page).to have_content('inloggen of registreren')
 
-    fill_in placeholder: 'email@example.com', with: email
+    fill_in placeholder: 'email@example.com', with: email, fill_options: {clear: :backspace}
 
     click_button 'Ga verder'
 
