@@ -113,6 +113,13 @@ install_hosts() {
   ensure_hosts '127.0.0.1' 'app.argu.localtest'
   ensure_hosts '::1' 'argu.localtest'
   ensure_hosts '::1' 'app.argu.localtest'
+  ensure_hosts '127.0.0.1' 'postgres'
+  ensure_hosts '127.0.0.1' 'redis'
+  ensure_hosts '127.0.0.1' 'rabbitmq'
+  ensure_hosts '127.0.0.1' 'token.svc.cluster.local'
+  ensure_hosts '127.0.0.1' 'deku.svc.cluster.local'
+  ensure_hosts '127.0.0.1' 'email.svc.cluster.local'
+  ensure_hosts '127.0.0.1' 'argu.svc.cluster.local'
 }
 
 setup_path() {
