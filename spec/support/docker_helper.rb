@@ -14,6 +14,10 @@ module DockerHelper
     docker_postgres_command('-f', '/var/lib/postgresql/data/dump', 'postgres')
   end
 
+  def docker_reset_redis
+    docker_run('redis', ['redis-cli', 'FLUSHALL'])
+  end
+
   def docker_drop_database(database)
     docker_postgres_command('--command', "UPDATE pg_database SET datallowconn=false WHERE datname='#{database}_test';")
 

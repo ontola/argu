@@ -23,6 +23,7 @@ namespace :test do
   task :reset do
     include DockerHelper
     docker_reset_databases
+    docker_reset_redis
   end
 end
 

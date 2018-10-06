@@ -40,6 +40,7 @@ RSpec.configure do |config|
 
   config.before(:each) do
     docker_reset_databases
+    docker_reset_redis
     mailcatcher_clear
   end
 
