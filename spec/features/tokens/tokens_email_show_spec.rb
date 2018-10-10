@@ -7,7 +7,9 @@ RSpec.describe 'Token email show', type: :feature do
     example 'new user visits token' do
       as(:guest, location: token)
 
-      expect_joined
+      # @todo wait_for(page).to have_content("You have joined the group 'Members'")
+      wait_for(page).to have_content('Holland')
+      verify_logged_in
     end
 
     example 'other user visits token' do
@@ -118,14 +120,14 @@ RSpec.describe 'Token email show', type: :feature do
   private
 
   def expect_joined
+    wait_for(page).to have_content("You have joined the group 'Members'")
     wait_for(page).to have_content('Holland')
-    expect(page).to have_content("You have joined the group 'Members'")
     expect(page).not_to have_content('Add to my forums')
   end
 
   def expect_member_already
+    wait_for(page).to have_content('You are already member of this group')
     wait_for(page).to have_content('Holland')
-    expect(page).to have_content('You are already member of this group')
     expect(page).not_to have_content('Add to my forums')
   end
 end
