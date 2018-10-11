@@ -7,7 +7,7 @@ module DockerHelper
     argu: :argu,
     token: :token_service,
     email: :email_service
-  }
+  }.freeze
 
   def docker_reset_databases
     SERVICES.keys.each { |db| docker_drop_database(db) }
@@ -47,20 +47,24 @@ module DockerHelper
     end
   end
 
-  def docker_run(container, commands)
-    if docker_container(container).nil?
-      path = File.expand_path("../#{SERVICES[container.to_sym]}")
-      system(
-        "cd #{path}; "\
-        "BUNDLE_GEMFILE=#{path}/Gemfile #{commands.join(' ').gsub('bundle exec ', "bundle exec #{path}/bin/")}"
-      )
-    else
-      result = docker_container(container).exec(commands)
-      return result if result[-1] == 0
-      result[0].each { |message| puts message }
-      result[1].each { |message| puts message }
-      raise "#{container} results in exit code #{result[2]}"
-    end
+  def docker_run(service, commands)
+    container = docker_container(service)
+    return run_local(service, commands) if container.nil?
+
+    result = container.exec(commands)
+    return result if result[-1] == 0
+
+    result[0].each { |message| puts message }
+    result[1].each { |message| puts message }
+    raise "#{service} results in exit code #{result[2]}"
+  end
+
+  def run_local(service, commands)
+    path = File.expand_path("../#{SERVICES[service.to_sym]}")
+    system(
+      "cd #{path}; "\
+      "BUNDLE_GEMFILE=#{path}/Gemfile #{commands.join(' ').gsub('bundle exec ', "bundle exec #{path}/bin/")}"
+    )
   end
 
   def docker_postgres_command(*args)

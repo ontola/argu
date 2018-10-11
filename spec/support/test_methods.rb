@@ -6,6 +6,7 @@ module TestMethods
   def as(actor, location: '/argu/freetown', password: 'password')
     visit "https://#{use_legacy_frontend? ? '' : 'app.'}argu.localtest#{location}"
     return if actor == :guest
+
     use_legacy_frontend? ? login_legacy(actor, password) : login(actor, password)
   end
 
@@ -62,7 +63,9 @@ module TestMethods
 
     click_button 'Ga verder'
 
-    expect(page).to have_content 'Door je te registreren ga je akkoord met de algemene voorwaarden en de privacy policy.'
+    expect(page).to(
+      have_content('Door je te registreren ga je akkoord met de algemene voorwaarden en de privacy policy.')
+    )
 
     click_button 'Bevestig'
   end
@@ -76,11 +79,7 @@ module TestMethods
       wait_for { page }.to have_css('.Select-option')
       find('.Select-option', text: selector).click
     end
-    if scope
-      within(scope, &select)
-    else
-      select.call
-    end
+    scope ? within(scope, &select) : select.call
   end
 
   def verify_logged_in
@@ -89,6 +88,7 @@ module TestMethods
 
   def visit(url)
     return super if use_legacy_frontend?
+
     super(url.gsub('https://argu', 'https://app.argu'))
   end
 

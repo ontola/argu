@@ -6,10 +6,10 @@ class Mock
   include MockServer
   include MockServer::Model::DSL
 
-  def nominatim
+  def nominatim # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
     client = MockServer::MockServerClient.new('localhost', 1090)
-    expectation = expectation do |expectation|
-      expectation.request do |request|
+    expectation = expectation do |exp|
+      exp.request do |request|
         request.method = 'GET'
         request.path = '/nominatim/v1/search'
         request.query_string_parameters = [
@@ -29,7 +29,7 @@ class Mock
         ]
       end
 
-      expectation.response do |response|
+      exp.response do |response|
         response.status_code = 200
         response.headers << header('Content-Type', 'application/json; charset=utf-8')
         response.body = [
@@ -40,11 +40,11 @@ class Mock
             osm_type: 'relation',
             osm_id: '2323309',
             boundingbox: %w[
-                11.777
-                53.7253321
-                -70.2695875
-                7.2274985
-              ],
+              11.777
+              53.7253321
+              -70.2695875
+              7.2274985
+            ],
             lat: '52.5001698',
             lon: '5.7480821',
             display_name: 'The Netherlands',
@@ -72,7 +72,7 @@ class Mock
         ].to_json
       end
 
-      expectation.times = unlimited
+      exp.times = unlimited
     end
     client.register(expectation)
   end

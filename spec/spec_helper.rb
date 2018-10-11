@@ -30,21 +30,25 @@ RSpec.configure do |config|
   config.before(:suite) do
     DockerHelper::SERVICES.keys.each do |service|
       puts "Checking #{service}"
-      unless docker_container('postgres').exec(['psql', '-tAc', "SELECT 1 FROM pg_database WHERE datname='#{service}_test'", '--username', 'postgres'])[0] == ["1\n"]
-        raise "Database '#{service}_test' does not exist. Did you run `bundle exec rake test:setup`?"
-      end
-      puts "- Database ready"
+      table_exists =
+        docker_container('postgres')
+          .exec(
+            ['psql', '-tAc', "SELECT 1 FROM pg_database WHERE datname='#{service}_test'", '--username', 'postgres']
+          )[0] == ["1\n"]
+      raise "Database '#{service}_test' does not exist. Did you run `bundle exec rake test:setup`?" unless table_exists
+
+      puts '- Database ready'
     end
     puts 'Services are ready'
   end
 
-  config.before(:each) do
+  config.before do
     docker_reset_databases
     docker_reset_redis
     mailcatcher_clear
   end
 
-  config.after(:each) do |example|
+  config.after do |example|
     if example.exception && @mailcatcher_expectation
       catched = mailcatcher_mailbox.messages(reload: true).map { |m| "#{m.to}: #{m.subject}" }.join("\n")
       catched.empty? ? raise('No emails catched') : raise("Catched emails:\n#{catched}")

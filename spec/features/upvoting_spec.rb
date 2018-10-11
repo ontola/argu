@@ -45,6 +45,7 @@ RSpec.describe 'Upvoting', type: :feature do
     wait_for(page).to have_content 'Upvote'
     click_button 'Upvote'
     return unless success
+
     wait_for(page).to have_content 'Thanks for your vote!'
     click_button class: 'Button--snackbar'
     expect_voted
@@ -54,6 +55,7 @@ RSpec.describe 'Upvoting', type: :feature do
     wait_for(page).to have_content 'Upvote'
     click_button 'Upvote'
     return unless success
+
     wait_for(page).to have_content 'Vote deleted successfully'
     click_button class: 'Button--snackbar'
     expect_not_voted

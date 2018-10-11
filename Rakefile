@@ -12,6 +12,7 @@ namespace :test do
     include DockerHelper
     Mock.new.nominatim
     raise "Trying to load test data in #{env} env" unless File.readlink(File.expand_path('.env')).end_with?('test')
+
     docker_setup('argu', seed: :test)
     docker_setup('token', seed: :test)
     docker_run('email', %w[bundle exec rake db:setup])

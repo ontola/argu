@@ -11,4 +11,5 @@ gem 'mockserver-client', git: 'https://github.com/ArthurWD/mockserver-client-rub
 gem 'rake'
 gem 'rspec'
 gem 'rspec-wait'
+gem 'rubocop'
 gem 'selenium-webdriver'
