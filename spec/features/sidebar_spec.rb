@@ -38,14 +38,4 @@ RSpec.describe 'Sidebar', type: :feature do
     expect(sidebar_top).to have_content 'Freetown'
     expect(sidebar_top).to have_content 'Holland'
   end
-
-  private
-
-  def switch_organization(organization)
-    find('.NavBarContent__switcher .SideBarCollapsible__toggle').click
-    expect(sidebar).to have_content organization
-    expect(main_content).not_to have_content organization
-    click_link organization
-    expect(main_content).to have_content organization
-  end
 end

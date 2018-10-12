@@ -82,6 +82,14 @@ module TestMethods
     scope ? within(scope, &select) : select.call
   end
 
+  def switch_organization(organization)
+    find('.NavBarContent__switcher .SideBarCollapsible__toggle').click
+    expect(sidebar).to have_content organization
+    expect(main_content).not_to have_content organization
+    click_link organization
+    expect(main_content).to have_content organization
+  end
+
   def verify_logged_in
     wait_for { page }.to have_css 'div[resource="https://app.argu.localtest/c_a"]'
   end
