@@ -38,9 +38,10 @@ module Selectors
     found.find(element)
   end
 
-  def resource_selector(iri, child:, parent: page)
-    wait_for(parent).to have_css "div[resource='#{iri}']"
-    found = parent.find("div[resource='#{iri}']")
+  def resource_selector(iri, element: 'div', child: nil, parent: page)
+    selector = "#{element}[resource='#{iri}']"
+    wait_for(parent).to have_css selector
+    found = parent.find(selector)
     return found if child.nil?
 
     found.find(child)
