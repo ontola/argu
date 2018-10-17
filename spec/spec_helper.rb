@@ -1,9 +1,11 @@
 # frozen_string_literal: true
 
 require 'capybara/rspec'
+require 'capybara-screenshot/rspec'
 require 'support/mock'
 require 'selenium/webdriver'
 require 'rspec/wait'
+require 'support/exception_helper'
 require 'support/mailcatcher_helper'
 require 'support/docker_helper'
 require 'support/test_methods'
@@ -12,6 +14,7 @@ require 'support/selectors'
 RSpec.configure do |config|
   include DockerHelper
 
+  config.include ExceptionHelper
   config.include MailCatcherHelper
   config.include DockerHelper
   config.include TestMethods
@@ -49,9 +52,10 @@ RSpec.configure do |config|
   end
 
   config.after do |example|
-    if example.exception && @mailcatcher_expectation
-      catched = mailcatcher_mailbox.messages(reload: true).map { |m| "#{m.to}: #{m.subject}" }.join("\n")
-      catched.empty? ? raise('No emails catched') : raise("Catched emails:\n#{catched}")
+    if example.exception
+      upload_container_logs(example)
+      upload_javascript_errors(example)
+      raise_catched_emails
     end
   end
 end
@@ -81,3 +85,18 @@ end
 MailCatcher::API.configure do |config|
   config.server = 'http://app.argu.localtest:1080'
 end
+
+Capybara.save_path = File.expand_path('../tmp/exceptions', __dir__)
+
+Capybara::Screenshot.after_save_html do |path|
+  ExceptionHelper.upload_to_bitbucket(path)
+end
+
+Capybara::Screenshot.after_save_screenshot do |path|
+  ExceptionHelper.upload_to_bitbucket(path)
+end
+
+Capybara::Screenshot.register_filename_prefix_formatter(:rspec) do |example|
+  ExceptionHelper.example_filename(example)
+end
+Capybara::Screenshot.append_timestamp = false

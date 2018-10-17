@@ -3,6 +3,7 @@
 source 'https://rubygems.org/'
 
 gem 'capybara'
+gem 'capybara-screenshot'
 gem 'chromedriver-helper'
 gem 'docker-api'
 gem 'faraday'
