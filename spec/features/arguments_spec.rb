@@ -8,6 +8,7 @@ RSpec.describe 'Arguments', type: :feature do
   let(:content) { 'Content of argument' }
 
   def fill_in_omniform(omniform_parent, click_to_open: false, side: 'pro')
+    wait_until_loaded
     scope =
       resource_selector(
         "https://app.argu.localtest#{location}",

@@ -7,6 +7,7 @@ RSpec.describe 'Comments', type: :feature do
   let(:content) { 'Content of comment' }
 
   def fill_in_omniform(omniform_parent, click_to_open: false)
+    wait_until_loaded
     scope =
       resource_selector(
         "https://app.argu.localtest#{location}",
