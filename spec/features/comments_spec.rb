@@ -6,7 +6,7 @@ RSpec.describe 'Comments', type: :feature do
   let(:location) { '/argu/m/32' }
   let(:content) { 'Content of comment' }
 
-  def fill_in_omniform(omniform_parent, click_to_open: false) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def fill_in_omniform(omniform_parent, click_to_open: false)
     scope =
       resource_selector(
         "https://app.argu.localtest#{location}",

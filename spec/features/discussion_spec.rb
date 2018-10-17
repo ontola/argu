@@ -63,7 +63,7 @@ RSpec.describe 'Discussions', type: :feature do
 
   private
 
-  def expect_discussion_button(organization, forum, expect) # rubocop:disable Metrics/AbcSize:
+  def expect_discussion_button(organization, forum, expect)
     wait_for(page).to have_content forum
     resource_selector(
       "https://app.argu.localtest/#{organization}/menus/navigations#forums.#{forum.downcase.tr(' ', '_')}",

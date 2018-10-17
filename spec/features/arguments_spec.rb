@@ -7,7 +7,6 @@ RSpec.describe 'Arguments', type: :feature do
   let(:title) { 'Title of argument' }
   let(:content) { 'Content of argument' }
 
-  # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
   def fill_in_omniform(omniform_parent, click_to_open: false, side: 'pro')
     scope =
       resource_selector(
@@ -29,7 +28,6 @@ RSpec.describe 'Arguments', type: :feature do
       wait_for(page).to have_content content
     end
   end
-  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
   shared_examples_for 'post argument' do
     before do
