@@ -48,8 +48,7 @@ RSpec.describe 'Voting', type: :feature do
           verify_logged_in
         end
 
-        # @todo Transfer guest vote to new user
-        # it_behaves_like 'confirm vote'
+        it_behaves_like 'confirm vote'
       end
 
       context 'confirm with wrong password' do
