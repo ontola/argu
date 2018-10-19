@@ -54,7 +54,7 @@ RSpec.configure do |config|
   config.after do |example|
     if example.exception
       upload_container_logs(example)
-      upload_javascript_errors(example)
+      upload_javascript_logs(example)
       raise_catched_emails
     end
   end

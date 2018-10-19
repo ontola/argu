@@ -12,7 +12,9 @@ module ExceptionHelper
 
   def upload_container_logs(example)
     (DockerHelper::SERVICES.keys + %w[devproxy frontend]).each do |container|
-      upload_exception_file(docker_container(container).logs(stdout: true), example, "#{container}.log")
+      if docker_container(container)
+        upload_exception_file(docker_container(container).logs(stdout: true), example, "#{container}.log")
+      end
     end
   end
 
@@ -20,9 +22,14 @@ module ExceptionHelper
     [example.full_description.tr(' ', '-'), suffix].compact.join('.')
   end
 
-  def upload_javascript_errors(example)
+  def upload_javascript_logs(example)
     errors = page.driver.browser.manage.logs.get(:browser)
     upload_exception_file(errors.map(&:message).join("\n"), example, 'javascript.log') if errors
+    status = page.evaluate_script(
+      'JSON.stringify(Array.from(LRS.api.statusMap).reduce((obj, [key, value]) => ('\
+      'Object.assign(obj, { [key.value]: value })), {}));'
+    )
+    upload_exception_file(JSON.pretty_generate(JSON.parse(status)), example, 'javascript.statements.log')
   end
 
   def upload_to_bitbucket(path)
