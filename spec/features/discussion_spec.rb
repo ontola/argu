@@ -82,8 +82,12 @@ RSpec.describe 'Discussions', type: :feature do
   def fill_in_form
     fill_in 'http://schema.org/name', with: title, fill_options: {clear: :backspace}
     fill_in 'http://schema.org/text', with: content, fill_options: {clear: :backspace}
-    attach_file 'Content', File.absolute_path('spec/fixtures/profile_photo.png')
-    # @todo upload cover_photo
+    within 'div[property="https://argu.co/ns/core#coverPhoto"]' do
+      attach_file 'Content', File.absolute_path('spec/fixtures/cover_photo.jpg')
+    end
+    within 'div[property="https://argu.co/ns/core#attachments"]' do
+      attach_file 'Content', File.absolute_path('spec/fixtures/profile_photo.png')
+    end
     click_button 'Save'
   end
 
@@ -98,7 +102,7 @@ RSpec.describe 'Discussions', type: :feature do
     wait_for(page).to have_content(title)
     expect(page).to have_content(content)
     resource_selector("https://app.argu.localtest/argu/#{path}/attachments", child: '.AttachmentPreview')
-    # @todo expect cover_photo
+    expect(page).to have_css('.CoverImage__wrapper')
     expect(current_path).to include("/argu/#{path}")
   end
 end
