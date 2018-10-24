@@ -6,6 +6,7 @@ require 'support/mock'
 require 'selenium/webdriver'
 require 'rspec/wait'
 require 'support/exception_helper'
+require 'support/expectations'
 require 'support/mailcatcher_helper'
 require 'support/docker_helper'
 require 'support/test_methods'
@@ -15,6 +16,7 @@ RSpec.configure do |config|
   include DockerHelper
 
   config.include ExceptionHelper
+  config.include Expectations
   config.include MailCatcherHelper
   config.include DockerHelper
   config.include TestMethods

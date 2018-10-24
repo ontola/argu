@@ -82,6 +82,11 @@ module TestMethods
     scope ? within(scope, &select) : select.call
   end
 
+  def go_to_menu_item(item)
+    resource_selector("#{page.current_url}/menus/actions").click
+    click_link item
+  end
+
   def switch_organization(organization)
     find('.NavBarContent__switcher .SideBarCollapsible__toggle').click
     expect(sidebar).to have_content organization

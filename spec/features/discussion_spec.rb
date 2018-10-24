@@ -33,32 +33,34 @@ RSpec.describe 'Discussions', type: :feature do
     as 'member@example.com', location: '/argu/holland/discussions/new#new_question'
     expect_form('New challenge')
     fill_in_form
-    expect_content('Challenge', 'q/64')
+    expect_published_message('Challenge')
+    expect_content('q/64')
   end
 
   example 'Member posts a motion' do
     as 'member@example.com', location: '/argu/holland/discussions/new#new_motion'
     expect_form('New idea')
     fill_in_form
-    expect_content('Idea', 'm/64')
+    expect_published_message('Idea')
+    expect_content('m/64')
   end
 
   example 'staff updates a question' do
     as 'staff@example.com', location: '/argu/q/35'
-    resource_selector('https://app.argu.localtest/argu/q/35/menus/actions').click
-    click_link 'Edit'
+    go_to_menu_item('Edit')
     expect_form('Update')
     fill_in_form
-    expect_content('Challenge', 'q/35', new: false)
+    expect_updated_message('Challenge')
+    expect_content('q/35')
   end
 
   example 'staff updates a motion' do
     as 'staff@example.com', location: '/argu/m/32'
-    resource_selector('https://app.argu.localtest/argu/m/32/menus/actions').click
-    click_link 'Edit'
+    go_to_menu_item('Edit')
     expect_form('Update')
     fill_in_form
-    expect_content('Idea', 'm/32', new: false)
+    expect_updated_message('Idea')
+    expect_content('m/32')
   end
 
   private
@@ -74,11 +76,6 @@ RSpec.describe 'Discussions', type: :feature do
     expect ? expect(sidebar).to(expectation) : expect(sidebar).not_to(expectation)
   end
 
-  def expect_form(name)
-    wait_for(page).to have_content name
-    expect(page).to have_css 'form'
-  end
-
   def fill_in_form
     fill_in 'http://schema.org/name', with: title, fill_options: {clear: :backspace}
     fill_in 'http://schema.org/text', with: content, fill_options: {clear: :backspace}
@@ -91,14 +88,7 @@ RSpec.describe 'Discussions', type: :feature do
     click_button 'Save'
   end
 
-  def expect_content(type, path, new: true)
-    message =
-      if new
-        "#{type} created successfully. it can take a few moments before it's visible on other pages"
-      else
-        "#{type} saved successfully"
-      end
-    wait_for(page).to have_content message
+  def expect_content(path)
     wait_for(page).to have_content(title)
     expect(page).to have_content(content)
     resource_selector("https://app.argu.localtest/argu/#{path}/attachments", child: '.AttachmentPreview')
