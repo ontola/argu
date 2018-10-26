@@ -23,6 +23,8 @@ namespace :test do
 
   task :reset do
     include DockerHelper
+    raise "Trying to reset data in #{env} env" unless File.readlink(File.expand_path('.env')).end_with?('test')
+
     docker_reset_databases
     docker_reset_redis
   end
