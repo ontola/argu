@@ -59,6 +59,10 @@ module DockerHelper
     raise "#{service} results in exit code #{result[2]}"
   end
 
+  def rails_runner(service, command)
+    docker_run(service, ['rails', 'runner', command])
+  end
+
   def run_local(service, commands)
     path = File.expand_path("../#{SERVICES[service.to_sym]}")
     system(
