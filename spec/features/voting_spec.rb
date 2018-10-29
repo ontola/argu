@@ -83,7 +83,7 @@ RSpec.describe 'Voting', type: :feature do
           end
           click_link 'Notifications'
           wait_for(page).to(
-            have_content('Please confirm your vote by clicking the link we\'ve send to new_user@example.com')
+            have_content("Please confirm your vote by clicking the link we've send to new_user@example.com")
           )
           expect_email(:confirm_vote_email)
           expect(confirm_vote_email.body).to have_content('In favour of Fg motion title 8end')

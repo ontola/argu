@@ -26,7 +26,7 @@ module ExceptionHelper
     errors = page.driver.browser.manage.logs.get(:browser)
     upload_exception_file(errors.map(&:message).join("\n"), example, 'javascript.log') if errors
     status = page.evaluate_script(
-      'typeof LRS !== \'undefined\' &&'\
+      "typeof LRS !== 'undefined' &&"\
       'JSON.stringify(Array.from(LRS.api.statusMap).reduce((obj, [key, value]) => ('\
       'Object.assign(obj, { [key.value]: value })), {}));'
     )

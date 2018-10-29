@@ -32,18 +32,18 @@ RSpec.describe 'Follow', type: :feature do
 
     unsubscribe_link = notifications_email.links.detect { |link| link.include?('unsubscribe') }
     visit unsubscribe_link
-    wait_for(page).to have_content 'You no longer receive notifications for \'Freetown\''
+    wait_for(page).to have_content "You no longer receive notifications for 'Freetown'"
     expect(current_path).to eq('/argu/freetown')
 
     visit unsubscribe_link
-    wait_for(page).to have_content 'You don\'t receive notifications already for \'Freetown\''
+    wait_for(page).to have_content "You don't receive notifications already for 'Freetown'"
     expect(current_path).to eq('/argu/freetown')
   end
 
   private
 
   def notifications_email
-    @notifications_email ||= mailcatcher_email(to: ['user1@example.com'], subject: 'New notifications in \'Freetown\'')
+    @notifications_email ||= mailcatcher_email(to: ['user1@example.com'], subject: "New notifications in 'Freetown'")
   end
 
   def expect_following(index)

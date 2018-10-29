@@ -14,7 +14,7 @@ RSpec.describe 'User request confirmation', type: :feature do
       request_confirmation_link
 
       wait_for(page).to(
-        have_content('You\'ll receive a mail containing instructions to confirm your account within a few minutes')
+        have_content("You'll receive a mail containing instructions to confirm your account within a few minutes")
       )
       expect_email(:confirmation_email)
 
@@ -29,7 +29,7 @@ RSpec.describe 'User request confirmation', type: :feature do
       request_confirmation_link
 
       wait_for(page).to(
-        have_content('You\'ll receive a mail containing instructions to confirm your account within a few minutes')
+        have_content("You'll receive a mail containing instructions to confirm your account within a few minutes")
       )
       expect_email(:confirmation_email)
 
@@ -48,7 +48,7 @@ RSpec.describe 'User request confirmation', type: :feature do
       request_confirmation_link
 
       wait_for(page).to(
-        have_content('You\'ll receive a mail containing instructions to confirm your account within a few minutes')
+        have_content("You'll receive a mail containing instructions to confirm your account within a few minutes")
       )
       expect_email(:confirmation_email)
 
@@ -75,7 +75,7 @@ RSpec.describe 'User request confirmation', type: :feature do
       request_confirmation_link
 
       wait_for(page).to(
-        have_content('You\'ll receive a mail containing instructions to confirm your account within a few minutes')
+        have_content("You'll receive a mail containing instructions to confirm your account within a few minutes")
       )
       expect_email(:confirmation_email)
 
@@ -90,7 +90,7 @@ RSpec.describe 'User request confirmation', type: :feature do
       request_confirmation_link
 
       wait_for(page).to(
-        have_content('You\'ll receive a mail containing instructions to confirm your account within a few minutes')
+        have_content("You'll receive a mail containing instructions to confirm your account within a few minutes")
       )
       expect_email(:confirmation_email)
 

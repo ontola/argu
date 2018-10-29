@@ -22,7 +22,7 @@ RSpec.describe 'Drafts', type: :feature do
     fill_in 'http://schema.org/text', with: 'content', fill_options: {clear: :backspace}
     select_draft_toggle
     click_button 'Save'
-    expect(page).not_to have_content 'It can take a few moments before it\'s visible on other pages.'
+    expect(page).not_to have_content "It can take a few moments before it's visible on other pages."
     expect_publish_action
   end
 
