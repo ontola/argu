@@ -36,6 +36,13 @@ module ExceptionHelper
     upload_exception_file(JSON.pretty_generate(JSON.parse(status)), example, 'javascript.statements.log') if status
   end
 
+  def upload_screenshot(name)
+    exception_file_dir
+    saver = Capybara::Screenshot.new_saver(Capybara, Capybara.page, false, name)
+    saver.save
+    upload_to_bitbucket(saver.screenshot_path)
+  end
+
   def upload_to_bitbucket(path)
     return unless ENV['BITBUCKET_STORAGE']
 
