@@ -3,6 +3,11 @@
 require 'mailcatcher/api'
 
 module TestMethods
+  def accept_terms
+    wait_for(page).to have_content 'Terms of use'
+    click_button 'Accept'
+  end
+
   def as(actor, location: '/argu/freetown', password: 'password')
     visit "https://#{use_legacy_frontend? ? '' : 'app.'}argu.localtest#{location}"
     return if actor == :guest

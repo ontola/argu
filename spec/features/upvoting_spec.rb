@@ -39,6 +39,20 @@ RSpec.describe 'Upvoting', type: :feature do
     it_behaves_like 'upvoting'
   end
 
+  context 'as invitee' do
+    let(:location) { '/tokens/valid_email_token' }
+    let(:motion_sequence) { 3 }
+
+    example 'remember upvote' do
+      click_link "Fg motion title #{motion_sequence}end"
+      upvote(success: false)
+      accept_terms
+      expect_voted
+      visit current_path
+      expect_voted
+    end
+  end
+
   private
 
   def upvote(success: true)

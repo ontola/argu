@@ -10,6 +10,10 @@ RSpec.describe 'Voting', type: :feature do
 
   let(:actor) { :guest }
   let(:after_confirmation) { nil }
+  let(:after_vote) do
+    wait_for(page).to have_content 'Thanks for your vote!'
+    expect_voted(side: @side)
+  end
 
   shared_examples_for 'voting' do
     example 'remember vote' do
@@ -110,6 +114,22 @@ RSpec.describe 'Voting', type: :feature do
 
       it_behaves_like 'voting'
     end
+
+    context 'as invitee' do
+      let(:location) { '/tokens/valid_email_token' }
+      let(:motion_sequence) { 3 }
+      let(:after_vote) do
+        accept_terms
+        wait_for(page).to have_content 'Thanks for your vote!'
+        expect_voted(side: @side)
+      end
+
+      example 'vote' do
+        click_link "Fg motion title #{motion_sequence}end"
+        vote_in_favour
+        after_vote
+      end
+    end
   end
 
   context 'on question#show' do
@@ -144,17 +164,19 @@ RSpec.describe 'Voting', type: :feature do
   end
 
   def vote_in_favour
+    @side = 'yes'
     wait_for(page).to have_content 'Agree'
     click_button 'Agree'
-    wait_for(page).to have_content 'Thanks for your vote!'
-    expect_voted
+    after_vote
   end
 
   def vote_against
+    @side = 'no'
     wait_for(page).to have_content 'Disagree'
     click_button 'Disagree'
+    after_vote
     wait_for(page).to have_content 'Thanks for your vote!'
-    expect_voted(side: 'no')
+    expect_voted(side: @side)
   end
 
   def expect_voted(side: 'yes')
