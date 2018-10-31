@@ -75,8 +75,21 @@ module TestMethods
     click_button 'Bevestig'
   end
 
+  def fill_in_select(name = nil, with: nil, selector: nil)
+    return fill_in_select_legacy(name, with, selector) if use_legacy_frontend?
+
+    select = lambda do
+      input_field = find("input[name='#{name}'].Field__input--select").native
+      input_field.send_keys with
+      selector ||= /#{with}/
+      wait_for { page }.to have_css('.SelectItem')
+      find('.SelectItem', text: selector).click
+    end
+    select.call
+  end
+
   # Helper to aid in picking an option in a Selectize dropdown
-  def fill_in_select(scope = nil, with: nil, selector: nil)
+  def fill_in_select_legacy(scope, with, selector)
     select = lambda do
       input_field = find('.Select-control .Select-input input').native
       input_field.send_keys with
