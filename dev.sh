@@ -2,7 +2,7 @@
 
 ENV=dev ./setup.sh
 
-docker-compose down
+docker-compose down --remove-orphans
 
 docker-compose up -d
 docker build .
