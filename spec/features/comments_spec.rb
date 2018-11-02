@@ -27,6 +27,7 @@ RSpec.describe 'Comments', type: :feature do
       parent = '.PrimaryResource div:nth-child(3) div.Card'
       go_to_parent
       fill_in_omniform(parent)
+      after_post
     end
   end
 
