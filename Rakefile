@@ -11,19 +11,20 @@ namespace :test do
   task :setup do
     include DockerHelper
     Mock.new.nominatim
-    raise "Trying to load test data in #{env} env" unless File.readlink(File.expand_path('.env')).end_with?('test')
+    raise 'Trying to reset data in wrong env' unless File.readlink(File.expand_path('.env')).end_with?('test')
 
     docker_setup('argu', seed: :test)
     docker_setup('token', seed: :test)
-    docker_run('email', %w[bundle exec rake db:setup])
-    docker_run('vote_compare', %w[bundle exec rake db:setup])
+    docker_setup('email')
+    docker_setup('deku')
+    docker_setup('vote_compare')
 
     docker_run('postgres', %w[pg_dumpall --username=postgres --file=/var/lib/postgresql/data/dump])
   end
 
   task :reset do
     include DockerHelper
-    raise "Trying to reset data in #{env} env" unless File.readlink(File.expand_path('.env')).end_with?('test')
+    raise 'Trying to reset data in wrong env' unless File.readlink(File.expand_path('.env')).end_with?('test')
 
     docker_reset_databases
     docker_reset_redis
@@ -36,7 +37,8 @@ namespace :dev do
     include DockerHelper
     docker_setup('argu')
     docker_setup('token')
-    docker_run('email', %w[bundle exec rake db:setup])
-    docker_run('vote_compare', %w[bundle exec rake db:setup])
+    docker_setup('email')
+    docker_setup('deku')
+    docker_setup('vote_compare')
   end
 end
