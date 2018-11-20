@@ -62,7 +62,7 @@ http {
     map $uri $backend {
         ~^/compare/votes		vote_compare;
         ~^/tokens				token;
-        ~^/email				email;
+        ~^/email/				email;
         ~^\/\w*\/\w*\/od\/?.*$	deku;
         ~^/subscribe			subscribe;
         default					argu;
