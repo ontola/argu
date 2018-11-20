@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Drafts', type: :feature do
-  example 'Show new discussion link as guest' do
+  example 'User shows drafts' do
     as 'user48@example.com', location: '/u/fg_shortname54end/drafts'
 
     wait_for(page).to have_content 'My drafts'
