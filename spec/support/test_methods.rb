@@ -2,7 +2,7 @@
 
 require 'mailcatcher/api'
 
-module TestMethods
+module TestMethods # rubocop:disable Metrics/ModuleLength
   def accept_terms
     wait_for(page).to have_content 'Terms of use'
     click_button 'Accept'
@@ -103,6 +103,13 @@ module TestMethods
   def go_to_menu_item(item)
     resource_selector("#{page.current_url}/menus/actions").click
     click_link item
+  end
+
+  def select_tab(tab)
+    wait_for(page).to have_css('.TabBar')
+    within '.TabBar' do
+      click_link tab
+    end
   end
 
   def switch_organization(organization)
