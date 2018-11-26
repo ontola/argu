@@ -72,12 +72,12 @@ RSpec.describe 'Voting', type: :feature do
           wait_for(page).to(
             have_content('Door je te registreren ga je akkoord met de algemene voorwaarden en de privacy policy.')
           )
-          click_button 'Bevestig'
+          click_button 'Confirm'
         end
         let(:after_confirmation) do
           wait_for(page).to(
             have_content(
-              'Vergeet niet je stem te bevestigen door op de link te klikken die we je hebben gemaild naar '\
+              'Please confirm your vote by clicking the link we\'ve send to '\
               'new_user@example.com'
             )
           )
@@ -150,13 +150,13 @@ RSpec.describe 'Voting', type: :feature do
   private
 
   def login_to_confirm(password = nil)
-    expect(page).to have_content 'BEVESTIG JOUW STEM VIA EMAIL'
+    expect(page).to have_content 'Confirm your vote via e-mail'
     fill_in placeholder: 'email@example.com', with: email
-    click_button 'Ga verder'
+    click_button 'Confirm'
     return unless password
 
     fill_in name: 'password', with: password
-    click_button 'Verder'
+    click_button 'Continue'
   end
 
   def confirm_vote_email

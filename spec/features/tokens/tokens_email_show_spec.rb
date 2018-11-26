@@ -62,7 +62,7 @@ RSpec.describe 'Token email show', type: :feature do
 
       # @todo render snackbar on a 401
       # wait_for(page).to have_content('Please login to accept this invitation')
-      wait_for(page).to have_content 'inloggen of registreren'
+      wait_for(page).to have_content 'login or register'
 
       fill_in_login_form
 
@@ -88,7 +88,7 @@ RSpec.describe 'Token email show', type: :feature do
       #
       # # @todo render snackbar on a 401
       # # wait_for(page).to have_content('Please login to accept this invitation')
-      # wait_for(page).to have_content 'inloggen of registreren'
+      # wait_for(page).to have_content 'login or register'
       #
       # fill_in_login_form
       #
@@ -104,7 +104,7 @@ RSpec.describe 'Token email show', type: :feature do
 
       # @todo render snackbar on a 401
       # wait_for(page).to have_content('Please login to accept this invitation')
-      wait_for(page).to have_content 'inloggen of registreren'
+      wait_for(page).to have_content 'login or register'
 
       fill_in_login_form 'member@example.com'
 

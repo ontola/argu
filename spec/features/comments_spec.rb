@@ -66,10 +66,12 @@ RSpec.describe 'Comments', type: :feature do
       )
 
     within scope do
-      click_button 'Plaats jouw reactie...' if click_to_open
+      click_button 'Share your response...' if click_to_open
       fill_in 'http://schema.org/text', with: content
       upload_screenshot 'omniform'
-      click_button 'Opslaan'
+      within '.Form__footer--right' do
+        find('.Button--submit').click
+      end
     end
   end
 

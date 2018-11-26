@@ -11,7 +11,7 @@ RSpec.describe 'Discussions', type: :feature do
 
     wait_for(page).to have_content 'New discussion'
     click_link 'New discussion'
-    wait_for(page).to have_content 'Niet ingelogd'
+    wait_for(page).to have_content 'You have to be logged in to view this resource.'
   end
 
   example 'Hide new discussion link when not allowed' do

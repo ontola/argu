@@ -20,11 +20,11 @@ module TestMethods
   end
 
   def login(email, password = 'password')
-    wait_for(page).to have_content 'Log in / registreer'
+    wait_for(page).to have_content 'Log in / sign up'
 
-    page.click_link('Log in / registreer')
+    page.click_link('Log in / sign up')
 
-    expect(page).to have_content 'inloggen of registreren'
+    expect(page).to have_content 'login or register'
 
     fill_in_login_form email, password
 
@@ -50,29 +50,29 @@ module TestMethods
   end
 
   def fill_in_login_form(email = 'user1@example.com', password = 'password')
-    wait_for(page).to have_content('inloggen of registreren')
+    wait_for(page).to have_content('login or register')
 
     fill_in placeholder: 'email@example.com', with: email, fill_options: {clear: :backspace}
 
-    click_button 'Ga verder'
+    click_button 'Confirm'
 
     fill_in type: :password, with: password
 
-    click_button 'Verder'
+    click_button 'Continue'
   end
 
   def fill_in_registration_form(email = 'new_user@example.com')
-    wait_for(page).to have_content('inloggen of registreren')
+    wait_for(page).to have_content('login or register')
 
     fill_in placeholder: 'email@example.com', with: email, fill_options: {clear: :backspace}
 
-    click_button 'Ga verder'
+    click_button 'Confirm'
 
     expect(page).to(
       have_content('Door je te registreren ga je akkoord met de algemene voorwaarden en de privacy policy.')
     )
 
-    click_button 'Bevestig'
+    click_button 'Confirm'
   end
 
   def fill_in_select(name = nil, with: nil, selector: nil)

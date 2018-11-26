@@ -7,8 +7,8 @@ RSpec.describe 'Sign up', type: :feature do
 
   example 'register as user' do
     as(:guest)
-    wait_for(page).to have_content 'Log in / registreer'
-    page.click_link('Log in / registreer')
+    wait_for(page).to have_content 'Log in / sign up'
+    page.click_link('Log in / sign up')
 
     fill_in_registration_form email
 
@@ -32,20 +32,20 @@ RSpec.describe 'Sign up', type: :feature do
 
   example 'change email during registration' do
     as(:guest)
-    wait_for(page).to have_content 'Log in / registreer'
-    page.click_link('Log in / registreer')
+    wait_for(page).to have_content 'Log in / sign up'
+    page.click_link('Log in / sign up')
 
-    wait_for(page).to have_content('inloggen of registreren')
+    wait_for(page).to have_content('login or register')
 
     fill_in placeholder: 'email@example.com', with: 'other_email@example.com'
 
-    click_button 'Ga verder'
+    click_button 'Confirm'
 
     expect(page).to(
       have_content('Door je te registreren ga je akkoord met de algemene voorwaarden en de privacy policy.')
     )
 
-    click_button 'Terug'
+    click_button 'back'
 
     fill_in_registration_form email
 

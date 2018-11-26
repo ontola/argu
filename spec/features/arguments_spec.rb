@@ -72,12 +72,14 @@ RSpec.describe 'Arguments', type: :feature do
       )
 
     within scope do
-      click_button 'Plaats jouw reactie...' if click_to_open
+      click_button 'Share your response...' if click_to_open
       click_button "Argument #{@side == 'pro' ? 'in favour' : 'against'}"
       wait_for(page).to have_field 'http://schema.org/name'
       fill_in 'http://schema.org/name', with: title
       fill_in 'http://schema.org/text', with: content
-      click_button 'Opslaan'
+      within '.Form__footer--right' do
+        find('.Button--submit').click
+      end
     end
 
     after_post

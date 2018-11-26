@@ -81,7 +81,7 @@ RSpec.describe 'User request confirmation', type: :feature do
 
       visit confirmation_email.links.last
 
-      wait_for(page).to have_content 'Het item kan niet worden verwerkt'
+      wait_for(page).to have_content 'The item that you are trying to create cannot be processed'
     end
 
     example 'user requests confirmation' do
@@ -96,13 +96,13 @@ RSpec.describe 'User request confirmation', type: :feature do
 
       visit confirmation_email.links.last
 
-      wait_for(page).to have_content 'Het item kan niet worden verwerkt'
+      wait_for(page).to have_content 'The item that you are trying to create cannot be processed'
     end
   end
 
   example 'guest visits non-existing token' do
     as(:guest, location: '/users/confirmation?confirmation_token=wrong_token')
-    wait_for(page).to have_content 'Het item kan niet worden verwerkt'
+    wait_for(page).to have_content 'The item that you are trying to create cannot be processed'
   end
 
   private
