@@ -19,7 +19,7 @@ RSpec.describe 'Discussions', type: :feature do
     expect_discussion_button('other_page', 'Other page forum', false)
     expect_discussion_button('other_page', 'Other page forum2', false)
 
-    switch_organization 'Argu'
+    switch_organization 'Argu page'
     expect_discussion_button('argu', 'Freetown', true)
     expect_discussion_button('argu', 'Holland', true)
 
