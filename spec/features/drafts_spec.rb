@@ -17,7 +17,7 @@ RSpec.describe 'Drafts', type: :feature do
 
   example 'Member posts a draft' do
     as 'member@example.com', location: '/argu/holland/discussions/new#new_question'
-    expect_form('New challenge')
+    expect_form('/argu/holland/q')
     fill_in 'http://schema.org/name', with: 'title', fill_options: {clear: :backspace}
     fill_in 'http://schema.org/text', with: 'content', fill_options: {clear: :backspace}
     select_draft_toggle

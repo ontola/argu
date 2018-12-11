@@ -24,14 +24,14 @@ RSpec.describe 'Discussions', type: :feature do
     expect_discussion_button('argu', 'Holland', true)
 
     click_link 'New discussion'
-    expect_form('New challenge')
+    expect_form('/argu/holland/q')
     click_link 'New motion'
-    expect_form('New idea')
+    expect_form('/argu/holland/m')
   end
 
   example 'Member posts a question' do
     as 'member@example.com', location: '/argu/holland/discussions/new#new_question'
-    expect_form('New challenge')
+    expect_form('/argu/holland/q')
     fill_in_form
     expect_published_message('Challenge')
     expect_content('q/64')
@@ -39,7 +39,7 @@ RSpec.describe 'Discussions', type: :feature do
 
   example 'Member posts a motion' do
     as 'member@example.com', location: '/argu/holland/discussions/new#new_motion'
-    expect_form('New idea')
+    expect_form('/argu/holland/m')
     fill_in_form
     expect_published_message('Idea')
     expect_content('m/64')
@@ -48,7 +48,7 @@ RSpec.describe 'Discussions', type: :feature do
   example 'staff updates a question' do
     as 'staff@example.com', location: '/argu/q/35'
     go_to_menu_item('Edit')
-    expect_form('Update')
+    expect_form('/argu/q/35')
     fill_in_form
     expect_updated_message('Challenge')
     expect_content('q/35')
@@ -57,7 +57,7 @@ RSpec.describe 'Discussions', type: :feature do
   example 'staff updates a motion' do
     as 'staff@example.com', location: '/argu/m/32'
     go_to_menu_item('Edit')
-    expect_form('Update')
+    expect_form('/argu/m/32')
     fill_in_form
     expect_updated_message('Idea')
     expect_content('m/32')

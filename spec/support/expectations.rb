@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
 module Expectations
-  def expect_form(name)
-    wait_for(page).to have_content name
-    expect(page).to have_css 'form'
+  def expect_form(action)
+    wait_for(page).to have_css "form[action='#{action}']"
   end
 
   def expect_published_message(type)
