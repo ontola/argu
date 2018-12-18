@@ -8,6 +8,7 @@ require 'rspec/wait'
 require 'support/exception_helper'
 require 'support/expectations'
 require 'support/mailcatcher_helper'
+require 'support/matchers'
 require 'support/docker_helper'
 require 'support/test_methods'
 require 'support/selectors'
@@ -18,6 +19,7 @@ RSpec.configure do |config|
   config.include ExceptionHelper
   config.include Expectations
   config.include MailCatcherHelper
+  config.include Matchers
   config.include DockerHelper
   config.include TestMethods
   config.include Selectors
