@@ -9,7 +9,7 @@ RSpec.describe 'Token email show', type: :feature do
     example 'new user visits token' do
       as(:guest, location: token)
 
-      # @todo wait_for(page).to have_content("You have joined the group 'Members'")
+      # @todo wait_for(page).to have_snackbar("You have joined the group 'Members'")
       wait_for(page).to have_content('Holland')
       verify_logged_in
     end
@@ -23,7 +23,7 @@ RSpec.describe 'Token email show', type: :feature do
       # @TODO continue flow
       # click_button 'Log out'
       #
-      # expect(page).to have_content('Please login to accept this invitation')
+      # expect(page).to have_snackbar('Please login to accept this invitation')
       # click_link 'Sign up with email'
       #
       # expect(page).not_to have_content('REGISTER OR LOG IN')
@@ -61,7 +61,7 @@ RSpec.describe 'Token email show', type: :feature do
       as(:guest, location: token)
 
       # @todo render snackbar on a 401
-      # wait_for(page).to have_content('Please login to accept this invitation')
+      # wait_for(page).to have_snackbar('Please login to accept this invitation')
       wait_for(page).to have_content 'login or register'
 
       fill_in_login_form
@@ -87,7 +87,7 @@ RSpec.describe 'Token email show', type: :feature do
       # click_button 'Log out'
       #
       # # @todo render snackbar on a 401
-      # # wait_for(page).to have_content('Please login to accept this invitation')
+      # # wait_for(page).to have_snackbar('Please login to accept this invitation')
       # wait_for(page).to have_content 'login or register'
       #
       # fill_in_login_form
@@ -103,7 +103,7 @@ RSpec.describe 'Token email show', type: :feature do
       as(:guest, location: token)
 
       # @todo render snackbar on a 401
-      # wait_for(page).to have_content('Please login to accept this invitation')
+      # wait_for(page).to have_snackbar('Please login to accept this invitation')
       wait_for(page).to have_content 'login or register'
 
       fill_in_login_form 'member@example.com'
@@ -122,13 +122,13 @@ RSpec.describe 'Token email show', type: :feature do
   private
 
   def expect_joined
-    wait_for(page).to have_content("You have joined the group 'Members'")
+    wait_for(page).to have_snackbar("You have joined the group 'Members'")
     wait_for(page).to have_content('Holland')
     expect(page).not_to have_content('Add to my forums')
   end
 
   def expect_member_already
-    wait_for(page).to have_content('You are already member of this group')
+    wait_for(page).to have_snackbar('You are already member of this group')
     wait_for(page).to have_content('Holland')
     expect(page).not_to have_content('Add to my forums')
   end

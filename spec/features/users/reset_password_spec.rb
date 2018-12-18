@@ -10,7 +10,7 @@ RSpec.describe 'User reset password', type: :feature do
     click_button 'Save'
 
     wait_for(page).to(
-      have_content('You will receive an email shortly with instructions to reset your password')
+      have_snackbar('You will receive an email shortly with instructions to reset your password.')
     )
     expect(page).to have_content('login or register')
     expect(page.current_url).to include('/u/sign_in')
@@ -22,7 +22,7 @@ RSpec.describe 'User reset password', type: :feature do
     fill_in placeholder: 'Same as above', with: 'new password'
     click_button 'Save'
 
-    wait_for(page).to have_content('Your password has been updated successfully.')
+    wait_for(page).to have_snackbar('Your password has been updated successfully.')
 
     expect_email(:password_changed_email)
 

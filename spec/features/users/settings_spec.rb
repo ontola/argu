@@ -99,7 +99,7 @@ RSpec.describe 'User settings', type: :feature do
       expect_email_row(2, 'user1@example.com', true, true)
 
       click_button 'Make primary email address'
-      wait_for(page).to have_content('Email address saved successfully')
+      wait_for(page).to have_snackbar('Email address saved successfully')
       expect_email_row(1, new_email, true, true)
       expect_email_row(2, 'user1@example.com', false, true)
     end

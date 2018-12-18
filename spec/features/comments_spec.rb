@@ -76,7 +76,7 @@ RSpec.describe 'Comments', type: :feature do
   end
 
   def expect_comment_posted
-    wait_for(page).to have_content 'Comment created successfully'
+    wait_for(page).to have_snackbar 'Comment created successfully'
     within resource_selector("#{page.current_url}/c", element: '.Container > div') do
       wait_for(page).to have_content content
     end

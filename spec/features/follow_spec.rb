@@ -9,14 +9,14 @@ RSpec.describe 'Follow', type: :feature do
     resource_selector("#{page.current_url}/menus/follow").click
     expect_following 2
     find('span', text: 'Important items').click
-    wait_for(page).to have_content 'Your notification settings are updated'
+    wait_for(page).to have_snackbar 'Your notification settings are updated'
     expect_following 0
 
     visit '/argu/m/32'
     resource_selector("#{page.current_url}/menus/follow").click
     expect_following 0
     find('span', text: 'Never receive notifications').click
-    wait_for(page).to have_content 'Your notification settings are updated'
+    wait_for(page).to have_snackbar 'Your notification settings are updated'
     expect_following 2
   end
 
@@ -32,11 +32,11 @@ RSpec.describe 'Follow', type: :feature do
 
     unsubscribe_link = notifications_email.links.detect { |link| link.include?('unsubscribe') }
     visit unsubscribe_link
-    wait_for(page).to have_content "You no longer receive notifications for 'Freetown'"
+    wait_for(page).to have_snackbar "You no longer receive notifications for 'Freetown'."
     expect(current_path).to eq('/argu/freetown')
 
     visit unsubscribe_link
-    wait_for(page).to have_content "You don't receive notifications already for 'Freetown'"
+    wait_for(page).to have_snackbar "You don't receive notifications already for 'Freetown'."
     expect(current_path).to eq('/argu/freetown')
   end
 

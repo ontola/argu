@@ -86,7 +86,7 @@ RSpec.describe 'Arguments', type: :feature do
   end
 
   def expect_argument_posted
-    wait_for(page).to have_content "#{@side.capitalize} created successfully"
+    wait_for(page).to have_snackbar "#{@side.capitalize} created successfully"
     within resource_selector("#{page.current_url}/#{@side}s", element: '.Column > div') do
       wait_for(page).to have_content title
       wait_for(page).to have_content content

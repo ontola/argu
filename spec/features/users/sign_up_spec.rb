@@ -23,7 +23,7 @@ RSpec.describe 'Sign up', type: :feature do
     click_button 'Save'
 
     verify_logged_in
-    wait_for(page).to have_content('Your password has been updated successfully.')
+    wait_for(page).to have_snackbar('Your password has been updated successfully.')
     expect(page).to have_content('Welcome!')
 
     logout

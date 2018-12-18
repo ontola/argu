@@ -49,13 +49,13 @@ RSpec.describe 'Token bearer show', type: :feature do
 
   def expect_joined
     wait(30).for(page).to have_content('Holland')
-    expect(page).to have_content("You have joined the group 'Members'")
+    expect(page).to have_snackbar("You have joined the group 'Members'")
     # @todo verify favorite exists
   end
 
   def expect_member_already
     wait(30).for(page).to have_content('Holland')
-    expect(page).to have_content('You are already member of this group')
+    expect(page).to have_snackbar('You are already member of this group')
     # @todo verify favorite exists
   end
 end

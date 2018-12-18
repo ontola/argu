@@ -31,7 +31,7 @@ RSpec.describe 'Page settings', type: :feature do
       fill_in 'https://argu.co/ns/core#shortname', with: 'new_forum'
       click_button 'Save'
 
-      wait_for(page).to have_content 'Forum created successfully'
+      wait_for(page).to have_snackbar 'Forum created successfully'
       # @todo expect new forum in sidebar navigation
 
       visit_settings
@@ -45,7 +45,7 @@ RSpec.describe 'Page settings', type: :feature do
       )
       fill_in 'https://argu.co/ns/core#confirmationString', with: 'remove'
       click_button 'Delete'
-      wait_for(page).to have_content 'Forum deleted successfully'
+      wait_for(page).to have_snackbar 'Forum deleted successfully'
       # @todo expect redirected to page settings
       # @todo expect new forum removed from sidebar navigation
 

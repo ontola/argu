@@ -7,13 +7,13 @@ module Expectations
 
   def expect_published_message(type)
     wait_for(page).to(
-      have_content("#{type} published successfully. It can take a few moments before it's visible on other pages.")
+      have_snackbar("#{type} published successfully. It can take a few moments before it's visible on other pages.")
     )
   end
 
   def expect_updated_message(type)
     wait_for(page).to(
-      have_content("#{type} saved successfully")
+      have_snackbar("#{type} saved successfully")
     )
   end
 end

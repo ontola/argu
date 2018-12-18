@@ -11,7 +11,7 @@ RSpec.describe 'Voting', type: :feature do
   let(:actor) { :guest }
   let(:after_confirmation) { nil }
   let(:after_vote) do
-    wait_for(page).to have_content 'Thanks for your vote!'
+    wait_for(page).to have_snackbar 'Thanks for your vote!'
     expect_voted(side: @side)
   end
 
@@ -92,13 +92,13 @@ RSpec.describe 'Voting', type: :feature do
           expect_email(:confirm_vote_email)
           expect(confirm_vote_email.body).to have_content('In favour of Fg motion title 8end')
           visit confirm_vote_email.links.last
-          wait_for(page).to have_content('Your account has been confirmed.')
+          wait_for(page).to have_snackbar('Your account has been confirmed.')
           wait_for(page).to have_content('Choose a password')
           fill_in placeholder: 'At least 8 characters.', with: 'new password'
           fill_in placeholder: 'Same as above', with: 'new password'
           click_button 'Save'
           wait_for(page).to have_content('Set how you will be visible to others on Argu')
-          wait_for(page).to have_content('Your password has been updated successfully.')
+          wait_for(page).to have_snackbar('Your password has been updated successfully.')
           logout
           login('new_user@example.com', 'new password')
           click_link 'Notifications'
@@ -120,7 +120,7 @@ RSpec.describe 'Voting', type: :feature do
       let(:motion_sequence) { 3 }
       let(:after_vote) do
         accept_terms
-        wait_for(page).to have_content 'Thanks for your vote!'
+        wait_for(page).to have_snackbar 'Thanks for your vote!'
         expect_voted(side: @side)
       end
 
@@ -175,7 +175,7 @@ RSpec.describe 'Voting', type: :feature do
     wait_for(page).to have_content 'Disagree'
     click_button 'Disagree'
     after_vote
-    wait_for(page).to have_content 'Thanks for your vote!'
+    wait_for(page).to have_snackbar 'Thanks for your vote!'
     expect_voted(side: @side)
   end
 
