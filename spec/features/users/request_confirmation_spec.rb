@@ -3,8 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe 'User request confirmation', type: :feature do
-  let(:confirmation_email) { mailcatcher_email(to: [email], subject: 'Confirm your e-mail address') }
-
   context 'unconfirmed@example.com' do
     let(:email) { 'unconfirmed@example.com' }
 
@@ -109,6 +107,10 @@ RSpec.describe 'User request confirmation', type: :feature do
   end
 
   private
+
+  def confirmation_email
+    @confirmation_email ||= mailcatcher_email(to: [email], subject: 'Confirm your e-mail address')
+  end
 
   def expect_confirmed
     wait_for(page).to(

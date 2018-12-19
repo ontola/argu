@@ -16,7 +16,6 @@ RSpec.describe 'Page settings', type: :feature do
   context 'forums' do
     let(:tab) { 'Forums' }
     let(:new_email) { 'new_email@example.com' }
-    let(:add_address_email) { mailcatcher_email(to: [new_email], subject: 'Add your e-mail address') }
 
     example 'as staff' do
       as 'staff@example.com'
@@ -86,6 +85,10 @@ RSpec.describe 'Page settings', type: :feature do
   end
 
   private
+
+  def add_address_email
+    @add_address_email ||= mailcatcher_email(to: [new_email], subject: 'Add your e-mail address')
+  end
 
   def forums_row(row = 1)
     resource_selector(

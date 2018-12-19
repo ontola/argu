@@ -71,7 +71,6 @@ RSpec.describe 'User settings', type: :feature do
   context 'email addresses' do
     let(:tab) { 'Emails' }
     let(:new_email) { 'new_email@example.com' }
-    let(:add_address_email) { mailcatcher_email(to: [new_email], subject: 'Add your e-mail address') }
 
     example 'as user' do
       as 'user1@example.com'
@@ -107,8 +106,12 @@ RSpec.describe 'User settings', type: :feature do
 
   private
 
+  def add_address_email
+    @add_address_email ||= mailcatcher_email(to: [new_email], subject: 'Add your e-mail address')
+  end
+
   def confirmation_email
-    mailcatcher_email(to: [new_email], subject: 'Confirm your e-mail address')
+    @confirmation_email ||= mailcatcher_email(to: [new_email], subject: 'Confirm your e-mail address')
   end
 
   def email_addresses_row(row = 1)
