@@ -100,9 +100,11 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
     scope ? within(scope, &select) : select.call
   end
 
-  def go_to_menu_item(item)
-    resource_selector("#{page.current_url}/menus/actions").click
-    click_link item
+  def go_to_menu_item(text, menu: :actions, resource: page.current_url)
+    wait_until_loaded
+    resource_selector("#{resource}/menus/#{menu}").click
+    yield if block_given?
+    find('span', text: text).click
   end
 
   def select_tab(tab)

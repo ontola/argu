@@ -6,16 +6,16 @@ RSpec.describe 'Follow', type: :feature do
   example 'Follow motion' do
     as 'user1@example.com', location: '/argu/m/32'
 
-    resource_selector("#{page.current_url}/menus/follow").click
-    expect_following 2
-    find('span', text: 'Important items').click
+    go_to_menu_item('Important items', menu: :follow) do
+      expect_following 2
+    end
     wait_for(page).to have_snackbar 'Your notification settings are updated'
     expect_following 0
 
     visit '/argu/m/32'
-    resource_selector("#{page.current_url}/menus/follow").click
-    expect_following 0
-    find('span', text: 'Never receive notifications').click
+    go_to_menu_item('Never receive notifications', menu: :follow) do
+      expect_following 0
+    end
     wait_for(page).to have_snackbar 'Your notification settings are updated'
     expect_following 2
   end
