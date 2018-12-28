@@ -7,30 +7,33 @@ RSpec.describe 'Discussions', type: :feature do
   let(:content) { 'Content of discussion' }
 
   example 'Show new discussion link as guest' do
-    as :guest, location: '/argu'
+    as :guest, location: '/argu/freetown'
 
-    wait_for(page).to have_content 'New discussion'
-    click_link 'New discussion'
-    wait_for(page).to have_content 'You have to be logged in to view this resource.'
+    wait_for(page).to have_content 'New Idea'
+    click_link 'New idea'
+    # @todo AOD-407
+    # wait_for(page).to have_content 'You have to be logged in to view this resource.'
   end
 
   example 'Hide new discussion link when not allowed' do
     as 'member@example.com', location: '/other_page'
-    expect_discussion_button('other_page', 'Other page forum', false)
-    expect_discussion_button('other_page', 'Other page forum2', false)
+    click_link 'Other page forum'
+
+    # @todo Add policies to widgets
+    # expect(page).not_to have_content 'New Idea'
+    # expect(page).not_to have_content 'New Challenge'
 
     switch_organization 'Argu page'
-    expect_discussion_button('argu', 'Freetown', true)
-    expect_discussion_button('argu', 'Holland', true)
-
-    click_link 'New discussion'
-    expect_form('/argu/holland/q')
-    click_link 'New motion'
-    expect_form('/argu/holland/m')
+    wait_for(page).to have_content 'Freetown', count: 2
+    within '.PrimaryResource' do
+      click_link 'Freetown'
+    end
+    expect(page).to have_content 'New Idea'
+    expect(page).to have_content 'New Challenge'
   end
 
   example 'Member posts a question' do
-    as 'member@example.com', location: '/argu/holland/discussions/new#new_question'
+    as 'member@example.com', location: '/argu/holland/q/new'
     expect_form('/argu/holland/q')
     fill_in_form
     expect_published_message('Challenge')
@@ -38,7 +41,7 @@ RSpec.describe 'Discussions', type: :feature do
   end
 
   example 'Member posts a motion' do
-    as 'member@example.com', location: '/argu/holland/discussions/new#new_motion'
+    as 'member@example.com', location: '/argu/holland/m/new'
     expect_form('/argu/holland/m')
     fill_in_form
     expect_published_message('Idea')
@@ -64,17 +67,6 @@ RSpec.describe 'Discussions', type: :feature do
   end
 
   private
-
-  def expect_discussion_button(organization, forum, expect)
-    wait_for(page).to have_content forum
-    resource_selector(
-      "https://app.argu.localtest/#{organization}/menus/navigations#forums.#{forum.downcase.tr(' ', '_')}",
-      parent: sidebar,
-      child: '.SideBarCollapsible__toggle'
-    ).click
-    expectation = have_content('New discussion')
-    expect ? expect(sidebar).to(expectation) : expect(sidebar).not_to(expectation)
-  end
 
   def fill_in_form
     fill_in 'http://schema.org/name', with: title, fill_options: {clear: :backspace}
