@@ -10,7 +10,7 @@ RSpec.describe 'Upvoting', type: :feature do
 
   let(:actor) { :guest }
   let(:expected_count) { 1 }
-  let(:location) { '/argu/m/32' }
+  let(:location) { '/argu/m/36' }
   let(:motion_sequence) { 8 }
 
   shared_examples_for 'upvoting' do

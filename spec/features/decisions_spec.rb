@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Decisions', type: :feature do
   example 'Staff approves motion' do
-    as 'staff@example.com', location: '/argu/m/32'
+    as 'staff@example.com', location: '/argu/m/36'
     go_to_menu_item('Take decision')
     wait_for(page).to have_content 'Take a decision'
     fill_in_select 'https://argu.co/ns/core#decisionState', with: 'Approved'
@@ -15,7 +15,7 @@ RSpec.describe 'Decisions', type: :feature do
   end
 
   example 'Staff rejects motion' do
-    as 'staff@example.com', location: '/argu/m/32'
+    as 'staff@example.com', location: '/argu/m/36'
     go_to_menu_item('Take decision')
     wait_for(page).to have_content 'Take a decision'
     fill_in_select 'https://argu.co/ns/core#decisionState', with: 'Rejected'

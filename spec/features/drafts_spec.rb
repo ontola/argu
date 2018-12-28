@@ -27,9 +27,9 @@ RSpec.describe 'Drafts', type: :feature do
   end
 
   example 'Publish draft through action' do
-    as 'user48@example.com', location: '/argu/q/56'
+    as 'user48@example.com', location: '/argu/q/60'
     expect_publish_action
-    within 'div[resource="https://app.argu.localtest/argu/q/56/actions/publish#entrypoint"]' do
+    within 'div[resource="https://app.argu.localtest/argu/q/60/actions/publish#entrypoint"]' do
       click_button 'Publish'
     end
     expect_published_message('Challenge')
