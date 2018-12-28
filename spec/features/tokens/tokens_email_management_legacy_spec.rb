@@ -12,7 +12,7 @@ RSpec.describe 'Token email management legacy', type: :feature do
 
     wait_for(page).to have_content('Pending invites')
     expect(page).not_to have_css('.email-token-management .is-loading')
-    expect(page).to have_css '.email-token-management table tbody tr', count: 3
+    wait_for(page).to have_css '.email-token-management table tbody tr', count: 3
 
     within('.select-users-and-emails') do
       fill_in_select with: 'first_name_5 last_name_5'
@@ -24,7 +24,7 @@ RSpec.describe 'Token email management legacy', type: :feature do
 
     expect(invite_email.body).to include("I invite you to join the group 'Members'.")
 
-    expect(page).to have_css '.email-token-management table tbody tr', count: 4
+    wait_for(page).to have_css '.email-token-management table tbody tr', count: 4
   end
 
   private
