@@ -104,7 +104,7 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
     wait_until_loaded
     resource_selector("#{resource}/menus/#{menu}").click
     yield if block_given?
-    find('span', text: text).click
+    find('.DropdownLink', text: text).click
   end
 
   def select_tab(tab)
