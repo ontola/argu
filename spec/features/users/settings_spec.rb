@@ -116,7 +116,7 @@ RSpec.describe 'User settings', type: :feature do
 
   def email_addresses_row(row = 1)
     resource_selector(
-      'https://app.argu.localtest/u/fg_shortname3end/email_addresses?page=1&type=paginated',
+      'https://app.argu.localtest/u/fg_shortname3end/email_addresses?display=settingsTable&page=1',
       child: "tr:nth-child(#{row})"
     )
   end

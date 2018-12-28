@@ -92,7 +92,7 @@ RSpec.describe 'Page settings', type: :feature do
 
   def forums_row(row = 1)
     resource_selector(
-      'https://app.argu.localtest/argu/forums?page=1&type=paginated',
+      'https://app.argu.localtest/argu/forums?display=settingsTable&page=1',
       child: "tr:nth-child(#{row})"
     )
   end
