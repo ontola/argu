@@ -29,12 +29,13 @@ write_env() {
     sed -i "s/{frontend_token}/$FRONTEND_TOKEN/g" ./.env.$1
     sed -i "s/{service_token}/$SERVICE_TOKEN/g" ./.env.$1
     sed -i "s/{database_suffix}/$DB_SUFFIX/g" ./.env.$1
-    sed -i "s/{secret}/$(openssl rand -hex 32)/g" ./.env.$1
+    sed -i "s/{secret}/$SECRET/g" ./.env.$1
     sed -i "s/{tld}/local$1/g" ./.env.$1
 }
 
 # Create .env.dev
 if [ ! -f ./.env.dev ]; then
+    SECRET=$(openssl rand -hex 32)
     echo argu_client_id:
     read -s ARGU_CLIENT_ID
     echo argu_client_secret:
@@ -49,11 +50,12 @@ fi
 
 # Create .env.test
 if [ ! -f ./.env.test ]; then
+    SECRET=$(openssl rand -hex 32)
     ARGU_CLIENT_ID=client_id
     ARGU_CLIENT_SECRET=client_secret
     DB_SUFFIX=test
-    FRONTEND_TOKEN=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOiIyMDE5LTAxLTAyVDEzOjU3OjEzLjgxNTQ3WiIsInNjb3BlcyI6WyJzZXJ2aWNlIGFmZSJdLCJ1c2VyIjp7InR5cGUiOiJ1c2VyIiwiQGlkIjoiaHR0cHM6Ly9hcmd1LmxvY2FsdGVzdC91L2NvbW11bml0eSIsImlkIjowLCJlbWFpbCI6ImNvbW11bml0eUBhcmd1LmNvIn19.TzGhvSp3vIEId4dDngytq-Nj21MUBiAdsx46naN32Lw
-    SERVICE_TOKEN=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOiIyMDE5LTAxLTAyVDEzOjU4OjU1LjU0OTM1WiIsInNjb3BlcyI6WyJzZXJ2aWNlIl0sInVzZXIiOnsidHlwZSI6InVzZXIiLCJAaWQiOiJodHRwczovL2FyZ3UubG9jYWx0ZXN0L3Uvc2VydmljZSIsImlkIjotMiwiZW1haWwiOiJzZXJ2aWNlQGFyZ3UuY28ifX0.2gluj0Js3UpvM1GrhwTibfZ36by9lOj_-n3nCfinTPY
+    FRONTEND_TOKEN=$(./generate_jwt.sh $SECRET service afe)
+    SERVICE_TOKEN=$(./generate_jwt.sh $SECRET service)
     write_env test;
 fi
 
