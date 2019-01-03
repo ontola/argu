@@ -17,7 +17,9 @@ RSpec.describe 'Discussions', type: :feature do
 
   example 'Hide new discussion link when not allowed' do
     as 'member@example.com', location: '/other_page'
-    click_link 'Other page forum'
+    within '.PrimaryResource' do
+      click_link 'Other page forum'
+    end
 
     # @todo Add policies to widgets
     # expect(page).not_to have_content 'New Idea'
