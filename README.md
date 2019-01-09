@@ -44,3 +44,7 @@ Run `./restart.sh %{service_name}`, e.g. `./restart.sh argu`
 ## Updating services
 
 Run `./update.sh` to pull the latest images and run migrations.
+
+## When your CSRF token is wrong
+
+Run `./sync_tokens.sh` and follow the instructions.
