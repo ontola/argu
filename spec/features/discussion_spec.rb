@@ -18,12 +18,12 @@ RSpec.describe 'Discussions', type: :feature do
   example 'Hide new discussion link when not allowed' do
     as 'member@example.com', location: '/other_page'
     within '.PrimaryResource' do
+      wait_for(page).to have_content 'Other page forum'
       click_link 'Other page forum'
     end
 
-    # @todo Add policies to widgets
-    # expect(page).not_to have_content 'New Idea'
-    # expect(page).not_to have_content 'New Challenge'
+    expect(page).not_to have_content 'New Idea'
+    expect(page).not_to have_content 'New Challenge'
 
     switch_organization 'Argu page'
     wait_for(page).to have_content 'Freetown', count: 2
