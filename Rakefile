@@ -19,7 +19,12 @@ namespace :test do
     docker_setup('deku')
     docker_setup('vote_compare')
 
-    docker_run('postgres', %w[pg_dumpall --username=postgres --file=/var/lib/postgresql/data/dump])
+    SERVICES.keys.each do |db|
+      docker_run(
+        'postgres',
+        ['pg_dump', "#{db}_test", '--username=postgres', "--file=/var/lib/postgresql/data/dump_#{db}"]
+      )
+    end
   end
 
   task :reset do

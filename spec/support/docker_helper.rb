@@ -10,8 +10,11 @@ module DockerHelper
   }.freeze
 
   def docker_reset_databases
-    SERVICES.keys.each { |db| docker_drop_database(db) }
-    docker_postgres_command('-f', '/var/lib/postgresql/data/dump', 'postgres')
+    SERVICES.keys.each do |db|
+      docker_drop_database(db)
+      docker_postgres_command('--command', "CREATE DATABASE #{db}_test;")
+      docker_postgres_command('-d', "#{db}_test", '-f', "/var/lib/postgresql/data/dump_#{db}")
+    end
   end
 
   def docker_reset_redis
@@ -27,7 +30,7 @@ module DockerHelper
         "'#{database}_test' AND pid <> pg_backend_pid();"
     )
 
-    docker_postgres_command('--command', "DROP DATABASE #{database}_test")
+    docker_postgres_command('--command', "DROP DATABASE #{database}_test;")
   end
 
   def docker_container(name)
