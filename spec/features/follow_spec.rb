@@ -24,7 +24,7 @@ RSpec.describe 'Follow', type: :feature do
     expect(mailcatcher_email).to be_nil
     rails_runner(
       :argu,
-      'User.find(3).update(notifications_viewed_at: 1.day.ago); '\
+      'User.find(3).update(notifications_viewed_at: 1.year.ago); '\
       'SendActivityNotificationsWorker.new.perform(3, User.reactions_emails[:direct_reactions_email])'
     )
     expect_email(:notifications_email)
