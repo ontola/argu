@@ -116,7 +116,7 @@ RSpec.describe 'Voting', type: :feature do
     end
 
     context 'as invitee' do
-      let(:location) { '/tokens/valid_email_token' }
+      let(:location) { '/argu/tokens/valid_email_token' }
       let(:motion_sequence) { 3 }
       let(:after_vote) do
         accept_terms

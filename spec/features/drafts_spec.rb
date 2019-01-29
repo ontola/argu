@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Drafts', type: :feature do
   example 'User shows drafts' do
-    as 'user48@example.com', location: '/u/fg_shortname54end/drafts'
+    as 'user48@example.com', location: '/argu/u/fg_shortname54end/drafts'
 
     wait_for(page).to have_content 'My drafts'
     wait_for(page).to have_content 'Fg question title 10end'

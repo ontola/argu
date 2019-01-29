@@ -9,20 +9,16 @@ RSpec.describe 'Sidebar', type: :feature do
     expect(sidebar).to have_content 'Argu page'
   end
 
-  it 'switches organization by switcher' do
+  it 'has organization color' do
     as :guest, location: '/argu'
 
     expect(sidebar[:style]).to match(/background-color: rgb\(71, 86, 104\)/)
 
     expect(sidebar).not_to have_content 'Other page'
 
-    switch_organization 'Other page'
+    switch_organization 'other_page'
 
-    wait_for(sidebar[:style]).to match(/background-color: rgb\(128, 0, 0\)/)
-
-    switch_organization 'Argu page'
-
-    wait_for(sidebar[:style]).to match(/background-color: rgb\(71, 86, 104\)/)
+    wait_for { sidebar[:style] }.to match(/background-color: rgb\(128, 0, 0\)/)
   end
 
   it 'shows one forum for guest, two for staff' do

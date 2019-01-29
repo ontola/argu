@@ -8,7 +8,7 @@ RSpec.describe 'Token email show legacy', type: :feature do
   end
 
   context 'valid token' do
-    let(:token) { '/tokens/valid_email_token' }
+    let(:token) { '/argu/tokens/valid_email_token' }
 
     example 'new user visits token' do
       as(:guest, location: token)
@@ -55,7 +55,7 @@ RSpec.describe 'Token email show legacy', type: :feature do
   end
 
   context 'user token' do
-    let(:token) { '/tokens/user_email_token' }
+    let(:token) { '/argu/tokens/user_email_token' }
 
     example 'logged out user visits token' do
       as(:guest, location: token)
@@ -98,7 +98,7 @@ RSpec.describe 'Token email show legacy', type: :feature do
   end
 
   context 'member token' do
-    let(:token) { '/tokens/member_email_token' }
+    let(:token) { '/argu/tokens/member_email_token' }
 
     example 'logged out member visits token' do
       as(:guest, location: token)

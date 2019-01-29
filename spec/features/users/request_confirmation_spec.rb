@@ -7,7 +7,7 @@ RSpec.describe 'User request confirmation', type: :feature do
     let(:email) { 'unconfirmed@example.com' }
 
     example 'guest requests confirmation of unconfirmed email' do
-      as(:guest, location: '/users/confirmation/new')
+      as(:guest, location: '/argu/users/confirmation/new')
 
       request_confirmation_link
 
@@ -22,7 +22,7 @@ RSpec.describe 'User request confirmation', type: :feature do
     end
 
     example 'guest requests confirmation of unconfirmed email and accepts as other user' do
-      as(:guest, location: '/users/confirmation/new')
+      as(:guest, location: '/argu/users/confirmation/new')
 
       request_confirmation_link
 
@@ -41,7 +41,7 @@ RSpec.describe 'User request confirmation', type: :feature do
     end
 
     example 'unconfirmed user requests confirmation' do
-      as(email, location: '/users/confirmation/new')
+      as(email, location: '/argu/users/confirmation/new')
 
       request_confirmation_link
 
@@ -56,7 +56,7 @@ RSpec.describe 'User request confirmation', type: :feature do
     end
 
     example 'user requests confirmation of wrong email' do
-      as('user1@example.com', location: '/users/confirmation/new')
+      as('user1@example.com', location: '/argu/users/confirmation/new')
 
       request_confirmation_link
 
@@ -68,7 +68,7 @@ RSpec.describe 'User request confirmation', type: :feature do
     let(:email) { 'user1@example.com' }
 
     example 'guest requests confirmation of confirmed email' do
-      as(:guest, location: '/users/confirmation/new')
+      as(:guest, location: '/argu/users/confirmation/new')
 
       request_confirmation_link
 
@@ -84,7 +84,7 @@ RSpec.describe 'User request confirmation', type: :feature do
     end
 
     example 'user requests confirmation' do
-      as(email, location: '/users/confirmation/new')
+      as(email, location: '/argu/users/confirmation/new')
 
       request_confirmation_link
 
@@ -101,7 +101,7 @@ RSpec.describe 'User request confirmation', type: :feature do
   end
 
   example 'guest visits non-existing token' do
-    as(:guest, location: '/users/confirmation?confirmation_token=wrong_token')
+    as(:guest, location: '/argu/users/confirmation?confirmation_token=wrong_token')
     wait_for(page).to have_content 'The item that you are trying to create cannot be processed'
     wait_for(page).to have_snackbar 'Confirmation token is invalid'
   end

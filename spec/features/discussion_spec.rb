@@ -16,6 +16,7 @@ RSpec.describe 'Discussions', type: :feature do
   end
 
   example 'Hide new discussion link when not allowed' do
+    self.current_tenant = 'https://app.argu.localtest/other_page'
     as 'member@example.com', location: '/other_page'
     within '.PrimaryResource' do
       wait_for(page).to have_content 'Other page forum'
@@ -25,7 +26,7 @@ RSpec.describe 'Discussions', type: :feature do
     expect(page).not_to have_content 'New Idea'
     expect(page).not_to have_content 'New Challenge'
 
-    switch_organization 'Argu page'
+    switch_organization 'argu'
     wait_for(page).to have_content 'Freetown', count: 2
     within '.PrimaryResource' do
       click_link 'Freetown'

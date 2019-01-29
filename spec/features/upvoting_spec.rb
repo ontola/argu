@@ -40,7 +40,7 @@ RSpec.describe 'Upvoting', type: :feature do
   end
 
   context 'as invitee' do
-    let(:location) { '/tokens/valid_email_token' }
+    let(:location) { '/argu/tokens/valid_email_token' }
     let(:motion_sequence) { 3 }
 
     example 'remember upvote' do

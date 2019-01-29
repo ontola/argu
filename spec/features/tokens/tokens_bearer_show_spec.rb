@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Token bearer show', type: :feature do
   context 'valid' do
-    let(:token) { '/tokens/valid_bearer_token' }
+    let(:token) { '/argu/tokens/valid_bearer_token' }
 
     example 'new user visits bearer token' do
       as(:guest, location: token)

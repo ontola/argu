@@ -4,9 +4,8 @@ require 'spec_helper'
 
 RSpec.describe 'Navigations', type: :feature do
   example 'walk from page to argument' do
-    as :guest, location: '/o'
+    as :guest, location: '/argu'
 
-    go_to_child 'Argu page'
     go_to_child 'Freetown'
     go_to_child 'Fg question title 7end'
     go_to_child 'Fg motion title 9end'
@@ -27,8 +26,8 @@ RSpec.describe 'Navigations', type: :feature do
   private
 
   def go_to_child(name)
-    wait_for(page).to have_content(name)
     within '.MainContentWrapper' do
+      wait_for(page).to have_content(name)
       click_link name
     end
   end

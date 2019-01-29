@@ -3,6 +3,8 @@
 require 'mailcatcher/api'
 
 module TestMethods # rubocop:disable Metrics/ModuleLength
+  attr_writer :current_tenant
+
   def accept_terms
     wait_for(page).to have_content 'Terms of use'
     click_button 'Accept'
@@ -13,6 +15,10 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
     return if actor == :guest
 
     use_legacy_frontend? ? login_legacy(actor, password) : login(actor, password)
+  end
+
+  def current_tenant
+    @current_tenant || 'https://app.argu.localtest/argu'
   end
 
   def wait_until_loaded
@@ -121,15 +127,11 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
   end
 
   def switch_organization(organization)
-    find('.NavBarContent__switcher .SideBarCollapsible__toggle').click
-    expect(sidebar).to have_content organization
-    expect(main_content).not_to have_content organization
-    click_link organization
-    expect(main_content).to have_content organization
+    visit "https://app.argu.localtest/#{organization}"
   end
 
   def verify_logged_in
-    wait_for { page }.to have_css 'div[resource="https://app.argu.localtest/c_a"]'
+    wait_for { page }.to have_css "div[resource=\"#{current_tenant}/c_a\"]"
   end
 
   def visit(url)

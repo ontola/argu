@@ -47,7 +47,7 @@ RSpec.describe 'Arguments', type: :feature do
   end
 
   context 'as invitee' do
-    let(:location) { '/tokens/valid_email_token' }
+    let(:location) { '/argu/tokens/valid_email_token' }
     let(:go_to_parent) do
       wait_for(page).to have_content('Fg motion title 3end')
       click_link 'Fg motion title 3end'
