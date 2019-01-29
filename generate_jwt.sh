@@ -31,7 +31,7 @@ payload=$(
 	'
 	($time_str | tonumber) as $time_num
 	| .iat=$time_num
-	| .exp=($time_num + 1209600)
+	| .exp=($time_num + 31556952)
 	| .scopes=[$scope1, $scope2]-[""]
 	'
 )
