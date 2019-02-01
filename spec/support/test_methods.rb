@@ -16,7 +16,10 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
   end
 
   def wait_until_loaded
-    wait_for { page.execute_script('return LRS.api.requestMap.size === 0;') }.to be_truthy
+    is_done =
+      'return LRS.api.requestMap.size === 0 && '\
+      '(LRS.broadcastHandle || LRS.currentBroadcast || LRS.lastPostponed) === undefined;'
+    wait_for { page.execute_script(is_done) }.to be_truthy
   end
 
   def login(email, password = 'password')
