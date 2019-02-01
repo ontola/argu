@@ -21,7 +21,7 @@ module Matchers
   end
 
   def action_log_snackbar_message(log)
-    CGI.parse(action_log_iri(log).split('?').pop)['text'].pop
+    CGI.parse(action_log_iri(log).split('?').pop)['text'][0]
   end
 
   def action_log_iri(log)
