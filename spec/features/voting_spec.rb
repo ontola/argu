@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Voting', type: :feature do
   before do
     as actor, location: location
-    wait_for(page).to have_content "fg motion content #{motion_sequence}end"
+    wait(30).for(page).to have_content "fg motion content #{motion_sequence}end"
   end
 
   let(:actor) { :guest }
