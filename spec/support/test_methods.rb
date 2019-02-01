@@ -106,7 +106,9 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
   def go_to_menu_item(text, menu: :actions, resource: page.current_url)
     wait_until_loaded
     resource_selector("#{resource}/menus/#{menu}").click
+    wait_until_loaded
     yield if block_given?
+    wait_for(page).to have_css('.DropdownLink', text: text)
     find('.DropdownLink', text: text).click
   end
 
