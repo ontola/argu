@@ -30,8 +30,8 @@ module ExceptionHelper
     upload_exception_file(errors.map(&:message).join("\n"), example, 'javascript.log') if errors
     status = page.execute_script(
       "return typeof LRS !== 'undefined' &&"\
-      'JSON.stringify(Array.from(LRS.api.statusMap).reduce((obj, [key, value]) => ('\
-      'Object.assign(obj, { [key.value]: value })), {}));'
+      'JSON.stringify(LRS.api.statusMap.reduce((obj, value, index) => ('\
+      'Object.assign(obj, { [LRS.defaultType.constructor.findByStoreIndex(index)]: value })), {}));'
     )
     upload_exception_file(JSON.pretty_generate(JSON.parse(status)), example, 'javascript.statements.log') if status
   end
