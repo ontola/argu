@@ -34,6 +34,7 @@ RSpec.describe 'Page settings', type: :feature do
       # @todo expect new forum in sidebar navigation
 
       visit_settings
+      wait_until_loaded
       wait_for(page).to have_content 'New Forum'
       expect(forums_row(1)).to have_content('New Forum')
       expect(forums_row(2)).to have_content('Holland')
