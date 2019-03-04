@@ -88,7 +88,7 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
     return fill_in_select_legacy(name, with, selector) if use_legacy_frontend?
 
     select = lambda do
-      input_field = find("input[name='#{name}'].Field__input--select").native
+      input_field = find("input[id='#{name}-input'].Field__input--select").native
       input_field.send_keys with
       selector ||= /#{with}/
       wait_for { page }.to have_css('.SelectItem')
