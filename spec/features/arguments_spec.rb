@@ -49,7 +49,7 @@ RSpec.describe 'Arguments', type: :feature do
   context 'as invitee' do
     let(:location) { '/argu/tokens/valid_email_token' }
     let(:go_to_parent) do
-      wait_for(page).to have_content('Fg motion title 3end')
+      wait(30).for(page).to have_content('Fg motion title 3end')
       click_link 'Fg motion title 3end'
     end
     let(:after_post) do
@@ -71,6 +71,7 @@ RSpec.describe 'Arguments', type: :feature do
         element: omniform_parent
       )
 
+    wait_for(page).to have_content('Share your response...')
     within scope do
       click_button 'Share your response...' if click_to_open
       click_button "Argument #{@side == 'pro' ? 'in favour' : 'against'}"

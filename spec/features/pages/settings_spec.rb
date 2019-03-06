@@ -39,7 +39,10 @@ RSpec.describe 'Page settings', type: :feature do
       expect(forums_row(1)).to have_content('New Forum')
       expect(forums_row(2)).to have_content('Holland')
       expect(forums_row(3)).to have_content('Freetown')
-      within(forums_row(1)) { find('td:last-child a').click }
+      within(forums_row(1)) do
+        wait_for(page).to have_css('.fa-close')
+        find('td:last-child a').click
+      end
       expect(page).to(
         have_content('This object and all related data will be permanently removed. This cannot be undone.')
       )
@@ -104,6 +107,7 @@ RSpec.describe 'Page settings', type: :feature do
   end
 
   def visit_settings
+    wait_for(page).to have_content('Settings')
     within('.NavBarContent') do
       click_link 'Settings'
     end

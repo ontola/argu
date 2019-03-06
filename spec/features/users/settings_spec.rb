@@ -132,11 +132,8 @@ RSpec.describe 'User settings', type: :feature do
     # @todo fill in fields, press save and reload page to see if values are persisted.
   end
 
-  def visit_settings # rubocop:disable Metrics/AbcSize
-    expect(current_user_section).to be_truthy
-    current_user_section('.SideBarCollapsible__toggle').click
-    wait_for { current_user_section }.to have_content 'User settings'
-    current_user_section(:link, 'User settings').click
+  def visit_settings
+    click_application_menu_button 'User settings'
     select_tab(tab) if tab
   end
 end

@@ -17,6 +17,12 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
     use_legacy_frontend? ? login_legacy(actor, password) : login(actor, password)
   end
 
+  def click_application_menu_button(button)
+    application_menu_button.click
+    wait_for { application_menu }.to have_content button
+    click_link button
+  end
+
   def current_tenant
     @current_tenant || 'https://app.argu.localtest/argu'
   end
@@ -53,9 +59,7 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
   end
 
   def logout
-    current_user_section('.SideBarCollapsible__toggle').click
-    wait_for { current_user_section }.to have_content 'Sign out'
-    current_user_section(:link, 'Sign out').click
+    click_application_menu_button('Sign out')
   end
 
   def fill_in_login_form(email = 'user1@example.com', password = 'password')
@@ -77,9 +81,7 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
 
     click_button 'Confirm'
 
-    expect(page).to(
-      have_content('Door je te registreren ga je akkoord met de algemene voorwaarden en de privacy policy.')
-    )
+    wait_for_terms_notice
 
     click_button 'Confirm'
   end
@@ -131,13 +133,23 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
   end
 
   def verify_logged_in
-    wait_for { page }.to have_css "div[resource=\"#{current_tenant}/c_a\"]"
+    wait(30).for { page }.to have_css "div[resource=\"#{current_tenant}/c_a\"]"
+  end
+
+  def verify_not_logged_in
+    wait_for { page }.not_to have_css "div[resource=\"#{current_tenant}/c_a\"]"
   end
 
   def visit(url)
     return super if use_legacy_frontend?
 
     super(url.gsub('https://argu', 'https://app.argu'))
+  end
+
+  def wait_for_terms_notice
+    wait_for(page).to(
+      have_content("Door je te registreren ga je akkoord met de\n algemene voorwaarden \nen de\n privacy policy\n.")
+    )
   end
 
   def use_legacy_frontend

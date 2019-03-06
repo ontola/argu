@@ -1,6 +1,16 @@
 # frozen_string_literal: true
 
 module Selectors
+  def application_menu
+    wait_for(page).to have_css('.AppMenu')
+    page.find('.AppMenu')
+  end
+
+  def application_menu_button
+    wait_for(page).to have_button(text: 'Menu')
+    page.find(:button, text: 'Menu')
+  end
+
   def count_bubble_count(element = nil)
     wait_for(page).to have_css('.CountBubble__number')
     found = page.find('.CountBubble__number')
@@ -9,23 +19,16 @@ module Selectors
     found.find(element)
   end
 
-  def current_user_section(*args)
-    wait_for(page).to have_css "div[resource=\"#{current_tenant}/c_a\"]"
-    found = page.find(".NavBarContent__footer div[resource=\"#{current_tenant}/c_a\"]")
-    return found if args.empty?
-
-    found.find(*args)
-  end
-
-  def sidebar(element = nil)
-    found = page.find('.NavBarContent')
+  def navbar(element = nil)
+    found = page.find('.Navbar')
     return found if element.nil?
 
     found.find(element)
   end
 
-  def sidebar_top(element = nil)
-    found = page.find('.NavBarContent__top')
+  def navbar_tabs(element = nil)
+    wait_for(page).to have_css('.Navbar .VerticalScroller')
+    found = page.find('.Navbar .VerticalScroller')
     return found if element.nil?
 
     found.find(element)

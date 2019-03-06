@@ -69,9 +69,7 @@ RSpec.describe 'Voting', type: :feature do
         let(:email) { 'new_user@example.com' }
         let(:confirm) do
           login_to_confirm
-          wait_for(page).to(
-            have_content('Door je te registreren ga je akkoord met de algemene voorwaarden en de privacy policy.')
-          )
+          wait_for_terms_notice
           click_button 'Confirm'
         end
         let(:after_confirmation) do
@@ -82,10 +80,12 @@ RSpec.describe 'Voting', type: :feature do
             )
           )
           expect_voted
-          within sidebar do
+          within navbar do
             wait_for { count_bubble_count }.to have_content '1'
           end
-          click_link 'Notifications'
+          # @todo add link to notification in UI
+          # click_link 'Notifications'
+          visit 'https://app.argu.localtest/argu/n'
           wait_for(page).to(
             have_content("Please confirm your vote by clicking the link we've send to new_user@example.com")
           )
@@ -101,7 +101,7 @@ RSpec.describe 'Voting', type: :feature do
           wait_for(page).to have_snackbar('Your password has been updated successfully.')
           logout
           login('new_user@example.com', 'new password')
-          click_link 'Notifications'
+          visit 'https://app.argu.localtest/argu/n'
           wait_for(page).to have_content('Finish your profile to be more recognizable.')
         end
 
@@ -155,7 +155,7 @@ RSpec.describe 'Voting', type: :feature do
     click_button 'Confirm'
     return unless password
 
-    fill_in name: 'password', with: password
+    fill_in id: 'password', with: password
     click_button 'Continue'
   end
 

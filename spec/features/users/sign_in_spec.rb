@@ -17,9 +17,7 @@ RSpec.describe 'Sign in', type: :feature do
 
     click_button 'Confirm'
 
-    expect(page).to(
-      have_content('Door je te registreren ga je akkoord met de algemene voorwaarden en de privacy policy.')
-    )
+    wait_for_terms_notice
 
     click_button 'back'
 
