@@ -44,13 +44,12 @@ RSpec.describe 'Comments', type: :feature do
   context 'as invitee' do
     let(:location) { '/argu/tokens/valid_email_token' }
     let(:go_to_parent) do
-      wait_for(page).to have_content('Fg motion title 3end')
+      wait(30).for(page).to have_content('Fg motion title 3end')
       click_link 'Fg motion title 3end'
     end
     let(:after_post) do
       accept_terms
-      # @todo post body when accepting terms
-      # expect_comment_posted
+      expect_comment_posted
     end
     it_behaves_like 'post comment'
   end

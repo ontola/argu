@@ -54,8 +54,7 @@ RSpec.describe 'Arguments', type: :feature do
     end
     let(:after_post) do
       accept_terms
-      # @todo post body when accepting terms
-      # expect_argument_posted
+      expect_argument_posted
     end
     it_behaves_like 'post argument'
   end
