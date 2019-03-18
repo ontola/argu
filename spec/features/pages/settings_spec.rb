@@ -13,33 +13,37 @@ RSpec.describe 'Page settings', type: :feature do
     end
   end
 
-  context 'forums' do
-    let(:tab) { 'Forums' }
+  context 'components' do
+    let(:tab) { 'Components' }
     let(:new_email) { 'new_email@example.com' }
 
     example 'as staff' do
       as 'staff@example.com'
       visit_settings
-      wait_for(page).to have_content 'New Forum'
-      expect(forums_row(1)).to have_content('Holland')
-      expect(forums_row(2)).to have_content('Freetown')
+      wait_for(page).to have_content 'Container nodes'
+      expect(components_row(1)).to have_content('Holland')
+      expect(components_row(2)).to have_content('Freetown')
 
-      click_link('New forum')
+      click_application_menu_button('New forum')
 
       fill_in 'http://schema.org/name', with: 'New Forum'
       fill_in 'https://argu.co/ns/core#shortname', with: 'new_forum'
+      fill_in_select 'https://argu.co/ns/core#publicGrant', with: 'Participate'
       click_button 'Save'
 
       wait_for(page).to have_snackbar 'Forum created successfully'
-      # @todo expect new forum in sidebar navigation
+      # @todo expect new forum in topbar navigation
 
-      visit_settings
+      # @todo fetch /container_nodes instead of /forums after posting a forum, so the reload can be removed
+      visit '/argu/settings#container_nodes'
+      # visit_settings
+
       wait_until_loaded
-      wait_for(page).to have_content 'New Forum'
-      expect(forums_row(1)).to have_content('New Forum')
-      expect(forums_row(2)).to have_content('Holland')
-      expect(forums_row(3)).to have_content('Freetown')
-      within(forums_row(1)) do
+      wait_for(page).to have_content 'Container nodes'
+      expect(components_row(1)).to have_content('New Forum')
+      expect(components_row(2)).to have_content('Holland')
+      expect(components_row(3)).to have_content('Freetown')
+      within(components_row(1)) do
         wait_for(page).to have_css('.fa-close')
         find('td:last-child a').click
       end
@@ -53,8 +57,8 @@ RSpec.describe 'Page settings', type: :feature do
       # @todo expect new forum removed from sidebar navigation
 
       visit_settings
-      # @todo expect(forums_row(1)).to have_content('Holland')
-      # @todo expect(forums_row(2)).to have_content('Freetown')
+      # @todo expect(components_row(1)).to have_content('Holland')
+      # @todo expect(components_row(2)).to have_content('Freetown')
     end
   end
 
@@ -94,9 +98,9 @@ RSpec.describe 'Page settings', type: :feature do
     @add_address_email ||= mailcatcher_email(to: [new_email], subject: 'Add your e-mail address')
   end
 
-  def forums_row(row = 1)
+  def components_row(row = 1)
     resource_selector(
-      'https://app.argu.localtest/argu/forums?display=settingsTable&page=1',
+      'https://app.argu.localtest/argu/container_nodes?display=settingsTable&page=1',
       child: "tr:nth-child(#{row})"
     )
   end

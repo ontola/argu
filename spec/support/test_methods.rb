@@ -19,6 +19,7 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
 
   def click_application_menu_button(button)
     application_menu_button.click
+    wait_until_loaded
     wait_for { application_menu }.to have_content button
     click_link button
   end
