@@ -75,10 +75,11 @@ RSpec.describe 'Discussions', type: :feature do
     fill_in 'http://schema.org/name', with: title, fill_options: {clear: :backspace}
     fill_in 'http://schema.org/text', with: content, fill_options: {clear: :backspace}
     within 'fieldset[property="https://argu.co/ns/core#coverPhoto"]' do
-      attach_file 'Content', File.absolute_path('spec/fixtures/cover_photo.jpg')
+      attach_file(nil, File.absolute_path('spec/fixtures/cover_photo.jpg'), make_visible: true)
     end
     within 'fieldset[property="https://argu.co/ns/core#attachments"]' do
-      attach_file 'Content', File.absolute_path('spec/fixtures/profile_photo.png')
+      click_button 'Attachments'
+      attach_file(nil, File.absolute_path('spec/fixtures/profile_photo.png'), make_visible: true)
     end
     click_button 'Save'
   end
