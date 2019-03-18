@@ -22,11 +22,12 @@ RSpec.describe 'Follow', type: :feature do
 
   example 'Unfollow from notification' do
     expect(mailcatcher_email).to be_nil
+    rails_runner(:argu, 'User.find(3).update(notifications_viewed_at: 1.year.ago)')
     rails_runner(
       :argu,
-      'User.find(3).update(notifications_viewed_at: 1.year.ago); '\
       'SendActivityNotificationsWorker.new.perform(3, User.reactions_emails[:direct_reactions_email])'
     )
+
     expect_email(:notifications_email)
     expect(notifications_email.body).to have_content 'New replies are posted in Freetown.'
 

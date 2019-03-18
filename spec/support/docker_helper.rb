@@ -63,7 +63,7 @@ module DockerHelper
   end
 
   def rails_runner(service, command)
-    docker_run(service, ['rails', 'runner', command])
+    docker_run(service, ['bin/rails', 'runner', command])
   end
 
   def run_local(service, commands)
