@@ -26,6 +26,7 @@ RSpec.describe 'Page settings', type: :feature do
 
       click_application_menu_button('New forum')
 
+      wait_for(page).to have_css('.Page form')
       fill_in 'http://schema.org/name', with: 'New Forum'
       fill_in 'https://argu.co/ns/core#shortname', with: 'new_forum'
       fill_in_select 'https://argu.co/ns/core#publicGrant', with: 'Participate'
