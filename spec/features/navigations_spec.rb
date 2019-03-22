@@ -14,7 +14,7 @@ RSpec.describe 'Navigations', type: :feature do
   end
 
   example 'walk from argument to forum' do
-    as :guest, location: '/argu/pro/45'
+    as :guest, location: '/argu/pro/47'
 
     wait_for(page).to have_content 'fg comment body 2end'
     go_to_parent 'Fg motion title 9end'

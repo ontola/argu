@@ -39,7 +39,7 @@ RSpec.describe 'Voting', type: :feature do
   end
 
   context 'on motion#show' do
-    let(:location) { '/argu/m/36' }
+    let(:location) { '/argu/m/38' }
     let(:motion_sequence) { 8 }
 
     context 'as guest' do
@@ -133,7 +133,7 @@ RSpec.describe 'Voting', type: :feature do
   end
 
   context 'on question#show' do
-    let(:location) { '/argu/q/39' }
+    let(:location) { '/argu/q/41' }
     let(:motion_sequence) { 9 }
 
     context 'as guest' do

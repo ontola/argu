@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Arguments', type: :feature do
   let(:actor) { :guest }
   let(:go_to_parent) {}
-  let(:location) { '/argu/m/36' }
+  let(:location) { '/argu/m/38' }
   let(:title) { 'Title of argument' }
   let(:content) { 'Content of argument' }
   let(:after_post) do

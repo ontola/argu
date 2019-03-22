@@ -40,7 +40,7 @@ RSpec.describe 'Discussions', type: :feature do
     expect_form('/argu/holland/q')
     fill_in_form
     expect_published_message('Challenge')
-    expect_content('q/68')
+    expect_content('q/71')
   end
 
   example 'Member posts a motion' do
@@ -48,25 +48,25 @@ RSpec.describe 'Discussions', type: :feature do
     expect_form('/argu/holland/m')
     fill_in_form
     expect_published_message('Idea')
-    expect_content('m/68')
+    expect_content('m/71')
   end
 
   example 'staff updates a question' do
-    as 'staff@example.com', location: '/argu/q/39'
+    as 'staff@example.com', location: '/argu/q/41'
     go_to_menu_item('Edit')
-    expect_form('/argu/q/39')
+    expect_form('/argu/q/41')
     fill_in_form
     expect_updated_message('Challenge')
-    expect_content('q/39')
+    expect_content('q/41')
   end
 
   example 'staff updates a motion' do
-    as 'staff@example.com', location: '/argu/m/36'
+    as 'staff@example.com', location: '/argu/m/38'
     go_to_menu_item('Edit')
-    expect_form('/argu/m/36')
+    expect_form('/argu/m/38')
     fill_in_form
     expect_updated_message('Idea')
-    expect_content('m/36')
+    expect_content('m/38')
   end
 
   private

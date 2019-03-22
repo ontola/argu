@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Comments', type: :feature do
   let(:actor) { :guest }
-  let(:location) { '/argu/m/36' }
+  let(:location) { '/argu/m/38' }
   let(:content) { 'Content of comment' }
   let(:go_to_parent) {}
   let(:after_post) do
