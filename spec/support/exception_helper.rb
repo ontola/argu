@@ -25,9 +25,15 @@ module ExceptionHelper
     [example.full_description.tr(' ', '-'), suffix].compact.join('.')
   end
 
-  def upload_javascript_logs(example)
+  def upload_javascript_logs(example) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     errors = page.driver.browser.manage.logs.get(:browser)
-    upload_exception_file(errors.map(&:message).join("\n"), example, 'javascript.log') if errors
+    upload_exception_file(errors.map(&:message).join("\n"), example, 'javascript-console.log') if errors
+    errors = page.execute_script('return window.logging.errors')
+    if errors
+      upload_exception_file(errors.map { |message| message.join(' ') }.join("\n"), example, 'javascript-errors.log')
+    end
+    logs = page.execute_script('return window.logging.logs')
+    upload_exception_file(logs.map { |message| message.join(' ') }.join("\n"), example, 'javascript-logs.log') if errors
     status = page.execute_script(
       "return typeof LRS !== 'undefined' &&"\
       'JSON.stringify(LRS.api.statusMap.reduce((obj, value, index) => ('\
