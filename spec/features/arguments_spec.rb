@@ -63,6 +63,9 @@ RSpec.describe 'Arguments', type: :feature do
 
   def fill_in_omniform(omniform_parent, click_to_open: false, side: 'pro')
     @side = side
+    wait_for(page).to have_content 'Comment'
+    wait_for(page).to have_content 'Argument In Favour'
+    wait_for(page).to have_content 'Argument Against'
     wait_until_loaded
     scope =
       resource_selector(

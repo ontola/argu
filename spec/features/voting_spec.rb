@@ -151,6 +151,11 @@ RSpec.describe 'Voting', type: :feature do
 
   def login_to_confirm(password = nil)
     expect(page).to have_content 'Confirm your vote via e-mail'
+    wait_for(page).to have_content 'Opinion'
+    wait_for(page).to have_content 'Comment'
+    wait_for(page).to have_content 'Argument In Favour'
+    wait_for(page).to have_content 'Argument Against'
+
     fill_in placeholder: 'email@example.com', with: email
     click_button 'Confirm'
     return unless password
