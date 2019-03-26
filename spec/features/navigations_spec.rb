@@ -6,7 +6,6 @@ RSpec.describe 'Navigations', type: :feature do
   example 'walk from page to argument' do
     as :guest, location: '/argu'
 
-    go_to_child 'Freetown'
     go_to_child 'Fg question title 7end'
     go_to_child 'Fg motion title 9end'
     go_to_child 'Fg argument title 6end'
