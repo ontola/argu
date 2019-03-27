@@ -77,10 +77,13 @@ File.open(File.expand_path('docker-compose.template.yml')) do |source_file|
     command: #{command}
     expose:
       - 2999
+      - 9200
     networks:
       default:
         aliases:
           - #{service}.svc.cluster.local
+    extra_hosts:
+      - "elastic:#{ENV['HOST_IP'] || ENV['IP']}"
 END_HEREDOC
   end.join
   contents.gsub!(/\{webservices\}/, webservices)
