@@ -15,17 +15,6 @@ RSpec.describe 'Drafts', type: :feature do
     expect_publish_action
   end
 
-  example 'Member posts a draft' do
-    as 'member@example.com', location: '/argu/holland/q/new'
-    expect_form('/argu/holland/q')
-    fill_in 'http://schema.org/name', with: 'title', fill_options: {clear: :backspace}
-    fill_in 'http://schema.org/text', with: 'content', fill_options: {clear: :backspace}
-    select_draft_toggle
-    click_button 'Save'
-    expect(page).not_to have_content "It can take a few moments before it's visible on other pages."
-    expect_publish_action
-  end
-
   example 'Publish draft through action' do
     as 'user48@example.com', location: '/argu/q/62'
     expect_publish_action

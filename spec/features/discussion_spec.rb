@@ -39,7 +39,7 @@ RSpec.describe 'Discussions', type: :feature do
     as 'member@example.com', location: '/argu/holland/q/new'
     expect_form('/argu/holland/q')
     fill_in_form
-    expect_published_message('Challenge')
+    expect_draft_message('Challenge')
     expect_content('q/71')
   end
 
@@ -47,7 +47,7 @@ RSpec.describe 'Discussions', type: :feature do
     as 'member@example.com', location: '/argu/holland/m/new'
     expect_form('/argu/holland/m')
     fill_in_form
-    expect_published_message('Idea')
+    expect_draft_message('Idea')
     expect_content('m/71')
   end
 
