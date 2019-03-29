@@ -19,7 +19,7 @@ RSpec.describe 'Navigations', type: :feature do
     go_to_parent 'Fg motion title 9end'
     go_to_parent 'Fg question title 7end'
     go_to_parent 'Freetown'
-    wait_for(page).to have_content 'Discussions'
+    wait_for(page).to have_content 'Do you have a good idea?'
   end
 
   private
