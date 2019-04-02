@@ -12,13 +12,15 @@ RSpec.describe 'Sidebar', type: :feature do
   it 'has organization color' do
     as :guest, location: '/argu'
 
-    expect(navbar[:style]).to match(/background-color: rgb\(71, 86, 104\)/)
+    expect(css_var('--navbar-background')).to eq('#475668')
+    expect(css_var('--accent-color')).to eq('#FFFFFF')
 
     expect(navbar).not_to have_content 'Other page'
 
     switch_organization 'other_page'
 
-    wait_for { navbar[:style] }.to match(/background-color: rgb\(128, 0, 0\)/)
+    wait_for { css_var('--navbar-background') }.to eq('#800000')
+    expect(css_var('--accent-color')).to eq('#FFFFFF')
   end
 
   it 'shows one forum for guest, two for staff' do
@@ -31,5 +33,11 @@ RSpec.describe 'Sidebar', type: :feature do
 
     expect(navbar_tabs).to have_content 'Freetown'
     expect(navbar_tabs).to have_content 'Holland'
+  end
+
+  private
+
+  def css_var(var)
+    page.execute_script("return getComputedStyle(document.documentElement).getPropertyValue('#{var}')")
   end
 end
