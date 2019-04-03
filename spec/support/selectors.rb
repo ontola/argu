@@ -27,8 +27,8 @@ module Selectors
   end
 
   def navbar_tabs(element = nil)
-    wait_for(page).to have_css('.Navbar .VerticalScroller')
-    found = page.find('.Navbar .VerticalScroller')
+    wait_for(page).to have_css('.Navbar .NavBarContent__items')
+    found = page.find('.Navbar .NavBarContent__items')
     return found if element.nil?
 
     found.find(element)
