@@ -117,14 +117,14 @@ RSpec.describe 'User settings', type: :feature do
   def email_addresses_row(row = 1)
     resource_selector(
       'https://app.argu.localtest/argu/u/fg_shortname3end/email_addresses?display=settingsTable&page=1',
-      child: "tr:nth-child(#{row})"
+      child: "tbody tr:nth-child(#{row})"
     )
   end
 
   def expect_email_row(row, email, primary, confirmed)
     expect(email_addresses_row(row)).to have_content(email)
     expect(email_addresses_row(row)).send(primary ? :to : :not_to, have_content('Primary e-mail address'))
-    expect(email_addresses_row(row)).send(confirmed ? :to : :not_to, have_content('Is confirmed'))
+    expect(email_addresses_row(row)).send(confirmed ? :to : :not_to, have_content('Already confirmed'))
   end
 
   def fill_in_form(submit: 'Save')

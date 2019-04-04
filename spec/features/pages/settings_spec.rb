@@ -102,7 +102,7 @@ RSpec.describe 'Page settings', type: :feature do
   def components_row(row = 1)
     resource_selector(
       'https://app.argu.localtest/argu/container_nodes?display=settingsTable&page=1',
-      child: "tr:nth-child(#{row})"
+      child: "tbody tr:nth-child(#{row})"
     )
   end
 
