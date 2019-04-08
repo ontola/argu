@@ -39,7 +39,7 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
   def login(email, password = 'password')
     wait_for(page).to have_content 'Log in / sign up'
 
-    page.click_link('Log in / sign up')
+    page.click_link('Log in / sign up') unless current_path.include?('/u/sign_in')
 
     expect(page).to have_content 'login or register'
 
@@ -67,13 +67,15 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
   def fill_in_login_form(email = 'user1@example.com', password = 'password')
     wait_for(page).to have_content('login or register')
 
-    fill_in placeholder: 'email@example.com', with: email, fill_options: {clear: :backspace}
+    within '.Modal__portal' do
+      fill_in placeholder: 'email@example.com', with: email, fill_options: {clear: :backspace}
 
-    click_button 'Confirm'
+      click_button 'Confirm'
 
-    fill_in type: :password, with: password
+      fill_in type: :password, with: password
 
-    click_button 'Continue'
+      click_button 'Continue'
+    end
   end
 
   def fill_in_registration_form(email = 'new_user@example.com')
