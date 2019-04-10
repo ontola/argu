@@ -67,7 +67,9 @@ module ExceptionHelper
     filename = [exception_file_dir, example_filename(example, suffix)].join('/')
     File.open(filename, 'w') { |f| f.write(content) }
 
-    upload_to_bitbucket(filename)
+    Timeout::timeout(30) do
+      upload_to_bitbucket(filename)
+    end
   end
 
   def exception_file_dir
