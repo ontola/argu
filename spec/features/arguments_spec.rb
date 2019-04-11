@@ -64,8 +64,8 @@ RSpec.describe 'Arguments', type: :feature do
   def fill_in_omniform(omniform_parent, click_to_open: false, side: 'pro')
     @side = side
     wait_for(page).to have_content 'Comment'
-    wait_for(page).to have_content 'Argument In Favour'
-    wait_for(page).to have_content 'Argument Against'
+    wait_for(page).to have_content 'Pro'
+    wait_for(page).to have_content 'Con'
     wait_until_loaded
     scope =
       resource_selector(
@@ -76,7 +76,7 @@ RSpec.describe 'Arguments', type: :feature do
     wait_for(page).to have_content('Share your response...')
     within scope do
       click_button 'Share your response...' if click_to_open
-      click_button "Argument #{@side == 'pro' ? 'in favour' : 'against'}"
+      click_button @side.capitalize
       wait_for(page).to have_field 'http://schema.org/name'
       fill_in 'http://schema.org/name', with: title
       fill_in 'http://schema.org/text', with: content
