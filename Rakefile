@@ -16,8 +16,8 @@ namespace :test do
     docker_setup('argu', seed: :test)
     docker_setup('token', seed: :test)
     docker_setup('email')
-    docker_setup('deku')
-    docker_setup('vote_compare')
+    # docker_setup('deku')
+    # docker_setup('vote_compare')
 
     SERVICES.keys.each do |db|
       docker_run(
@@ -43,7 +43,7 @@ namespace :dev do
     docker_setup('argu')
     docker_setup('token')
     docker_setup('email')
-    docker_setup('deku')
-    docker_setup('vote_compare')
+    # docker_setup('deku')
+    # docker_setup('vote_compare')
   end
 end
