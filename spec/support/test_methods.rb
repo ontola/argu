@@ -41,7 +41,7 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
 
     page.click_link('Log in / sign up') unless current_path.include?('/u/sign_in')
 
-    expect(page).to have_content 'login or register'
+    wait_for(page).to have_content 'login or register'
 
     fill_in_login_form email, password
 
