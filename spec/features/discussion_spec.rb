@@ -89,6 +89,6 @@ RSpec.describe 'Discussions', type: :feature do
     expect(page).to have_content(content)
     resource_selector("https://app.argu.localtest/argu/#{path}/attachments", child: '.AttachmentPreview')
     expect(page).to have_css('.CoverImage__wrapper')
-    expect(current_path).to include("/argu/#{path}")
+    expect(page).to have_current_path("/argu/#{path}")
   end
 end
