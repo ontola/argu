@@ -29,7 +29,9 @@ RSpec.describe 'Page settings', type: :feature do
       wait_for(page).to have_css('.Page form')
       fill_in 'http://schema.org/name', with: 'New Forum'
       fill_in 'https://argu.co/ns/core#shortname', with: 'new_forum'
-      fill_in_select 'https://argu.co/ns/core#publicGrant', with: 'Participate'
+      click_button 'Grants'
+      fill_in_select '0.https://argu.co/ns/core#group', with: 'Public'
+      fill_in_select '0.https://argu.co/ns/core#grantSet', with: 'Participate'
       click_button 'Save'
 
       wait_for(page).to have_snackbar 'Forum created successfully'
@@ -73,8 +75,8 @@ RSpec.describe 'Page settings', type: :feature do
     end
   end
 
-  context 'advanced' do
-    let(:tab) { 'Advanced' }
+  context 'profile' do
+    let(:tab) { 'Organisation profile' }
 
     example 'as staff' do
       as 'staff@example.com'
