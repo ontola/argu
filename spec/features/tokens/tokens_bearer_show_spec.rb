@@ -9,53 +9,49 @@ RSpec.describe 'Token bearer show', type: :feature do
     example 'new user visits bearer token' do
       as(:guest, location: token)
 
+      wait_for(page).to have_content("You have been invited for the group 'Members'")
+
+      click_button 'Log in'
       fill_in_registration_form
 
-      expect_joined
+      accept_token
     end
 
     example 'logged out user visits bearer token' do
       as(:guest, location: token)
 
+      wait_for(page).to have_content("You have been invited for the group 'Members'")
+
+      click_button 'Log in'
       fill_in_login_form
 
-      expect_joined
+      accept_token
     end
 
     example 'logged out member visits bearer token' do
       as(:guest, location: token)
 
+      wait_for(page).to have_content("You have been invited for the group 'Members'")
+
+      click_button 'Log in'
+
       fill_in_login_form 'member@example.com'
 
-      expect_member_already
+      accept_token result: :member_already
     end
 
     example 'user visits bearer token' do
       as('user1@example.com')
       visit "https://app.argu.localtest#{token}"
 
-      expect_joined
+      accept_token
     end
 
     example 'member visits bearer token' do
       as('member@example.com')
       visit "https://app.argu.localtest#{token}"
 
-      expect_member_already
+      accept_token result: :member_already
     end
-  end
-
-  private
-
-  def expect_joined
-    wait(30).for(page).to have_content('Holland')
-    expect(page).to have_snackbar("You have joined the group 'Members'")
-    # @todo verify favorite exists
-  end
-
-  def expect_member_already
-    wait(30).for(page).to have_content('Holland')
-    expect(page).to have_snackbar('You are already member of this group')
-    # @todo verify favorite exists
   end
 end

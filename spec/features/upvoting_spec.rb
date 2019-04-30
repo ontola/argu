@@ -5,10 +5,12 @@ require 'spec_helper'
 RSpec.describe 'Upvoting', type: :feature do
   before do
     as actor, location: location
+    before_vote
     wait_for(page).to have_content "fg motion content #{motion_sequence}end"
   end
 
   let(:actor) { :guest }
+  let(:before_vote) {}
   let(:expected_count) { 1 }
   let(:location) { '/argu/m/38' }
   let(:motion_sequence) { 8 }
@@ -40,6 +42,7 @@ RSpec.describe 'Upvoting', type: :feature do
   end
 
   context 'as invitee' do
+    let(:before_vote) { accept_token }
     let(:location) { '/argu/tokens/valid_email_token' }
     let(:motion_sequence) { 3 }
 

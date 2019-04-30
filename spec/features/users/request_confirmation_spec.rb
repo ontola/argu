@@ -31,7 +31,7 @@ RSpec.describe 'User request confirmation', type: :feature do
       )
       expect_email(:confirmation_email)
 
-      login 'user1@example.com'
+      login 'user1@example.com', modal: false
 
       visit confirmation_email.links.last
 

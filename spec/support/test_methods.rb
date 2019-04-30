@@ -10,10 +10,26 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
     click_button 'Accept'
   end
 
+  def accept_token(result: :success)
+    wait_for(page).to have_button('Accept')
+    click_button('Accept')
+
+    case result
+    when :success
+      # @todo snackbars are shown, but the page is instantly reloaded.
+      # This prevents the matcher from seeing the snackbar
+      # wait_for(page).to have_snackbar("You have joined the group 'Members'")
+    when :already_member
+      wait_for(page).to have_snackbar('You are already member of this group')
+    end
+    wait(30).for(page).to have_current_path('/argu/holland')
+    wait_for(page).to have_content('Holland')
+    verify_logged_in
+  end
+
   def as(actor, location: '/argu/freetown', password: 'password')
     visit "https://#{use_legacy_frontend? ? '' : 'app.'}argu.localtest#{location}"
     return if actor == :guest
-
     use_legacy_frontend? ? login_legacy(actor, password) : login(actor, password)
   end
 
@@ -36,14 +52,14 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
     wait_for { page.execute_script(is_done) }.to be_truthy
   end
 
-  def login(email, password = 'password')
+  def login(email, password = 'password', modal: true)
     wait_for(page).to have_content 'Log in / sign up'
 
     page.click_link('Log in / sign up') unless current_path.include?('/u/sign_in')
 
     wait_for(page).to have_content 'login or register'
 
-    fill_in_login_form email, password
+    fill_in_login_form email, password, modal: modal
 
     verify_logged_in
   end
@@ -64,10 +80,11 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
     click_application_menu_button('Sign out')
   end
 
-  def fill_in_login_form(email = 'user1@example.com', password = 'password')
+  def fill_in_login_form(email = 'user1@example.com', password = 'password', modal: true)
     wait_for(page).to have_content('login or register')
 
-    within '.Modal__portal' do
+    wrapper = modal ? '.Modal__portal' : "form[action='/users']"
+    within wrapper do
       fill_in placeholder: 'email@example.com', with: email, fill_options: {clear: :backspace}
 
       click_button 'Confirm'

@@ -44,6 +44,7 @@ RSpec.describe 'Comments', type: :feature do
   context 'as invitee' do
     let(:location) { '/argu/tokens/valid_email_token' }
     let(:go_to_parent) do
+      accept_token
       wait(30).for(page).to have_content('Fg motion title 3end')
       click_link 'Fg motion title 3end'
     end

@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Voting', type: :feature do
   before do
     as actor, location: location
+    before_vote
     wait(30).for(page).to have_content "fg motion content #{motion_sequence}end"
   end
 
@@ -14,6 +15,7 @@ RSpec.describe 'Voting', type: :feature do
     wait_for(page).to have_snackbar 'Thanks for your vote!'
     expect_voted(side: @side)
   end
+  let(:before_vote) {}
 
   shared_examples_for 'voting' do
     example 'remember vote' do
@@ -123,6 +125,7 @@ RSpec.describe 'Voting', type: :feature do
         wait_for(page).to have_snackbar 'Thanks for your vote!'
         expect_voted(side: @side)
       end
+      let(:before_vote) { accept_token }
 
       example 'vote' do
         click_link "Fg motion title #{motion_sequence}end"

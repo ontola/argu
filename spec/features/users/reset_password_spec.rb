@@ -26,7 +26,7 @@ RSpec.describe 'User reset password', type: :feature do
 
     expect_email(:password_changed_email)
 
-    login('user1@example.com', 'new password')
+    login('user1@example.com', 'new password', modal: false)
   end
 
   private
