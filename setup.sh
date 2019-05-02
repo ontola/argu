@@ -13,6 +13,7 @@ NGINXIP=$(head -1 ./nginx.conf 2>/dev/null | tr -d '# ')
 
 echo "IP: $IP"
 echo "NGINX IP: $NGINXIP"
+ELASTICSEARCH_URL=${ELASTICSEARCH_URL:-http://elastic:9200}
 
 IP=$IP ENV=$ENV ./setup_environment.rb
 
@@ -22,6 +23,7 @@ PG_PASSWORD=$(openssl rand -hex 32)
 
 write_env() {
     echo "writing .env for $1"
+
     sed "s/{postgres_user}/$PG_USERNAME/g" .env.template > ./.env.$1
     sed -i "s/{postgres_password}/$PG_PASSWORD/g" ./.env.$1
     sed -i "s/{argu_client_id}/$ARGU_CLIENT_ID/g" ./.env.$1
@@ -29,6 +31,7 @@ write_env() {
     sed -i "s/{frontend_token}/$FRONTEND_TOKEN/g" ./.env.$1
     sed -i "s/{service_token}/$SERVICE_TOKEN/g" ./.env.$1
     sed -i "s/{database_suffix}/$DB_SUFFIX/g" ./.env.$1
+    sed -i "s#{elastic_search}#$ELASTICSEARCH_URL#g" ./.env.$1
     sed -i "s/{secret}/$SECRET/g" ./.env.$1
     sed -i "s/{tld}/local$1/g" ./.env.$1
 }
