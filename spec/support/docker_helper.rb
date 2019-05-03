@@ -52,7 +52,7 @@ module DockerHelper
 
   def docker_run(service, commands)
     container = docker_container(service)
-    return run_local(service, commands) if container.nil?
+    return run_local(service, "\"#{command}\"") if container.nil?
 
     result = container.exec(commands)
     return result if result[-1] == 0
@@ -63,7 +63,7 @@ module DockerHelper
   end
 
   def rails_runner(service, command)
-    docker_run(service, ['bin/rails', 'runner', "\"#{command}\""])
+    docker_run(service, ['bin/rails', 'runner', command])
   end
 
   def run_local(service, commands)
