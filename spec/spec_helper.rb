@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'capybara/rspec'
-require 'capybara-screenshot/rspec'
 require 'support/mock'
 require 'selenium/webdriver'
 require 'webdrivers'
@@ -58,9 +57,9 @@ RSpec.configure do |config|
 
   config.after do |example|
     if example.exception
-      upload_container_logs(example)
-      upload_javascript_logs(example)
-      raise_catched_emails
+      # upload_container_logs(example)
+      # upload_javascript_logs(example)
+      # raise_catched_emails
     end
   end
 end
@@ -91,17 +90,17 @@ MailCatcher::API.configure do |config|
   config.server = 'http://app.argu.localtest:1080'
 end
 
-Capybara.save_path = File.expand_path('../tmp/exceptions', __dir__)
-
-Capybara::Screenshot.after_save_html do |path|
-  ExceptionHelper.upload_to_bitbucket(path)
-end
-
-Capybara::Screenshot.after_save_screenshot do |path|
-  ExceptionHelper.upload_to_bitbucket(path)
-end
-
-Capybara::Screenshot.register_filename_prefix_formatter(:rspec) do |example|
-  ExceptionHelper.example_filename(example)
-end
-Capybara::Screenshot.append_timestamp = false
+# Capybara.save_path = File.expand_path('../tmp/exceptions', __dir__)
+#
+# Capybara::Screenshot.after_save_html do |path|
+#   ExceptionHelper.upload_to_bitbucket(path)
+# end
+#
+# Capybara::Screenshot.after_save_screenshot do |path|
+#   ExceptionHelper.upload_to_bitbucket(path)
+# end
+#
+# Capybara::Screenshot.register_filename_prefix_formatter(:rspec) do |example|
+#   ExceptionHelper.example_filename(example)
+# end
+# Capybara::Screenshot.append_timestamp = false
