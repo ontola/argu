@@ -97,6 +97,7 @@ Capybara.register_driver :selenium_chrome do |app|
   client.open_timeout = 90
   client.read_timeout = 90
   options = Selenium::WebDriver::Chrome::Options.new
+  options.headless!
   options.add_preference('intl.accept_languages', 'en-US')
 
   Capybara::Selenium::Driver.new(
