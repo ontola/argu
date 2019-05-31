@@ -67,6 +67,14 @@ File.open(File.expand_path('docker-compose.template.yml')) do |source_file|
   webservices = services.reject { |service, _opts| local_ports.key?(service.to_s) }.map do |service, opts|
     image = opts[:image] || "#{service}_service"
     command = opts[:command] || './bin/rails server -b 0.0.0.0 -p 2999'
+    health_check =
+      if service === :argu
+        <<END_HEREDOC
+healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:2999/d/health"]
+END_HEREDOC
+      end
+
     <<END_HEREDOC
   #{service}:
     image: eu.gcr.io/active-gasket-113610/#{image}:${RAILS_ENV:-staging}
@@ -75,6 +83,11 @@ File.open(File.expand_path('docker-compose.template.yml')) do |source_file|
     volumes:
       - ./devproxyCA/cacert.pem:/etc/ssl/certs/cacert.pem
     command: #{command}
+    depends_on:
+      - redis
+      - postgres
+      - rabbitmq
+      - elastic
     expose:
       - 2999
       - 9200
@@ -84,6 +97,7 @@ File.open(File.expand_path('docker-compose.template.yml')) do |source_file|
           - #{service}.svc.cluster.local
     extra_hosts:
       - "elastic:#{ENV['HOST_IP'] || ENV['IP']}"
+    #{health_check}
 END_HEREDOC
   end.join
   contents.gsub!(/\{webservices\}/, webservices)

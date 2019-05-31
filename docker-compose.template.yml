@@ -1,19 +1,32 @@
 version: '3.6'
 
 services:
+  testrunner:
+    privileged: true
+    build:
+      context: .
+      dockerfile: dockerfiles/testrunner.Dockerfile
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /dev/shm:/dev/shm
+    networks:
+      default:
+      external:
   devproxy:
-    image: nginx
+    build:
+      context: .
+      dockerfile: dockerfiles/nginx.Dockerfile
     ports:
       - 443:443
+      - 80:80
       - 2999:2999
     networks:
       default:
         aliases:
+          - app.argu.localtest
+          - argu.localtest
           {devproxy_aliases}
       external:
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
-      - ./ssl:/etc/nginx/ssl
   mockserver:
     image: jamesdbloom/mockserver
     ports:
@@ -27,47 +40,47 @@ services:
       - ${ENV_FILE:-./.env}
     command: bundle exec sidekiq
     volumes:
-      - ./devproxyCA/cacert.pem:/etc/ssl/certs/cacert.pem
+      - certdata:/etc/ssl/certs
   vote_compare_sidekiq:
     image: eu.gcr.io/active-gasket-113610/vote_compare_service:${RAILS_ENV:-staging}
     env_file:
       - ${ENV_FILE:-./.env}
     volumes:
-      - ./devproxyCA/cacert.pem:/etc/ssl/certs/cacert.pem
+      - certdata:/etc/ssl/certs
     command: bundle exec sidekiq -e staging
   vote_compare_subscriber:
     image: eu.gcr.io/active-gasket-113610/vote_compare_service:${RAILS_ENV:-staging}
     env_file:
       - ${ENV_FILE:-./.env}
     volumes:
-      - ./devproxyCA/cacert.pem:/etc/ssl/certs/cacert.pem
+      - certdata:/etc/ssl/certs
     command: bundle exec rake broadcast:subscribe
     depends_on:
       - rabbitmq
-    restart: on-failure
+    restart: unless-stopped
   email_subscriber:
     image: eu.gcr.io/active-gasket-113610/email_service:${RAILS_ENV:-staging}
     env_file:
       - ${ENV_FILE:-./.env}
     volumes:
-      - ./devproxyCA/cacert.pem:/etc/ssl/certs/cacert.pem
+      - certdata:/etc/ssl/certs
     command: bundle exec rake broadcast:subscribe
     depends_on:
       - rabbitmq
-    restart: on-failure
+    restart: unless-stopped
   email_sidekiq:
     image: eu.gcr.io/active-gasket-113610/email_service:${RAILS_ENV:-staging}
     env_file:
       - ${ENV_FILE:-./.env}
     volumes:
-      - ./devproxyCA/cacert.pem:/etc/ssl/certs/cacert.pem
+      - certdata:/etc/ssl/certs
     command: bundle exec sidekiq -e staging
   deku_sidekiq:
     image: eu.gcr.io/active-gasket-113610/deku:${RAILS_ENV:-staging}
     env_file:
       - ${ENV_FILE:-./.env}
     volumes:
-      - ./devproxyCA/cacert.pem:/etc/ssl/certs/cacert.pem
+      - certdata:/etc/ssl/certs
     command: bundle exec sidekiq -e staging
   postgres:
     image: postgres:9.5.5
@@ -87,6 +100,26 @@ services:
     networks:
       default:
       external:
+  elastic:
+    image: elasticsearch:6.7.2
+    env_file:
+      - ${ENV_FILE:-./.env}
+    environment:
+      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
+      - "discovery.type=single-node"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    networks:
+      default:
+      external:
+    ports:
+      - 9200:9200
+      - 9300:9300
   mailcatcher:
     image: schickling/mailcatcher
     networks:
@@ -111,4 +144,5 @@ networks:
        - subnet: 172.99.0.0/16
   external:
 volumes:
+  certdata:
   pgdata:

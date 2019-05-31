@@ -7,7 +7,7 @@ class Mock
   include MockServer::Model::DSL
 
   def nominatim # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
-    client = MockServer::MockServerClient.new('localhost', 1090)
+    client = MockServer::MockServerClient.new('mockserver', ENV['MOCK_SERVER_PORT'] || 1080)
     expectation = expectation do |exp|
       exp.request do |request|
         request.method = 'GET'

@@ -1,0 +1,6 @@
+*.log
+serial
+www/
+tmp
+.idea
+local_ports.yml

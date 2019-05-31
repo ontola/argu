@@ -1,0 +1,115 @@
+# Ruby CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-ruby/ for more details
+#
+version: 2.1
+orbs:
+  gcp-gcr: circleci/gcp-gcr@0.5.0
+  gcp-cli: circleci/gcp-cli@1.0.2
+jobs:
+  build:
+    docker:
+      # specify the version you desire here
+      - image: circleci/ruby:2.6.1-node-browsers
+    resource_class: large
+
+    working_directory: ~/devproxy
+
+    steps:
+      - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - gcp-gcr/gcr-auth
+      - run:
+          command: cat ${HOME}/gcloud-service-key.json | docker login -u _json_key --password-stdin https://eu.gcr.io
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "Gemfile.lock" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-
+
+      - run:
+          name: install dependencies
+          command: |
+            bundle install --jobs=4 --retry=3 --deployment --path vendor/bundle
+
+      - save_cache:
+          paths:
+            - ./vendor/bundle
+          key: v1-dependencies-{{ checksum "Gemfile.lock" }}
+
+      # Environment setup
+      - run: sudo sh -c "echo '127.0.0.1 app.argu.localtest' >> /etc/hosts"
+      - run: sudo sh -c "echo '127.0.0.1 argu.localtest' >> /etc/hosts"
+      - run: echo "" > ./.env.dev
+      - run: echo NEO_URL=${NEO_URL} >> ./.env.template
+      - run: echo DEFAULT_LOCALE=en >> ./.env.template
+      - run: BACKEND_HOST=argu:3000 ./setup.sh
+      - run: IP=127.0.0.1 HOST_IP=172.99.0.1 ENV=test ./setup_environment.rb
+      - run: sudo chown -R $(whoami):$(whoami) ./ssl
+      - run: "[[ $BRANCH_NAME = master ]] && RAILS_ENV=production || RAILS_ENV=staging"
+
+      # Setup volumes
+      - run: docker create -v /cfg --name certdata alpine:3.4 /bin/true
+      - run: sudo chown -R $(whoami):$(whoami) ./devproxyCA
+      - run: docker cp ./devproxyCA/cacert.pem certdata:/cacert.pem
+
+      # Setup services
+      - run: RAILS_ENV=$RAILS_ENV docker-compose pull
+      - run: docker-compose up -d elastic rabbitmq mockserver devproxy
+      - run: docker-compose up -d sidekiq postgres mailcatcher redis
+      - run: RAILS_ENV=$RAILS_ENV docker-compose up -d argu
+      - run: RAILS_ENV=$RAILS_ENV docker-compose up -d token deku vote_compare vote_compare_sidekiq frontend email email_subscriber email_sidekiq
+
+      # Fixes
+      - run: docker exec devproxy_argu_1 sed -i -e 's/staging.argu.co/argu.localtest/g' public/packs/manifest.json
+      - run: docker exec devproxy_argu_1 sed -i -e 's/argu.co/argu.localtest/g' public/packs/manifest.json
+      - run: docker restart devproxy_argu_1
+      - run: ./restart.sh devproxy || true
+
+      # Setup tests
+      - run:
+          name: build test runner
+          command: |
+            TEST_FILES="$(circleci tests glob "spec/**/*_spec.rb" | \
+              circleci tests split --split-by=timings)"
+
+            docker-compose build --build-arg "TEST_FILES=$TEST_FILES"
+      - run: docker-compose run testrunner bundle exec rake test:setup
+
+      # Run tests!
+      - run:
+          shell: /bin/bash -o pipefail
+          name: run tests
+          command: docker-compose run --name testrunner_1 testrunner
+
+      # Deploy
+      - run:
+          command: |
+            if [ "$BRANCH_NAME" == "master" ];then
+              curl -X POST $DEPLOY_HOOK_PRODUCTION
+            else
+              curl -X POST $DEPLOY_HOOK_STAGING
+            fi
+
+      # Store results
+      - run:
+          name: prepare collecting reports and diagnostics
+          when: always
+          command: |
+            mkdir /tmp/test-results || true
+            docker cp testrunner_1:/tmp/test-results/rspec.xml /tmp/test-results/rspec.xml || true
+            docker cp testrunner_1:/usr/src/app/tmp/exceptions /tmp/test-results/exceptions_1 || true
+            docker cp testrunner_2:/tmp/test-results/rspec.xml /tmp/test-results/rspec_2.xml || true
+            cat /tmp/test-results/rspec_2.xml >> /tmp/test-results/rspec.xml || true
+            rm /tmp/test-results/rspec_2.xml || true
+            docker cp testrunner_2:/usr/src/app/tmp/exceptions /tmp/test-results/exceptions_2 || true
+            docker ps --no-trunc -a > /tmp/test-results/docker-ps.txt || true
+            docker-compose logs > /tmp/test-results/docker-compose-logs.tx || true
+      - store_test_results:
+          path: /tmp/test-results
+      - store_artifacts:
+          path: /tmp/test-results
+          destination: test-results

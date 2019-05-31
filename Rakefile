@@ -6,19 +6,28 @@ require_relative 'spec/support/docker_helper'
 
 RSpec::Core::RakeTask.new(:spec)
 
+def check_env
+  link = File.readlink(File.expand_path('.env'))
+  raise "Trying to reset data in wrong env (expected test but got '#{link}')" unless link.end_with?('test')
+end
+
 namespace :test do
   desc 'Setup for running tests'
   task :setup do
     include DockerHelper
     Mock.new.nominatim
-    raise 'Trying to reset data in wrong env' unless File.readlink(File.expand_path('.env')).end_with?('test')
+    check_env
 
+    puts 'setting up argu'
     docker_setup('argu', seed: :test)
+    puts 'setting up token'
     docker_setup('token', seed: :test)
+    puts 'setting up email'
     docker_setup('email')
     # docker_setup('deku')
     # docker_setup('vote_compare')
 
+    puts 'dumping databases'
     SERVICES.keys.each do |db|
       docker_run(
         'postgres',
@@ -29,7 +38,7 @@ namespace :test do
 
   task :reset do
     include DockerHelper
-    raise 'Trying to reset data in wrong env' unless File.readlink(File.expand_path('.env')).end_with?('test')
+    check_env
 
     docker_reset_databases
     docker_reset_redis

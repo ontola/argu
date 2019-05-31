@@ -2,6 +2,7 @@
 
 require 'capybara/rspec'
 require 'capybara-screenshot/rspec'
+require 'dotenv'
 require 'support/mock'
 require 'selenium/webdriver'
 require 'webdrivers'
@@ -13,6 +14,8 @@ require 'support/matchers'
 require 'support/docker_helper'
 require 'support/test_methods'
 require 'support/selectors'
+
+Dotenv.load
 
 RSpec.configure do |config|
   include DockerHelper
@@ -74,8 +77,14 @@ end
 Capybara.register_driver :selenium_chrome do |app|
   capabilities = Selenium::WebDriver::Remote::Capabilities.chrome('elementScrollBehavior' => 1)
   client = Selenium::WebDriver::Remote::Http::Default.new
-  client.timeout = 90
+  client.read_timeout = 90
+  client.open_timeout = 90
   options = Selenium::WebDriver::Chrome::Options.new
+  options.headless! unless ENV['NO_HEADLESS']
+  options.add_argument('--window-size=1920,1080')
+  options.add_argument('--enable-logging')
+  options.add_argument('--disable-gpu')
+  options.add_argument('--no-sandbox')
   options.add_preference('intl.accept_languages', 'en-US')
 
   Capybara::Selenium::Driver.new(
@@ -88,7 +97,7 @@ Capybara.register_driver :selenium_chrome do |app|
 end
 
 MailCatcher::API.configure do |config|
-  config.server = 'http://app.argu.localtest:1080'
+  config.server = 'http://mailcatcher:1080'
 end
 
 Capybara.save_path = File.expand_path('../tmp/exceptions', __dir__)
