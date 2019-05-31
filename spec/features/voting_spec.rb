@@ -77,7 +77,7 @@ RSpec.describe 'Voting', type: :feature do
         let(:after_confirmation) do
           wait_for(page).to(
             have_content(
-              'Please confirm your vote by clicking the link we\'ve send to '\
+              'Please confirm your vote by clicking the link we\'ve sent to '\
               'new_user@example.com'
             )
           )
@@ -89,7 +89,7 @@ RSpec.describe 'Voting', type: :feature do
           # click_link 'Notifications'
           visit 'https://app.argu.localtest/argu/n'
           wait_for(page).to(
-            have_content("Please confirm your vote by clicking the link we've send to new_user@example.com")
+            have_content("Please confirm your vote by clicking the link we've sent to new_user@example.com")
           )
           expect_email(:confirm_vote_email)
           expect(confirm_vote_email.body).to have_content('In favour of Fg motion title 8end')
