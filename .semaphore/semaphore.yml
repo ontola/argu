@@ -1,0 +1,45 @@
+version: v1.0
+name: Pipeline
+agent:
+  machine:
+    type: e1-standard-8
+    os_image: ubuntu1804
+blocks:
+  - name: "Test"
+    task:
+      secrets:
+        - name: GCP
+      prologue:
+        commands:
+          # Authenticate using the file injected from the secret
+          - gcloud auth activate-service-account --key-file=.secrets/gcp.json
+          # Don't forget -q to silence confirmation prompts
+          - gcloud auth configure-docker -q
+          - checkout
+      jobs:
+        - name: Testing
+          commands:
+            - sudo sh -c "echo '127.0.0.1 app.argu.localtest' >> /etc/hosts"
+            - sudo sh -c "echo '127.0.0.1 argu.localtest' >> /etc/hosts"
+            - echo "" > ./.env.dev
+            - echo NEO_URL=${NEO_URL} >> ./.env.template
+            - echo DEFAULT_LOCALE=en >> ./.env.template
+            - BACKEND_HOST=argu:3000 ./setup.sh
+            - IP=127.0.0.1 HOST_IP=172.99.0.1 ENV=test ./setup_environment.rb
+            - sudo chown -R $(whoami):$(whoami) ./ssl
+            - "[[ $BRANCH_NAME = master ]] && RAILS_ENV=production || RAILS_ENV=staging"
+            - docker create -v /cfg --name certdata alpine:3.4 /bin/true
+            - sudo chown -R $(whoami):$(whoami) ./devproxyCA
+            - docker cp ./devproxyCA/cacert.pem certdata:/cacert.pem
+            - RAILS_ENV=$RAILS_ENV docker-compose pull
+            - docker-compose up -d elastic rabbitmq mockserver devproxy
+            - docker-compose up -d sidekiq postgres mailcatcher redis
+            - RAILS_ENV=$RAILS_ENV docker-compose up -d argu
+            - RAILS_ENV=$RAILS_ENV docker-compose up -d token deku vote_compare vote_compare_sidekiq frontend email email_subscriber email_sidekiq
+            - docker exec devproxy_argu_1 sed -i -e 's/staging.argu.co/argu.localtest/g' public/packs/manifest.json
+            - docker exec devproxy_argu_1 sed -i -e 's/argu.co/argu.localtest/g' public/packs/manifest.json
+            - docker restart devproxy_argu_1
+            - ./restart.sh devproxy || true
+            - docker-compose build --build-arg "TEST_FILES=$TEST_FILES"
+            - docker-compose run testrunner bundle exec rake test:setup
+            - docker-compose run --name testrunner_1 testrunner
