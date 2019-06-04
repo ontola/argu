@@ -35,7 +35,7 @@ File.delete(File.expand_path('.env', __dir__)) if File.symlink?(File.expand_path
 File.symlink(File.expand_path("../.env.#{ENV['ENV']}", __FILE__), File.expand_path('.env', __dir__))
 
 # Create nginx.conf
-File.open(File.expand_path('nginx.conf.template')) do |source_file|
+File.open(File.expand_path('nginx.template.conf')) do |source_file|
   contents = source_file.read
   contents.gsub!(/\{your_local_ip\}/, ENV['IP'])
   services.each do |service, opts|
