@@ -43,3 +43,16 @@ blocks:
             - docker-compose build --build-arg "TEST_FILES=$TEST_FILES"
             - docker-compose run testrunner bundle exec rake test:setup
             - docker-compose run --name testrunner_1 testrunner
+promotions:
+  - name: Production deploy
+    pipeline_file: production-deploy.yml
+    auto_promote_on:
+      - result: passed
+        branch:
+          - master
+  - name: Staging deploy
+    pipeline_file: staging-deploy.yml
+    auto_promote_on:
+      - result: passed
+        branch:
+          - develop
