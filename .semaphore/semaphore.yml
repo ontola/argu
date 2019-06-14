@@ -27,7 +27,7 @@ blocks:
             - BACKEND_HOST=argu:3000 ./setup.sh
             - IP=127.0.0.1 HOST_IP=172.99.0.1 ENV=test ./setup_environment.rb
             - sudo chown -R $(whoami):$(whoami) ./ssl
-            - "[[ $BRANCH_NAME = master ]] && RAILS_ENV=production || RAILS_ENV=staging"
+            - "[[ $SEMAPHORE_GIT_BRANCH = master ]] && RAILS_ENV=production || RAILS_ENV=staging"
             - docker create -v /cfg --name certdata alpine:3.4 /bin/true
             - sudo chown -R $(whoami):$(whoami) ./devproxyCA
             - docker cp ./devproxyCA/cacert.pem certdata:/cacert.pem
