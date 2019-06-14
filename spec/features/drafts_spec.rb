@@ -22,6 +22,7 @@ RSpec.describe 'Drafts', type: :feature do
       click_button 'Publish'
     end
     expect_published_message('Challenge')
+    wait_for(page).to have_content 'Fg question title 10end'
     expect_no_publish_action
   end
 
