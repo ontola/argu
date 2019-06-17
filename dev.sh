@@ -6,4 +6,4 @@ docker-compose down --remove-orphans
 
 docker-compose up -d
 docker build .
-docker-compose up -d --force-recreate devproxy
+docker-compose up -d --force-recreate --build devproxy
