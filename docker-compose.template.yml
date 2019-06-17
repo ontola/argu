@@ -83,7 +83,7 @@ services:
       - certdata:/etc/ssl/certs
     command: bundle exec sidekiq -e staging
   postgres:
-    image: postgres:9.5.5
+    image: mdillon/postgis:9.5
     env_file:
       - ${ENV_FILE:-./.env}
     networks:
