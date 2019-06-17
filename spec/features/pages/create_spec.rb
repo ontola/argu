@@ -8,6 +8,8 @@ RSpec.describe 'Page create', type: :feature do
     click_application_menu_button('My Argu websites')
     wait_for(page).to have_content 'Nog geen items'
     click_link 'New website'
+    wait_until_loaded
+
     fill_in 'http://xmlns.com/foaf/0.1/name', with: 'My Website'
     fill_in 'http://schema.org/description', with: 'About my website'
     fill_in 'https://argu.co/ns/core#shortname', with: 'my_website'
