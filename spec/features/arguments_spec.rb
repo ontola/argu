@@ -11,12 +11,15 @@ RSpec.describe 'Arguments', type: :feature do
   let(:after_post) do
     expect_argument_posted
   end
+  let(:result_element) { '.Column > div' }
+  let(:parent_resource) { page.current_url }
+  let(:expect_argument_content) { true }
+
+  before do
+    as actor, location: location
+  end
 
   shared_examples_for 'post argument' do
-    before do
-      as actor, location: location
-    end
-
     example 'pro from card section' do
       parent = '.PrimaryResource div:nth-child(1) div.Card'
       go_to_parent
@@ -44,6 +47,19 @@ RSpec.describe 'Arguments', type: :feature do
   context 'As user' do
     let(:actor) { 'user1@example.com' }
     it_behaves_like 'post argument'
+
+    context 'question#show' do
+      let(:location) { '/argu/q/41' }
+      let(:result_element) { '.Column .CardList' }
+      let(:parent_resource) { 'https://app.argu.localtest/argu/m/42' }
+      let(:expect_argument_content) { false }
+
+      example 'pro from motion preview' do
+        parent = ".Card[resource=\"#{parent_resource}\"]"
+
+        fill_in_omniform(parent, click_to_open: true)
+      end
+    end
   end
 
   context 'as invitee' do
@@ -65,12 +81,12 @@ RSpec.describe 'Arguments', type: :feature do
   def fill_in_omniform(omniform_parent, click_to_open: false, side: 'pro')
     @side = side
     wait_for(page).to have_content 'Comment'
-    wait_for(page).to have_content 'Pro'
-    wait_for(page).to have_content 'Con'
+    wait_for(page).to have_content 'Pro' unless click_to_open
+    wait_for(page).to have_content 'Con' unless click_to_open
     wait_until_loaded
     scope =
       resource_selector(
-        page.current_url,
+        parent_resource,
         element: omniform_parent
       )
 
@@ -91,9 +107,9 @@ RSpec.describe 'Arguments', type: :feature do
 
   def expect_argument_posted
     wait_for(page).to have_snackbar "#{@side.capitalize} created successfully"
-    within resource_selector("#{page.current_url}/#{@side}s", element: '.Column > div') do
+    within resource_selector("#{parent_resource}/#{@side}s", element: result_element) do
       wait_for(page).to have_content title
-      wait_for(page).to have_content content
+      wait_for(page).to have_content content if expect_argument_content
     end
   end
 end
