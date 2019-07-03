@@ -5,92 +5,92 @@
 worker_processes        2;
 
 events {
-	worker_connections  1024;
-	multi_accept on;
-	use   epoll;
+    worker_connections  1024;
+    multi_accept        on;
+    use                 epoll;
 }
 
 http {
-	log_format debuglog '[$time_iso8601] $remote_addr - $server_name 	=> $upstream_addr:	'
-                        '"$request" $status $body_bytes_sent '
-                        '"$http_referer" "$http_user_agent" "$http_x_forwarded_for" "$request_body" "$http_Authorization" cookie: "$http_Cookie" x-argu-back: "$http_X_Argu_Back" uri: "$uri" backend: "$backend"';
-	log_format upstreamlog '[$time_iso8601] $remote_addr - $server_name 	=> $upstream_addr:	$request [tUps: $upstream_response_time tReq: $request_time]';
+    log_format debuglog         '[$time_iso8601] $remote_addr - $server_name     => $upstream_addr:    '
+                                '"$request" $status $body_bytes_sent '
+                                '"$http_referer" "$http_user_agent" "$http_x_forwarded_for" "$request_body" "$http_Authorization" cookie: "$http_Cookie" x-argu-back: "$http_X_Argu_Back" uri: "$uri" backend: "$backend"';
+    log_format upstreamlog      '[$time_iso8601] $remote_addr - $server_name     => $upstream_addr:    $request [tUps: $upstream_response_time tReq: $request_time]';
 
-	client_body_buffer_size		128K;
-	client_header_buffer_size	2k;
-	client_max_body_size		8m;
-	large_client_header_buffers	2 2k;
+    client_body_buffer_size     128K;
+    client_header_buffer_size   2k;
+    client_max_body_size        8m;
+    large_client_header_buffers 2 2k;
 
-	gzip				on;
-	gzip_comp_level			2;
-	gzip_proxied			any;
-	gzip_types			text/plain text/css text/javascript application/json application/vnd.api+json application/x-javascript text/xml application/xml applica$
+    gzip                        on;
+    gzip_comp_level             2;
+    gzip_proxied                any;
+    gzip_types                  text/plain text/css text/javascript application/json application/vnd.api+json application/x-javascript text/xml application/xml applica$
 
-	proxy_buffering			off;
-	proxy_buffer_size		4k;
-	proxy_buffers			4 32k;
-	proxy_busy_buffers_size		64k;
-	proxy_temp_file_write_size	64k;
+    proxy_buffering             off;
+    proxy_buffer_size           4k;
+    proxy_buffers               4 32k;
+    proxy_busy_buffers_size     64k;
+    proxy_temp_file_write_size  64k;
 
-	tcp_nodelay			on;
-	tcp_nopush			on;
+    tcp_nodelay                 on;
+    tcp_nopush                  on;
 
-	upstream frontend {
-		server {frontend_host};
-	}
+    upstream frontend {
+        server {frontend_host};
+    }
 
-	upstream argu {
-		server {argu_host};
-	}
+    upstream argu {
+        server {argu_host};
+    }
 
-	upstream email {
-		server {email_host};
-	}
+    upstream email {
+        server {email_host};
+    }
 
-	upstream token {
-		server {token_host};
-	}
+    upstream token {
+        server {token_host};
+    }
 
-	upstream vote_compare {
-		server {vote_compare_host};
-	}
+    upstream vote_compare {
+        server {vote_compare_host};
+    }
 
-	upstream deku {
-		server {deku_host};
-	}
+    upstream deku {
+        server {deku_host};
+    }
 
     map $uri $backend {
-        ~^/compare/votes		vote_compare;
-        ~^(/\w+)?/tokens		token;
-        ~^/email/				email;
-        ~^\/\w*\/\w*\/od\/?.*$	deku;
-        ~^/subscribe			subscribe;
-        default					argu;
+        ~^/compare/votes        vote_compare;
+        ~^(/\w+)?/tokens        token;
+        ~^/email/               email;
+        ~^\/\w*\/\w*\/od\/?.*$  deku;
+        ~^/subscribe            subscribe;
+        default                 argu;
     }
 
     server {
-        listen			443 ssl http2;
-        server_name     glapp.localdev;
+        listen              443 ssl http2;
+        server_name         glapp.localdev;
 
-		root			/etc/nginx/www;
-		access_log		/dev/fd/1 upstreamlog;
-		error_log		/dev/fd/1;
-		sendfile		on;
+        root                /etc/nginx/www;
+        access_log          /dev/fd/1 upstreamlog;
+        error_log           /dev/fd/1;
+        sendfile            on;
 
-        ssl_certificate		/etc/nginx/ssl/nginx.crt;
-        ssl_certificate_key	/etc/nginx/ssl/nginx.key;
+        ssl_certificate     /etc/nginx/ssl/nginx.crt;
+        ssl_certificate_key /etc/nginx/ssl/nginx.key;
 
-        proxy_set_header	Host			$host;
-        proxy_set_header	X-Real-IP		$remote_addr;
-        proxy_set_header	X-Forwarded-For		$proxy_add_x_forwarded_for;
-        proxy_set_header	X-Forwarded-Proto	https;
-        proxy_set_header	X-Forwarded-Ssl		on;
-        proxy_set_header	Upgrade				$http_upgrade;
-        proxy_set_header	Connection			"Upgrade";
+        proxy_set_header    Host                $host;
+        proxy_set_header    X-Real-IP           $remote_addr;
+        proxy_set_header    X-Forwarded-For     $proxy_add_x_forwarded_for;
+        proxy_set_header    X-Forwarded-Proto   https;
+        proxy_set_header    X-Forwarded-Ssl     on;
+        proxy_set_header    Upgrade             $http_upgrade;
+        proxy_set_header    Connection          "Upgrade";
 
-        proxy_pass_request_headers			on;
+        proxy_pass_request_headers              on;
 
-        merge_slashes off;
+        merge_slashes                           off;
 
         location /api {
             proxy_pass http://{your_local_ip}:3010;
@@ -101,75 +101,75 @@ http {
         }
     }
 
-	server {
-		listen			443 ssl http2;
-		server_name		app.argu.localdev;
-		server_name		app.argu.localtest;
-		server_name		team.glapp.localdev;
-		server_name		demogemeente.localdev;
+    server {
+        listen              443 ssl http2;
+        server_name         app.argu.localdev;
+        server_name         app.argu.localtest;
+        server_name         team.glapp.localdev;
+        server_name         demogemeente.localdev;
 
-		root			/etc/nginx/www;
-		access_log		/dev/fd/1 upstreamlog;
-		error_log		/dev/fd/1;
-		sendfile		on;
+        root                /etc/nginx/www;
+        access_log          /dev/fd/1 upstreamlog;
+        error_log           /dev/fd/1;
+        sendfile            on;
 
-		ssl_certificate		/etc/nginx/ssl/nginx.crt;
-		ssl_certificate_key	/etc/nginx/ssl/nginx.key;
+        ssl_certificate     /etc/nginx/ssl/nginx.crt;
+        ssl_certificate_key /etc/nginx/ssl/nginx.key;
 
-		proxy_set_header	Host			$host;
-		proxy_set_header	X-Real-IP		$remote_addr;
-		proxy_set_header	X-Forwarded-For		$proxy_add_x_forwarded_for;
-		proxy_set_header	X-Forwarded-Proto	https;
-		proxy_set_header	X-Forwarded-Ssl		on;
-		proxy_set_header	Upgrade				$http_upgrade;
-		proxy_set_header	Connection			"Upgrade";
+        proxy_set_header    Host                $host;
+        proxy_set_header    X-Real-IP           $remote_addr;
+        proxy_set_header    X-Forwarded-For     $proxy_add_x_forwarded_for;
+        proxy_set_header    X-Forwarded-Proto   https;
+        proxy_set_header    X-Forwarded-Ssl     on;
+        proxy_set_header    Upgrade             $http_upgrade;
+        proxy_set_header    Connection          "Upgrade";
 
-		proxy_pass_request_headers			on;
+        proxy_pass_request_headers              on;
 
-		merge_slashes off;
+        merge_slashes                           off;
 
         location / {
             proxy_pass http://frontend;
         }
     }
 
-	server {
-		listen			3032 http2;
-		listen			443 ssl http2 deferred;
-		server_name		argu.localdev;
-		server_name		argu.localtest;
+    server {
+        listen              3032 http2;
+        listen              443 ssl http2 deferred;
+        server_name         argu.localdev;
+        server_name         argu.localtest;
 
-		root			/etc/nginx/www;
-		access_log		/dev/fd/1 upstreamlog;
-		error_log		/dev/fd/1;
-		sendfile		on;
+        root                /etc/nginx/www;
+        access_log          /dev/fd/1 upstreamlog;
+        error_log           /dev/fd/1;
+        sendfile            on;
 
-		ssl_certificate		/etc/nginx/ssl/nginx.crt;
-		ssl_certificate_key	/etc/nginx/ssl/nginx.key;
+        ssl_certificate     /etc/nginx/ssl/nginx.crt;
+        ssl_certificate_key /etc/nginx/ssl/nginx.key;
 
-		add_header			Content-Security-Policy	"default-src 'self'; img-src *; script-src 'self' 'unsafe-eval' 'unsafe-inline' cdn.polyfill.io; style-src 'self' 'unsafe-inline' maxcdn.bootstrapcdn.com fonts.googleapis.com; font-src 'self' fonts.googleapis.com fonts.gstatic.com maxcdn.bootstrapcdn.com";
+        add_header          Content-Security-Policy    "default-src 'self'; img-src *; script-src 'self' 'unsafe-eval' 'unsafe-inline' cdn.polyfill.io; style-src 'self' 'unsafe-inline' maxcdn.bootstrapcdn.com fonts.googleapis.com; font-src 'self' fonts.googleapis.com fonts.gstatic.com maxcdn.bootstrapcdn.com";
 
-		proxy_set_header	Host			$host;
-		proxy_set_header	X-Real-IP		$remote_addr;
-		proxy_set_header	X-Forwarded-For		$proxy_add_x_forwarded_for;
-		proxy_set_header	X-Forwarded-Proto	https;
-		proxy_set_header	X-Forwarded-Ssl		on;
-		proxy_set_header	Upgrade				$http_upgrade;
-		proxy_set_header	Connection			"Upgrade";
+        proxy_set_header    Host                $host;
+        proxy_set_header    X-Real-IP           $remote_addr;
+        proxy_set_header    X-Forwarded-For     $proxy_add_x_forwarded_for;
+        proxy_set_header    X-Forwarded-Proto   https;
+        proxy_set_header    X-Forwarded-Ssl     on;
+        proxy_set_header    Upgrade             $http_upgrade;
+        proxy_set_header    Connection          "Upgrade";
 
-		proxy_pass_request_headers			on;
+        proxy_pass_request_headers              on;
 
-		merge_slashes off;
+        merge_slashes                           off;
 
-		location / {
-			proxy_pass http://$backend;
-		}
-	}
+        location / {
+            proxy_pass http://$backend;
+        }
+    }
 
     server {
-        listen			2999;
-        access_log		/dev/fd/1 upstreamlog;
-        error_log		/dev/fd/1;
+        listen              2999;
+        access_log          /dev/fd/1 upstreamlog;
+        error_log           /dev/fd/1;
         location / {
             proxy_pass http://$backend;
         }
