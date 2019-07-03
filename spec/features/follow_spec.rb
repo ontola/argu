@@ -50,7 +50,7 @@ RSpec.describe 'Follow', type: :feature do
   def expect_following(index)
     3.times do |i|
       expect(page).to(
-        have_css(".Dropdown__content .DropdownLink:nth-child(#{i + 1}) .fa-circle#{i == index ? '' : '-o'}")
+        have_css(".Dropdown__content .DropdownLink:nth-child(#{i + 2}) .fa-circle#{i == index ? '' : '-o'}")
       )
     end
   end

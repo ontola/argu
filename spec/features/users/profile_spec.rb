@@ -8,6 +8,6 @@ RSpec.describe 'User profile', type: :feature do
     wait_for(page).to have_content('first_name_32 last_name_32')
     wait_for(page).to have_content('Fg question title 7end')
     visit '/other_page/u/fg_shortname35end'
-    wait_for(page).to have_content('Nog geen items')
+    wait_for(page).to have_content('No items yet')
   end
 end

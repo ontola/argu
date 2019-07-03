@@ -6,7 +6,7 @@ RSpec.describe 'Page create', type: :feature do
   example 'user creates page' do
     as 'user1@example.com'
     click_application_menu_button('My Argu websites')
-    wait_for(page).to have_content 'Nog geen items'
+    wait_for(page).to have_content 'No items yet'
     click_link 'New website'
     wait_until_loaded
 
