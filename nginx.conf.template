@@ -106,6 +106,7 @@ http {
 		server_name		app.argu.localdev;
 		server_name		app.argu.localtest;
 		server_name		team.glapp.localdev;
+		server_name		demogemeente.localdev;
 
 		root			/etc/nginx/www;
 		access_log		/dev/fd/1 upstreamlog;
