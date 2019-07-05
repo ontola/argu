@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Sidebar', type: :feature do
+RSpec.describe 'Navbar', type: :feature do
   it 'show default organization on homepage' do
     as :guest, location: '/'
 
@@ -23,15 +23,15 @@ RSpec.describe 'Sidebar', type: :feature do
     expect(css_var('--accent-color')).to eq('#FFFFFF')
   end
 
-  it 'shows one forum for guest, two for staff' do
+  it 'shows no forum for guest, one for staff' do
     as :guest, location: '/argu'
 
-    expect(navbar_tabs).to have_content 'Freetown'
+    expect(navbar_tabs).not_to have_content 'Freetown'
     expect(navbar_tabs).not_to have_content 'Holland'
 
     login('staff@example.com')
 
-    expect(navbar_tabs).to have_content 'Freetown'
+    expect(navbar_tabs).not_to have_content 'Freetown'
     expect(navbar_tabs).to have_content 'Holland'
   end
 

@@ -27,10 +27,7 @@ RSpec.describe 'Discussions', type: :feature do
     expect(page).not_to have_content 'New Challenge'
 
     switch_organization 'argu'
-    wait_for(page).to have_content 'Freetown', count: 2
-    within '.NavBarContent' do
-      click_link 'Freetown'
-    end
+    wait_for(page).to have_content 'Freetown'
     wait_for(page).to have_content 'New Idea'
     expect(page).to have_content 'New Challenge'
   end
