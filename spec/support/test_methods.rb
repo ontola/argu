@@ -114,7 +114,7 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
       input_field = find("input[id='#{name}-input'].Input").native
       input_field.send_keys with
       selector ||= /#{with}/
-      wait_for { page }.to have_css('.SelectItem')
+      wait_for { page }.to have_css('.SelectItem', text: selector)
       find('.SelectItem', text: selector).click
     end
     select.call
@@ -126,7 +126,7 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
       input_field = find('.Select-control .Select-input input').native
       input_field.send_keys with
       selector ||= /#{with}/
-      wait_for { page }.to have_css('.Select-option')
+      wait_for { page }.to have_css('.Select-option', text: selector)
       find('.Select-option', text: selector).click
     end
     scope ? within(scope, &select) : select.call
