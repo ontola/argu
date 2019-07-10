@@ -47,7 +47,7 @@ RSpec.describe 'Page settings', type: :feature do
       expect(components_row(2)).to have_content('Holland')
       expect(components_row(3)).to have_content('Freetown')
       within(components_row(1)) do
-        wait_for(page).to have_css('.fa-close')
+        wait(30).for(page).to have_css('.fa-close')
         find('td:last-child a').click
       end
       expect(page).to(
