@@ -106,7 +106,12 @@ RSpec.describe 'Arguments', type: :feature do
   end
 
   def expect_argument_posted
-    wait_for(page).to have_snackbar "#{@side.capitalize} created successfully"
+    wait_for(page).to(
+      have_snackbar(
+        "#{@side.capitalize} published successfully. It can take a few moments before it's visible on other pages."
+      )
+    )
+    wait_for(page).to have_content title
     within resource_selector("#{parent_resource}/#{@side}s", element: result_element) do
       wait_for(page).to have_content title
       wait_for(page).to have_content content if expect_argument_content
