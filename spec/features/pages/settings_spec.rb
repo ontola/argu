@@ -24,7 +24,12 @@ RSpec.describe 'Page settings', type: :feature do
       expect(components_row(1)).to have_content('Holland')
       expect(components_row(2)).to have_content('Freetown')
 
-      click_application_menu_button('New forum')
+      within navbar do
+        click_link '+'
+      end
+
+      wait_for(page).to have_content('New forum')
+      click_link 'New forum'
 
       wait_for(page).to have_css('.Page form')
       fill_in 'http://schema.org/name', with: 'New Forum'
