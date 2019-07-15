@@ -64,7 +64,7 @@ RSpec.describe 'Upvoting', type: :feature do
     return unless success
 
     wait_for(page).to have_snackbar 'Thanks for your vote!'
-    click_button class: 'Button--snackbar'
+    click_link class: 'MuiIconButton-root'
     expect_voted
   end
 
@@ -74,7 +74,7 @@ RSpec.describe 'Upvoting', type: :feature do
     return unless success
 
     wait_for(page).to have_snackbar 'Vote deleted successfully'
-    click_button class: 'Button--snackbar'
+    click_link class: 'MuiIconButton-root'
     expect_not_voted
   end
 

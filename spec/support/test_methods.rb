@@ -143,8 +143,8 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
   end
 
   def select_tab(tab)
-    wait_for(page).to have_css('.TabBar')
-    within '.TabBar' do
+    wait_for(page).to have_css('.MuiTabs-root')
+    within '.MuiTabs-root' do
       click_link tab
     end
   end
