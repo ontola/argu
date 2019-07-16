@@ -38,6 +38,8 @@ RSpec.configure do |config|
 
   config.shared_context_metadata_behavior = :apply_to_host_groups
 
+  config.wait_timeout = ENV['RSPEC_WAIT']&.to_i || 15
+
   config.before(:suite) do
     DockerHelper::SERVICES.keys.each do |service|
       puts "Checking #{service}"
