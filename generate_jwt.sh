@@ -16,18 +16,26 @@ header='{
 	"alg": "HS256"
 }'
 
-payload='{
-  "user": {
-    "type": "user",
-    "id": -2
-  }
-}'
+if [ ${2} == 'false' ]
+then
+    payload="{
+      \"application_id\": 1
+    }"
+else
+    payload="{
+      \"application_id\": 1,
+      \"user\": {
+        \"type\": \"user\",
+        \"id\": ${2}
+      }
+    }"
+fi
 
 # Use jq to set the dynamic `iat` and `exp`
 # fields on the header using the current time.
 # `iat` is set to now, and `exp` is now + 1 second.
 payload=$(
-	echo "${payload}" | jq --arg time_str "$(date +%s)" --arg scope1 ${2} --arg scope2 "${3}" \
+	echo "${payload}" | jq --arg time_str "$(date +%s)" --arg scope1 ${3} --arg scope2 "${4}" \
 	'
 	($time_str | tonumber) as $time_num
 	| .iat=$time_num
