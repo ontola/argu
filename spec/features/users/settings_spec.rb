@@ -123,6 +123,7 @@ RSpec.describe 'User settings', type: :feature do
   end
 
   def expect_email_row(row, email, primary, confirmed)
+    wait_for(page).to have_content(email)
     expect(email_addresses_row(row)).to have_content(email)
     expect(email_addresses_row(row)).send(primary ? :to : :not_to, have_content('Primary e-mail address'))
     expect(email_addresses_row(row)).send(confirmed ? :to : :not_to, have_content('Already confirmed'))
