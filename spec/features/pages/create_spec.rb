@@ -16,7 +16,7 @@ RSpec.describe 'Page create', type: :feature do
     check 'I accept the terms of use'
     click_button 'Save'
 
-    wait(30).for(page).to have_current_path('/my_website/settings')
+    wait(30).for(page).to have_current_path('/my_website')
     expect(navbar).to have_content 'My Website'
     click_application_menu_button('My Argu websites')
     wait_for(page).to have_content 'About my website'
