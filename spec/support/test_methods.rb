@@ -112,7 +112,7 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
 
     select = lambda do
       input_field = find("input[id='#{name}-input'].Input").native
-      input_field.send_keys with
+      with.split('').each { |key| input_field.send_keys key }
       selector ||= /#{with}/
       wait_for { page }.to have_css('.SelectItem', text: selector)
       find('.SelectItem', text: selector).click

@@ -34,7 +34,9 @@ RSpec.describe 'Page settings', type: :feature do
       wait_for(page).to have_css('.Page form')
       fill_in 'http://schema.org/name', with: 'New Forum'
       fill_in 'https://argu.co/ns/core#shortname', with: 'new_forum'
+      wait_until_loaded
       click_button 'Grants'
+      wait_until_loaded
       fill_in_select '0.https://argu.co/ns/core#group', with: 'Public'
       fill_in_select '0.https://argu.co/ns/core#grantSet', with: 'Participate'
       click_button 'Save'
