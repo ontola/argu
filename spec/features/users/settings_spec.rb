@@ -77,7 +77,11 @@ RSpec.describe 'User settings', type: :feature do
       visit_settings
       wait_for(page).to have_content 'Email addresses'
       expect_email_row(1, 'user1@example.com', true, true)
-      click_link('New email address')
+      resource_selector(
+        'https://app.argu.localtest/argu/u/fg_shortname3end/email_addresses?display=settingsTable',
+        element: '.ContainerFloat',
+        child: '.fa-plus'
+      ).click
       fill_in 'http://schema.org/email', with: new_email
       click_button 'Add'
       wait_for(page).to have_content 'Email addresses'

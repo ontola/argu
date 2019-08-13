@@ -7,7 +7,8 @@ RSpec.describe 'Page create', type: :feature do
     as 'user1@example.com'
     click_application_menu_button('My Argu websites')
     wait_for(page).to have_content 'No items yet'
-    click_link 'New website'
+    resource_selector('https://app.argu.localtest/argu/u/fg_shortname3end/o', child: '.fa-plus').click
+
     wait_until_loaded
 
     fill_in 'http://xmlns.com/foaf/0.1/name', with: 'My Website'
