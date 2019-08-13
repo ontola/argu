@@ -35,7 +35,7 @@ blocks:
             - docker-compose up -d elastic rabbitmq mockserver devproxy
             - docker-compose up -d sidekiq postgres mailcatcher redis
             - RAILS_ENV=$RAILS_ENV docker-compose up -d argu
-            - RAILS_ENV=$RAILS_ENV docker-compose up -d token deku vote_compare vote_compare_sidekiq frontend email email_subscriber email_sidekiq
+            - RAILS_ENV=$RAILS_ENV docker-compose up -d token token_sidekiq deku vote_compare vote_compare_sidekiq frontend email email_subscriber email_sidekiq
             - docker exec devproxy_argu_1 sed -i -e 's/staging.argu.co/argu.localtest/g' public/packs/manifest.json
             - docker exec devproxy_argu_1 sed -i -e 's/argu.co/argu.localtest/g' public/packs/manifest.json
             - docker-compose build --build-arg "TEST_FILES=$TEST_FILES"

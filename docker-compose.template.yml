@@ -75,6 +75,13 @@ services:
     volumes:
       - certdata:/etc/ssl/certs
     command: bundle exec sidekiq -e staging
+  token_sidekiq:
+    image: eu.gcr.io/active-gasket-113610/token_service:${RAILS_ENV:-staging}
+    env_file:
+      - ${ENV_FILE:-./.env}
+    volumes:
+      - certdata:/etc/ssl/certs
+    command: bundle exec sidekiq -e staging
   deku_sidekiq:
     image: eu.gcr.io/active-gasket-113610/deku:${RAILS_ENV:-staging}
     env_file:
