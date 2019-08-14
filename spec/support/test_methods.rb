@@ -36,7 +36,7 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
   def click_application_menu_button(button)
     application_menu_button.click
     wait_until_loaded
-    wait_for(page).to have_css '.Menu[style="top: calc(0px - 0em);"], .Menu[style="top: calc(0% - 0em);"]'
+    wait_for(page).to have_css '.AppMenu'
     wait_for { application_menu }.to have_content button
     click_link button
   end
@@ -137,9 +137,9 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
     resource_selector("#{resource}/menus/#{menu}").click
     wait_until_loaded
     yield if block_given?
-    wait_for(page).to have_css('.DropdownLink', text: text)
+    wait_for(page).to have_css('.MuiListItem-button', text: text)
     sleep(1)
-    find('.DropdownLink', text: text).click
+    find('.MuiListItem-button', text: text).click
   end
 
   def select_tab(tab)

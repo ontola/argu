@@ -25,7 +25,8 @@ RSpec.describe 'Navigations', type: :feature do
   private
 
   def go_to_child(name)
-    within '.MainContentWrapper' do
+    wait_for(page).to have_content(name)
+    within '.PrimaryResource' do
       wait_for(page).to have_content(name)
       click_link name
     end
