@@ -75,6 +75,7 @@ RSpec.describe 'Voting', type: :feature do
           click_button 'Confirm'
         end
         let(:after_confirmation) do
+          wait_until_loaded
           wait_for(page).to(
             have_content(
               'Please confirm your vote by clicking the link we\'ve sent to '\

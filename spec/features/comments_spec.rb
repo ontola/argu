@@ -83,6 +83,7 @@ RSpec.describe 'Comments', type: :feature do
         "Comment published successfully. It can take a few moments before it's visible on other pages."
       )
     )
+    wait_until_loaded
     within resource_selector("#{page.current_url}/c", element: '.Container > div') do
       wait_for(page).to have_content content
     end
