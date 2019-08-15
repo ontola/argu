@@ -105,6 +105,8 @@ GEM
     rspec-expectations (3.7.0)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.7.0)
+    rspec-instafail (1.0.0)
+      rspec
     rspec-mocks (3.7.0)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.7.0)
@@ -154,6 +156,7 @@ DEPENDENCIES
   mockserver-client!
   rake
   rspec
+  rspec-instafail
   rspec-wait
   rspec_junit_formatter
   rubocop

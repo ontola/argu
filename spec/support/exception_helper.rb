@@ -40,6 +40,8 @@ module ExceptionHelper
       'Object.assign(obj, { [LRS.defaultType.constructor.findByStoreIndex(index)]: value })), {}));'
     )
     upload_exception_file(JSON.pretty_generate(JSON.parse(status)), example, 'javascript.statements.log') if status
+  rescue Net::HTTPBadResponse, Selenium::WebDriver::Error::UnknownError
+    nil
   end
 
   def upload_screenshot(name)

@@ -30,4 +30,4 @@ ARG TEST_FILES
 ENV TEST_FILES $TEST_FILES
 
 EXPOSE 3000
-CMD ["sh", "-c", "bundle exec rspec --format documentation --format RspecJunitFormatter --out /tmp/test-results/rspec.xml $TEST_FILES"]
+CMD ["sh", "-c", "bundle exec rspec --format documentation --format RSpec::Instafail --format RspecJunitFormatter --out /tmp/test-results/rspec.xml $TEST_FILES"]
