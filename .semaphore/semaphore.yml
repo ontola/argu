@@ -9,6 +9,7 @@ blocks:
     task:
       secrets:
         - name: GCP
+        - name: bugsnag-secret
       prologue:
         commands:
           # Authenticate using the file injected from the secret
@@ -24,6 +25,7 @@ blocks:
             - echo "" > ./.env.dev
             - echo NEO_URL=${NEO_URL} >> ./.env.template
             - echo DEFAULT_LOCALE=en >> ./.env.template
+            - sed -i "s/{bugsnag_key}/$BUGSNAG_KEY/g" ./.env.template
             - BACKEND_HOST=argu:3000 ./setup.sh
             - IP=127.0.0.1 HOST_IP=172.99.0.1 ENV=test ./setup_environment.rb
             - sudo chown -R $(whoami):$(whoami) ./ssl
