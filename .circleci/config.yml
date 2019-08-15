@@ -66,18 +66,13 @@ jobs:
       # Fixes
       - run: docker exec devproxy_argu_1 sed -i -e 's/staging.argu.co/argu.localtest/g' public/packs/manifest.json
       - run: docker exec devproxy_argu_1 sed -i -e 's/argu.co/argu.localtest/g' public/packs/manifest.json
-      - run: docker restart devproxy_argu_1
-      - run: ./restart.sh devproxy || true
 
       # Setup tests
-      - run:
-          name: build test runner
-          command: |
-            TEST_FILES="$(circleci tests glob "spec/**/*_spec.rb" | \
-              circleci tests split --split-by=timings)"
-
-            docker-compose build --build-arg "TEST_FILES=$TEST_FILES"
+      - run: docker-compose build --build-arg "TEST_FILES=$TEST_FILES"
       - run: docker-compose run testrunner bundle exec rake test:setup
+      - run: docker restart devproxy_argu_1
+      - run: ./restart.sh devproxy || true
+      - run: until [ $(docker ps -f name=devproxy_argu_1 -f health=healthy -q | wc -l) -gt 0 ]; do sleep 1; done
 
       # Run tests!
       - run:
@@ -86,13 +81,13 @@ jobs:
           command: docker-compose run --name testrunner_1 testrunner
 
       # Deploy
-      - run:
-          command: |
-            if [ "$BRANCH_NAME" == "master" ];then
-              curl -X POST $DEPLOY_HOOK_PRODUCTION
-            else
-              curl -X POST $DEPLOY_HOOK_STAGING
-            fi
+      # - run:
+      #     command: |
+      #       if [ "$BRANCH_NAME" == "master" ];then
+      #         curl -X POST $DEPLOY_HOOK_PRODUCTION
+      #       else
+      #         curl -X POST $DEPLOY_HOOK_STAGING
+      #       fi
 
       # Store results
       - run:
@@ -101,11 +96,7 @@ jobs:
           command: |
             mkdir /tmp/test-results || true
             docker cp testrunner_1:/tmp/test-results/rspec.xml /tmp/test-results/rspec.xml || true
-            docker cp testrunner_1:/usr/src/app/tmp/exceptions /tmp/test-results/exceptions_1 || true
-            docker cp testrunner_2:/tmp/test-results/rspec.xml /tmp/test-results/rspec_2.xml || true
-            cat /tmp/test-results/rspec_2.xml >> /tmp/test-results/rspec.xml || true
-            rm /tmp/test-results/rspec_2.xml || true
-            docker cp testrunner_2:/usr/src/app/tmp/exceptions /tmp/test-results/exceptions_2 || true
+            docker cp testrunner_1:/usr/src/app/tmp/exceptions /tmp/test-results/exceptions || true
             docker ps --no-trunc -a > /tmp/test-results/docker-ps.txt || true
             docker-compose logs > /tmp/test-results/docker-compose-logs.tx || true
       - store_test_results:
