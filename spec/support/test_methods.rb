@@ -53,7 +53,7 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
   end
 
   def login(email, password = 'password', modal: true)
-    wait_for(page).to have_content 'Log in / sign up'
+    wait_for { page }.to have_content 'Log in / sign up'
 
     page.click_link('Log in / sign up') unless current_path.include?('/u/sign_in')
 
