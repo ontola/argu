@@ -102,6 +102,25 @@ END_HEREDOC
   end.join
   contents.gsub!(/\{webservices\}/, webservices)
 
+  # set testrunner
+  testrunner = ''
+  if ENV['TESTRUNNER']
+    testrunner = <<END_HEREDOC
+  testrunner:
+    privileged: true
+  build:
+    context: .
+    dockerfile: dockerfiles/testrunner.Dockerfile
+  volumes:
+    - /var/run/docker.sock:/var/run/docker.sock
+  - /dev/shm:/dev/shm
+  networks:
+    default:
+    external:
+END_HEREDOC
+  end
+  contents.gsub!(/\{testrunner\}/, testrunner)
+
   # Write to docker-compose file
   File.open(File.expand_path('docker-compose.yml'), 'w+') { |f| f.write(contents) }
 end

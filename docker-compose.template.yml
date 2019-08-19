@@ -1,17 +1,7 @@
 version: '3.6'
 
 services:
-  testrunner:
-    privileged: true
-    build:
-      context: .
-      dockerfile: dockerfiles/testrunner.Dockerfile
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - /dev/shm:/dev/shm
-    networks:
-      default:
-      external:
+{testrunner}
   devproxy:
     build:
       context: .
@@ -134,6 +124,7 @@ services:
       external:
     ports:
       - 1080:1080
+      - 1025:1025
   rabbitmq:
     image: healthcheck/rabbitmq
     ports:

@@ -48,7 +48,7 @@ jobs:
       - run: echo DEFAULT_LOCALE=en >> ./.env.template
       - run: sed -i "s/{bugsnag_key}/$BUGSNAG_KEY/g" ./.env.template
       - run: BACKEND_HOST=argu:3000 ./setup.sh
-      - run: IP=127.0.0.1 HOST_IP=172.99.0.1 ENV=test ./setup_environment.rb
+      - run: TESTRUNNER=true IP=127.0.0.1 HOST_IP=172.99.0.1 ENV=test ./setup_environment.rb
       - run: sudo chown -R $(whoami):$(whoami) ./ssl
       - run: "[[ $BRANCH_NAME = master ]] && RAILS_ENV=production || RAILS_ENV=staging"
 
