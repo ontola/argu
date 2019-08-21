@@ -108,15 +108,15 @@ END_HEREDOC
     testrunner = <<END_HEREDOC
   testrunner:
     privileged: true
-  build:
-    context: .
-    dockerfile: dockerfiles/testrunner.Dockerfile
-  volumes:
-    - /var/run/docker.sock:/var/run/docker.sock
-  - /dev/shm:/dev/shm
-  networks:
-    default:
-    external:
+    build:
+      context: .
+      dockerfile: dockerfiles/testrunner.Dockerfile
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /dev/shm:/dev/shm
+    networks:
+      default:
+      external:
 END_HEREDOC
   end
   contents.gsub!(/\{testrunner\}/, testrunner)
