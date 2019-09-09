@@ -142,6 +142,10 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
     find('.MuiListItem-button', text: text).click
   end
 
+  def select_radio(label)
+    find('label', text: label).click
+  end
+
   def select_tab(tab)
     wait_for(page).to have_css('.MuiTabs-root')
     within '.MuiTabs-root' do

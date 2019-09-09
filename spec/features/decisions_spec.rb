@@ -7,7 +7,7 @@ RSpec.describe 'Decisions', type: :feature do
     as 'staff@example.com', location: '/argu/m/38'
     go_to_menu_item('Take decision')
     wait_for(page).to have_content 'Take a decision'
-    fill_in_select 'https://argu.co/ns/core#decisionState', with: 'Approved'
+    select_radio 'Approve'
     fill_in 'http://schema.org/text', with: 'Reason for decision'
     click_button 'Save'
     wait_for(page).to have_content 'Idea is approved', count: 2
@@ -18,7 +18,7 @@ RSpec.describe 'Decisions', type: :feature do
     as 'staff@example.com', location: '/argu/m/38'
     go_to_menu_item('Take decision')
     wait_for(page).to have_content 'Take a decision'
-    fill_in_select 'https://argu.co/ns/core#decisionState', with: 'Rejected'
+    select_radio 'Reject'
     fill_in 'http://schema.org/text', with: 'Reason for decision'
     click_button 'Save'
     wait_for(page).to have_content 'Idea is rejected', count: 2

@@ -37,8 +37,8 @@ RSpec.describe 'Page settings', type: :feature do
       wait_until_loaded
       click_button 'Grants'
       wait_until_loaded
-      fill_in_select '0.https://argu.co/ns/core#group', with: 'Public'
-      fill_in_select '0.https://argu.co/ns/core#grantSet', with: 'Participate'
+      select_radio 'Public'
+      select_radio 'Participate'
       click_button 'Save'
 
       wait_for(page).to have_snackbar 'Forum created successfully'

@@ -7,7 +7,6 @@ RSpec.describe 'Direct messages', type: :feature do
     as 'staff@example.com', location: '/argu/m/38'
     go_to_menu_item('Contact poster')
     wait_for(page).to have_content 'Send an e-mail to first_name_30 last_name_30'
-    fill_in_select 'http://schema.org/email', with: 'staff@example.com'
     fill_in 'http://schema.org/name', with: 'Example subject'
     fill_in 'http://schema.org/text', with: 'Example body'
     click_button 'Send'
