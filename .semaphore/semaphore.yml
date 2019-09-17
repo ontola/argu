@@ -47,7 +47,16 @@ blocks:
             - until [ $(docker ps -f name=devproxy_argu_1 -f health=healthy -q | wc -l) -gt 0 ]; do sleep 1; done
             - docker ps
             - docker images
-            - docker-compose run --name testrunner_1 testrunner
+            - docker-compose run --name testrunner testrunner
+      epilogue:
+        on_fail:
+          commands:
+            - mkdir /tmp/test-results || true
+            - docker cp testrunner:/tmp/test-results/rspec.xml /tmp/test-results/rspec.xml || true
+            - docker cp testrunner:/usr/src/app/tmp/exceptions /tmp/test-results/exceptions || true
+            - docker ps --no-trunc -a > /tmp/test-results/docker-ps.txt || true
+            - docker-compose logs > /tmp/test-results/docker-compose-logs.tx || true
+            - artifact push job /tmp/test-results
 promotions:
   - name: Production deploy
     pipeline_file: production-deploy.yml
