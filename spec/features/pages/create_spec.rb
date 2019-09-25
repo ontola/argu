@@ -18,7 +18,8 @@ RSpec.describe 'Page create', type: :feature do
     click_button 'Save'
 
     wait(30).for(page).to have_current_path('/my_website')
-    expect(navbar).to have_content 'My Website'
+    expect(page).to have_content 'My Website'
+    expect(page).to have_title "My Website"
     click_application_menu_button('My Argu websites')
     wait_for(page).to have_content 'About my website'
   end

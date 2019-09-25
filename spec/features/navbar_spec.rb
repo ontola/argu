@@ -3,10 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe 'Navbar', type: :feature do
-  it 'show default organization on homepage' do
+  it 'show freetown on homepage' do
     as :guest, location: '/'
 
-    expect(navbar).to have_content 'Argu page'
+    expect(navbar).to have_content 'Freetown'
   end
 
   it 'has organization color' do
