@@ -6,7 +6,7 @@ RSpec.describe 'Navbar', type: :feature do
   it 'show freetown on homepage' do
     as :guest, location: '/'
 
-    expect(navbar).to have_content 'Freetown'
+    wait_for(page).to have_content 'Freetown'
   end
 
   it 'has organization color' do

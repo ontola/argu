@@ -72,6 +72,7 @@ RSpec.describe 'Discussions', type: :feature do
     fill_in 'http://schema.org/name', with: title, fill_options: {clear: :backspace}
     fill_in 'http://schema.org/text', with: content, fill_options: {clear: :backspace}
     within 'fieldset[property="https://ns.ontola.io/coverPhoto"]' do
+      click_button 'Cover photo'
       attach_file(nil, File.absolute_path('spec/fixtures/cover_photo.jpg'), make_visible: true)
     end
     within 'fieldset[property="https://argu.co/ns/core#attachments"]' do
