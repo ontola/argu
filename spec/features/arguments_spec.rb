@@ -25,18 +25,6 @@ RSpec.describe 'Arguments', type: :feature do
       go_to_parent
       fill_in_omniform(parent, click_to_open: true)
     end
-
-    example 'pro from motion footer' do
-      parent = '.PrimaryResource div:nth-child(3) div.Card'
-      go_to_parent
-      fill_in_omniform(parent)
-    end
-
-    example 'con from motion footer' do
-      parent = '.PrimaryResource div:nth-child(3) div.Card'
-      go_to_parent
-      fill_in_omniform(parent, side: 'con')
-    end
   end
 
   context 'As guest' do
@@ -80,9 +68,6 @@ RSpec.describe 'Arguments', type: :feature do
 
   def fill_in_omniform(omniform_parent, click_to_open: false, side: 'pro')
     @side = side
-    wait_for(page).to have_content 'Comment'
-    wait_for(page).to have_content 'Pro' unless click_to_open
-    wait_for(page).to have_content 'Con' unless click_to_open
     wait_until_loaded
     scope =
       resource_selector(

@@ -22,13 +22,6 @@ RSpec.describe 'Comments', type: :feature do
       fill_in_omniform(parent, click_to_open: true)
       after_post
     end
-
-    example 'from motion footer' do
-      parent = '.PrimaryResource div:nth-child(3) div.Card'
-      go_to_parent
-      fill_in_omniform(parent)
-      after_post
-    end
   end
 
   context 'As guest' do
