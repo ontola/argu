@@ -24,9 +24,11 @@ RSpec.describe 'Page settings', type: :feature do
       expect(components_row(1)).to have_content('Holland')
       expect(components_row(2)).to have_content('Freetown')
 
-      within navbar do
-        click_link '+'
-      end
+      resource_selector(
+        'https://app.argu.localtest/argu/container_nodes/email_addresses?display=settingsTable',
+        element: '.ContainerFloat',
+        child: '.fa-plus'
+      ).click
 
       wait_for(page).to have_content('New forum')
       click_link 'New forum'
@@ -103,10 +105,6 @@ RSpec.describe 'Page settings', type: :feature do
   end
 
   private
-
-  def add_address_email
-    @add_address_email ||= mailcatcher_email(to: [new_email], subject: 'Add your e-mail address')
-  end
 
   def components_row(row = 1)
     resource_selector(
