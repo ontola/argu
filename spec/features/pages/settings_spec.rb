@@ -20,12 +20,12 @@ RSpec.describe 'Page settings', type: :feature do
     example 'as staff' do
       as 'staff@example.com'
       visit_settings
-      wait_for(page).to have_content 'Container nodes'
+      wait_for(page).to have_content 'Components'
       expect(components_row(1)).to have_content('Holland')
       expect(components_row(2)).to have_content('Freetown')
 
       resource_selector(
-        'https://app.argu.localtest/argu/container_nodes/email_addresses?display=settingsTable',
+        'https://app.argu.localtest/argu/container_nodes?display=settingsTable',
         element: '.ContainerFloat',
         child: '.fa-plus'
       ).click
@@ -51,7 +51,7 @@ RSpec.describe 'Page settings', type: :feature do
       # visit_settings
 
       wait_until_loaded
-      wait_for(page).to have_content 'Container nodes'
+      wait_for(page).to have_content 'Components'
       expect(components_row(1)).to have_content('New Forum')
       expect(components_row(2)).to have_content('Holland')
       expect(components_row(3)).to have_content('Freetown')

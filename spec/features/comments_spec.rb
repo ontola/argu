@@ -51,9 +51,6 @@ RSpec.describe 'Comments', type: :feature do
   private
 
   def fill_in_omniform(omniform_parent, click_to_open: false)
-    wait_for(page).to have_content 'Comment'
-    wait_for(page).to have_content 'Pro'
-    wait_for(page).to have_content 'Con'
     wait_until_loaded
     scope =
       resource_selector(

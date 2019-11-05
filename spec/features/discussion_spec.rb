@@ -9,7 +9,7 @@ RSpec.describe 'Discussions', type: :feature do
   example 'Show new discussion link as guest' do
     as :guest, location: '/argu/freetown'
 
-    wait_for(page).to have_content 'New Idea'
+    wait_for(page).to have_content 'New idea'
     click_link 'New idea'
     # @todo AOD-407
     # wait_for(page).to have_content 'You have to be logged in to view this resource.'
@@ -23,13 +23,13 @@ RSpec.describe 'Discussions', type: :feature do
       click_link 'Other page forum'
     end
 
-    wait_for(page).not_to have_content 'New Idea'
-    expect(page).not_to have_content 'New Challenge'
+    wait_for(page).not_to have_content 'New idea'
+    expect(page).not_to have_content 'New challenge'
 
     switch_organization 'argu'
     wait_for(page).to have_content 'Freetown'
-    wait_for(page).to have_content 'New Idea'
-    expect(page).to have_content 'New Challenge'
+    wait_for(page).to have_content 'New idea'
+    expect(page).to have_content 'New challenge'
   end
 
   example 'Member posts a question' do
