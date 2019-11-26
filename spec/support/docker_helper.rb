@@ -63,6 +63,7 @@ module DockerHelper
   end
 
   def rails_runner(service, command)
+    raise 'command may not include double quotes' if command.include?('"')
     docker_run(service, ['bin/rails', 'runner', docker_container(service) ? command : "\"#{command}\""])
   end
 

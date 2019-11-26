@@ -48,6 +48,37 @@ RSpec.describe 'Discussions', type: :feature do
     expect_content('m/71')
   end
 
+  example 'Member posts a motion with required setup' do
+    rails_runner(
+      :argu,
+      'Apartment::Tenant.switch(\'argu\') do'\
+      '  Shortname.where(owner_type: \'User\').destroy_all;'\
+      '  Page.argu.update(requires_intro: true) '\
+      'end'
+    )
+    as 'member@example.com', location: '/argu/holland/m/new'
+    expect_form('/argu/holland/m')
+    within navbar do
+      expect(page).not_to have_link(href: '/argu/u/member')
+    end
+    fill_in_form
+    wait_for(page).to have_content 'Welcome!'
+    within '.Modal__portal' do
+      click_button 'Save'
+    end
+    expect_draft_message('Idea')
+    expect_content('m/71')
+
+    within navbar do
+      expect(page).to have_link(href: '/argu/u/member')
+      click_link(href: '/argu/u/member')
+    end
+
+    within '.PrimaryResource' do
+      wait_for(page).to have_content 'first_name_26 last_name_26'
+    end
+  end
+
   example 'staff updates a question' do
     as 'staff@example.com', location: '/argu/q/41'
     go_to_menu_item('Edit')
