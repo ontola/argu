@@ -47,6 +47,7 @@ module Selectors
     found = parent.find(selector)
     return found if child.nil?
 
+    wait_for(found).to have_css child
     found.find(child)
   end
 end
