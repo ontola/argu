@@ -8,6 +8,7 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
   def accept_terms
     wait_for(page).to have_content 'Terms of use'
     click_button 'Accept'
+    wait_for(page).not_to have_content 'Terms of use'
   end
 
   def accept_token(result: :success)
