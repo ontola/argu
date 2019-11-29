@@ -74,7 +74,7 @@ RSpec.describe 'Discussions', type: :feature do
       click_link(href: '/argu/u/member')
     end
 
-    within '.PrimaryResource' do
+    within '.Page > .PrimaryResource' do
       wait_for(page).to have_content 'first_name_26 last_name_26'
     end
   end
