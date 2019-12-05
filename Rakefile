@@ -23,7 +23,7 @@ namespace :test do
     puts 'setting up token'
     docker_setup('token', seed: :test)
     puts 'setting up email'
-    docker_setup('email')
+    docker_setup('email', seed: :test)
     # docker_setup('deku')
     # docker_setup('vote_compare')
 
