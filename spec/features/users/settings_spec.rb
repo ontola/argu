@@ -54,11 +54,13 @@ RSpec.describe 'User settings', type: :feature do
   end
 
   context 'delete' do
-    let(:tab) { 'Delete' }
+    let(:tab) { 'Privacy' }
 
     example 'as user' do
       as 'user1@example.com'
       visit_settings
+      wait_for(page).to have_button 'Remove account'
+      click_button 'Remove account'
       fill_in_form(submit: 'Delete')
     end
     # @todo Not allowed to delete as super admin
@@ -69,7 +71,7 @@ RSpec.describe 'User settings', type: :feature do
   end
 
   context 'email addresses' do
-    let(:tab) { 'Emails' }
+    let(:tab) { 'Authentication' }
     let(:new_email) { 'new_email@example.com' }
 
     example 'as user' do
