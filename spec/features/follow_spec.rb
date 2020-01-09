@@ -38,16 +38,41 @@ RSpec.describe 'Follow', type: :feature do
     expect_email(:notifications_email)
     expect(notifications_email.body).to have_content 'New replies are posted in Freetown.'
 
-    unsubscribe_link = notifications_email.links.detect { |link| link.include?('unsubscribe') }
+    unsubscribe_link = notifications_email.links.detect { |link| link.include?('follows') }
     visit unsubscribe_link
-    wait_for(page).to have_snackbar "You no longer receive notifications for 'Freetown'."
-    # @todo show unsubscribe page
-    # expect(page).to have_current_path('/argu/freetown')
+    wait_for(page).to have_content "You are receiving notifications for all replies to 'Freetown'."
+    wait_for(page).to have_button 'Stop following'
+    click_button 'Stop following'
 
-    visit unsubscribe_link
-    wait_for(page).to have_snackbar "You don't receive notifications already for 'Freetown'."
-    # @todo show unsubscribe page
-    # wait_for(page).to have_current_path('/argu/freetown')
+    wait_for(page).to have_snackbar "You no longer receive notifications for 'Freetown'."
+    wait_for(page).to have_current_path('/argu/freetown')
+
+    verify_not_following(unsubscribe_link)
+  end
+
+  example 'Unfollow through POST' do
+    expect(mailcatcher_email).to be_nil
+    rails_runner(
+      :argu,
+      'Apartment::Tenant.switch(\'argu\') { User.find(3).update(notifications_viewed_at: 1.year.ago) }'
+    )
+    rails_runner(
+      :argu,
+      'Apartment::Tenant.switch(\'argu\') do '\
+        'ActsAsTenant.with_tenant(Page.find_via_shortname(\'argu\')) do '\
+          'SendActivityNotificationsWorker.new.perform(3, User.reactions_emails[:direct_reactions_email]) '\
+        'end '\
+      'end'
+    )
+
+    expect_email(:notifications_email)
+    expect(notifications_email.body).to have_content 'New replies are posted in Freetown.'
+
+    unsubscribe_link = notifications_email.links.detect { |link| link.include?('follows') }
+    post_request = Faraday.new(unsubscribe_link.sub('https://', 'https://app.'), ssl: {verify: false}).post
+    expect(post_request.status).to eq(200)
+
+    verify_not_following(unsubscribe_link)
   end
 
   private
@@ -62,5 +87,12 @@ RSpec.describe 'Follow', type: :feature do
         have_css(".MuiListItem-button:nth-child(#{i + 2}) .fa-circle#{i == index ? '' : '-o'}")
       )
     end
+  end
+
+  def verify_not_following(unsubscribe_link)
+    visit unsubscribe_link
+    wait_for(page).to have_content "You are not receiving notifications for 'Freetown'."
+    wait_until_loaded
+    expect(page).not_to have_button 'Stop following'
   end
 end
