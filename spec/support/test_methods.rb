@@ -179,6 +179,12 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
   end
 
   def use_legacy_frontend
+    rails_runner(
+      :argu,
+      'Apartment::Tenant.switch(\'argu\') { '\
+        'Property.where(predicate: \'https://argu.co/ns/core#useNewFrontend\').update_all(boolean: false) '\
+      '}'
+    )
     @use_legacy_frontend = true
   end
 
