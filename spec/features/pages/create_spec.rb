@@ -7,7 +7,13 @@ RSpec.describe 'Page create', type: :feature do
     as 'user1@example.com'
     click_application_menu_button('My Argu websites')
     wait_for(page).to have_content 'No items yet'
-    resource_selector('https://app.argu.localtest/argu/u/fg_shortname3end/o', child: '.fa-plus').click
+    wait_for(page).to have_css('.ContainerHeader')
+    container_header = page.find('.ContainerHeader')
+    resource_selector(
+      'https://app.argu.localtest/argu/u/fg_shortname3end/o',
+      child: '.fa-plus',
+      parent: container_header
+    ).click
 
     wait_until_loaded
 
