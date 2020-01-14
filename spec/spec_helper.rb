@@ -65,7 +65,7 @@ RSpec.configure do |config|
   config.after do |example|
     if example.exception
       upload_container_logs(example)
-      upload_javascript_logs(example)
+      upload_browser_logs(example)
       raise_catched_emails
     end
   end
@@ -78,7 +78,15 @@ Capybara.configure do |config|
 end
 
 Capybara.register_driver :selenium_chrome do |app|
-  capabilities = Selenium::WebDriver::Remote::Capabilities.chrome('elementScrollBehavior' => 1)
+  capabilities = Selenium::WebDriver::Remote::Capabilities.chrome(
+    'elementScrollBehavior' => 1,
+    'goog:loggingPrefs' => {browser: 'ALL'},
+    loggingPrefs: {
+      browser: 'ALL'
+    },
+    chromeOptions: {w3c: false}
+  )
+
   client = Selenium::WebDriver::Remote::Http::Default.new
   client.read_timeout = 90
   client.open_timeout = 90
@@ -89,6 +97,7 @@ Capybara.register_driver :selenium_chrome do |app|
   options.add_argument('--disable-gpu')
   options.add_argument('--no-sandbox')
   options.add_preference('intl.accept_languages', 'en-US')
+  options.add_option('w3c', false)
 
   Capybara::Selenium::Driver.new(
     app,

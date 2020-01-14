@@ -1,7 +1,9 @@
 # frozen_string_literal: true
+require 'logger'
 
 module ExceptionHelper
   module_function
+  LOGGER = Logger.new(STDOUT)
 
   def raise_catched_emails
     return unless @mailcatcher_expectation
@@ -25,23 +27,33 @@ module ExceptionHelper
     [example.full_description.tr(' ', '-'), suffix].compact.join('.')
   end
 
-  def upload_javascript_logs(example) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def upload_browser_logs(example)
+    upload_javascript_console_logs(example)
+    upload_javascript_errors(example)
+    upload_javascript_logs(example)
+  end
+
+  def upload_javascript_console_logs(example)
     errors = page.driver.browser.manage.logs.get(:browser)
     upload_exception_file(errors.map(&:message).join("\n"), example, 'javascript-console.log') if errors
-    errors = page.execute_script('return window.logging.errors')
-    if errors
-      upload_exception_file(errors.map { |message| message.join(' ') }.join("\n"), example, 'javascript-errors.log')
-    end
-    logs = page.execute_script('return window.logging.logs')
-    upload_exception_file(logs.map { |message| message.join(' ') }.join("\n"), example, 'javascript-logs.log') if errors
-    status = page.execute_script(
-      "return typeof LRS !== 'undefined' &&"\
-      'JSON.stringify(LRS.api.statusMap.reduce((obj, value, index) => ('\
-      'Object.assign(obj, { [LRS.defaultType.constructor.findByStoreIndex(index)]: value })), {}));'
-    )
-    upload_exception_file(JSON.pretty_generate(JSON.parse(status)), example, 'javascript.statements.log') if status
-  rescue Net::HTTPBadResponse, Selenium::WebDriver::Error::UnknownError
-    nil
+  rescue StandardError => e
+    LOGGER.error "Failed to show console logs: #{e.message}"
+  end
+
+  def upload_javascript_errors(example)
+    errors = page.execute_script('return (window.logging && window.logging.errors)')
+    return unless errors&.length&.positive?
+
+    upload_exception_file(errors.map { |message| message.join(' ') }.join("\n"), example, 'javascript-errors.log')
+  rescue StandardError => e
+    LOGGER.error "Failed to show javascript errors: #{e.message}"
+  end
+
+  def upload_javascript_logs(example)
+    logs = page.execute_script('return (window.logging && window.logging.logs)')
+    upload_exception_file(logs.map { |message| message.join(' ') }.join("\n"), example, 'javascript-logs.log') if logs
+  rescue StandardError => e
+    LOGGER.error "Failed to show javascript logs: #{e.message}"
   end
 
   def upload_screenshot(name)
