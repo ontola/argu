@@ -84,7 +84,7 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
   def fill_in_login_form(email = 'user1@example.com', password = 'password', modal: true)
     wait_for(page).to have_content('login or register')
 
-    wrapper = modal ? '.Modal__portal' : "form[action='/users']"
+    wrapper = modal ? "[role='dialog']" : "form[action='/users']"
     within wrapper do
       fill_in placeholder: 'email@example.com', with: email, fill_options: {clear: :backspace}
 

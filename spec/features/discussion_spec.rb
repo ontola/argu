@@ -63,7 +63,7 @@ RSpec.describe 'Discussions', type: :feature do
     end
     fill_in_form
     wait_for(page).to have_content 'Welcome!'
-    within '.Modal__portal' do
+    within "[role='dialog']" do
       click_button 'Save'
     end
     expect_draft_message('Idea')
