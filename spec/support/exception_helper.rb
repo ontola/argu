@@ -44,7 +44,7 @@ module ExceptionHelper
     errors = page.execute_script('return (window.logging && window.logging.errors)')
     return unless errors&.length&.positive?
 
-    upload_exception_file(errors.map { |message| message.join(' ') }.join("\n"), example, 'javascript-errors.log')
+    upload_exception_file(errors.join("\n"), example, 'javascript-errors.log')
   rescue StandardError => e
     LOGGER.error "Failed to show javascript errors: #{e.message}"
   end
