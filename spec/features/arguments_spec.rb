@@ -75,8 +75,8 @@ RSpec.describe 'Arguments', type: :feature do
         element: omniform_parent
       )
 
-    wait_for(page).to have_content('Share your response...')
     within scope do
+      wait_for(page).to have_content('Share your response...')
       click_button 'Share your response...' if click_to_open
       click_button @side.capitalize
       wait_for(page).to have_field 'http://schema.org/name'
