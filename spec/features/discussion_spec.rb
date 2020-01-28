@@ -101,8 +101,8 @@ RSpec.describe 'Discussions', type: :feature do
 
   def fill_in_form
     fill_in 'http://schema.org/name', with: title, fill_options: {clear: :backspace}
-    fill_in 'http://schema.org/text', with: content, fill_options: {clear: :backspace}
-    within 'fieldset[property="https://ns.ontola.io/coverPhoto"]' do
+    fill_in_markdown 'http://schema.org/text', with: content
+    within('fieldset[property="https://ns.ontola.io/coverPhoto"]') do
       click_button 'Cover photo'
       attach_file(nil, File.absolute_path('spec/fixtures/cover_photo.jpg'), make_visible: true)
     end
