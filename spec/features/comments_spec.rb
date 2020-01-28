@@ -17,7 +17,7 @@ RSpec.describe 'Comments', type: :feature do
     end
 
     example 'from card section' do
-      parent = '.PrimaryResource div:nth-child(1) div.Card'
+      parent = '.FullResource div:nth-child(1) div.Card'
       go_to_parent
       fill_in_omniform(parent, click_to_open: true)
       after_post
@@ -74,7 +74,7 @@ RSpec.describe 'Comments', type: :feature do
       )
     )
     wait_until_loaded
-    within resource_selector("#{page.current_url}/c", element: '.Container > div') do
+    within resource_selector("#{page.current_url}/c", element: '.MuiContainer-root > div') do
       wait_for(page).to have_content content
     end
   end

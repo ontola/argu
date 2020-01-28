@@ -26,7 +26,7 @@ RSpec.describe 'Navigations', type: :feature do
 
   def go_to_child(name)
     wait_for(page).to have_content(name)
-    within '.PrimaryResource' do
+    within '.Page' do
       wait_for(page).to have_content(name)
       click_link name
     end
@@ -34,7 +34,7 @@ RSpec.describe 'Navigations', type: :feature do
 
   def go_to_parent(name)
     wait_for(page).to have_content(name)
-    within('.PrimaryResource') do
+    within('.Page') do
       click_link name
     end
   end
