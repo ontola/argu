@@ -21,6 +21,7 @@ RSpec.describe 'Token bearer management', type: :feature do
 
     wait_for(page).to have_snackbar 'Invite link created successfully'
 
+    wait_for(page).to have_content('https://www.example.com')
     expect(token_row(1)).to have_content('https://www.example.com')
 
     within(token_row(1)) do
