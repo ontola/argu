@@ -15,18 +15,18 @@ local_ports =
   end
 services = {
   frontend: {
-    image: 'aod_demo',
+    image: 'eu.gcr.io/active-gasket-113610/aod_demo',
     command: 'node --use-openssl-ca ./dist/private/server.js',
     port: 8080
   },
   argu: {
-    image: 'argu'
+    image: 'registry.gitlab.com/ontola/apex'
   },
   email: {},
   token: {},
   vote_compare: {},
   deku: {
-    image: 'deku'
+    image: 'eu.gcr.io/active-gasket-113610/deku'
   }
 }
 
@@ -65,19 +65,19 @@ File.open(File.expand_path('docker-compose.template.yml')) do |source_file|
   contents.gsub!(/\$\{RESTRICT_EXTERNAL_NETWORK:-true\}/, ENV['ENV'] == 'test' ? 'true' : 'false')
   # set webservices
   webservices = services.reject { |service, _opts| local_ports.key?(service.to_s) }.map do |service, opts|
-    image = opts[:image] || "#{service}_service"
+    image = opts[:image] || "eu.gcr.io/active-gasket-113610/#{service}_service"
     command = opts[:command] || './bin/rails server -b 0.0.0.0 -p 2999'
     health_check =
       if service === :argu
         <<END_HEREDOC
 healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:2999/d/health"]
+      test: "curl -H 'Host: app.argu.localtest' -f http://localhost:2999/argu/d/health"
 END_HEREDOC
       end
 
     <<END_HEREDOC
   #{service}:
-    image: eu.gcr.io/active-gasket-113610/#{image}:${RAILS_ENV:-staging}
+    image: #{image}:${RAILS_ENV:-staging}
     env_file:
       - ${ENV_FILE:-./.env}
     volumes:

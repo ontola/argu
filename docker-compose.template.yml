@@ -25,7 +25,7 @@ services:
       default:
       external:
   sidekiq:
-    image: eu.gcr.io/active-gasket-113610/argu:${RAILS_ENV:-staging}
+    image: registry.gitlab.com/ontola/apex:${RAILS_ENV:-staging}
     env_file:
       - ${ENV_FILE:-./.env}
     command: bundle exec sidekiq
