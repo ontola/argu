@@ -29,9 +29,9 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
   end
 
   def as(actor, location: '/argu/freetown', password: 'password')
-    visit "https://#{use_legacy_frontend? ? '' : 'app.'}argu.localtest#{location}"
+    visit "https://app.argu.localtest#{location}"
     return if actor == :guest
-    use_legacy_frontend? ? login_legacy(actor, password) : login(actor, password)
+    login(actor, password)
   end
 
   def click_application_menu_button(button)
@@ -63,18 +63,6 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
     fill_in_login_form email, password, modal: modal
 
     verify_logged_in
-  end
-
-  def login_legacy(email, password = 'password')
-    page.click_link('Log in')
-
-    expect(page).to have_css('.modal-opened')
-
-    within('.modal #new_user') do
-      fill_in 'user_email', with: email
-      fill_in 'user_password', with: password
-      click_button 'Log in'
-    end
   end
 
   def logout
@@ -116,8 +104,6 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
   end
 
   def fill_in_select(name = nil, with: nil, selector: nil)
-    return fill_in_select_legacy(name, with, selector) if use_legacy_frontend?
-
     select = lambda do
       input_field = find("input[id='#{name}-input'].Input").native
       with.split('').each { |key| input_field.send_keys key }
@@ -126,18 +112,6 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
       find('.SelectItem', text: selector).click
     end
     select.call
-  end
-
-  # Helper to aid in picking an option in a Selectize dropdown
-  def fill_in_select_legacy(scope, with, selector)
-    select = lambda do
-      input_field = find('.Select-control .Select-input input').native
-      input_field.send_keys with
-      selector ||= /#{with}/
-      wait_for { page }.to have_css('.Select-option', text: selector)
-      find('.Select-option', text: selector).click
-    end
-    scope ? within(scope, &select) : select.call
   end
 
   def go_to_menu_item(text, menu: :actions, resource: page.current_url)
@@ -174,8 +148,6 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
   end
 
   def visit(url)
-    return super if use_legacy_frontend?
-
     super(url.gsub('https://argu', 'https://app.argu'))
   end
 
@@ -183,20 +155,6 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
     wait_for(page).to(
       have_content("Door je te registreren ga je akkoord met de\n algemene voorwaarden \nen de\n privacy policy\n.")
     )
-  end
-
-  def use_legacy_frontend
-    rails_runner(
-      :argu,
-      'Apartment::Tenant.switch(\'argu\') { '\
-        'Property.where(predicate: \'https://argu.co/ns/core#useNewFrontend\').update_all(boolean: false) '\
-      '}'
-    )
-    @use_legacy_frontend = true
-  end
-
-  def use_legacy_frontend?
-    @use_legacy_frontend == true
   end
 
   def expect_email(email_name)
