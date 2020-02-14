@@ -18,6 +18,8 @@ RSpec.describe 'User request confirmation', type: :feature do
 
       visit confirmation_email.links.last
 
+      verify_logged_in('unconfirmed@example.com')
+
       expect_confirmed
     end
 
@@ -35,9 +37,9 @@ RSpec.describe 'User request confirmation', type: :feature do
 
       visit confirmation_email.links.last
 
-      expect_confirmed
+      verify_logged_in('unconfirmed@example.com')
 
-      # @TODO expect logged in as user1@example.com
+      expect_confirmed
     end
 
     example 'unconfirmed user requests confirmation' do
@@ -51,6 +53,8 @@ RSpec.describe 'User request confirmation', type: :feature do
       expect_email(:confirmation_email)
 
       visit confirmation_email.links.last
+
+      verify_logged_in('unconfirmed@example.com')
 
       expect_confirmed
     end
@@ -79,7 +83,8 @@ RSpec.describe 'User request confirmation', type: :feature do
 
       visit confirmation_email.links.last
 
-      wait_for { page }.to have_content 'The item that you are trying to create cannot be processed'
+      verify_logged_in('user1@example.com')
+
       wait_for { page }.to have_snackbar 'Email was already confirmed, try to log in.'
     end
 
@@ -95,15 +100,15 @@ RSpec.describe 'User request confirmation', type: :feature do
 
       visit confirmation_email.links.last
 
-      wait_for { page }.to have_content 'The item that you are trying to create cannot be processed'
       wait_for { page }.to have_snackbar 'Email was already confirmed, try to log in.'
+
+      verify_not_logged_in
     end
   end
 
   example 'guest visits non-existing token' do
     as(:guest, location: '/argu/users/confirmation?confirmation_token=wrong_token')
-    wait_for { page }.to have_content 'The item that you are trying to create cannot be processed'
-    wait_for { page }.to have_snackbar 'Confirmation token is invalid'
+    wait_for { page }.to have_content 'This item is not found'
   end
 
   private
@@ -113,7 +118,7 @@ RSpec.describe 'User request confirmation', type: :feature do
   end
 
   def expect_confirmed
-    wait.for { page }.to have_current_path('/argu')
+    wait_for { page }.to have_current_path('/argu')
     wait_for { page }.to(
       have_snackbar('Your account has been confirmed.')
     )

@@ -164,8 +164,14 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
     visit "https://argu.localtest/#{organization}"
   end
 
-  def verify_logged_in
+  def verify_logged_in(email = nil)
     wait(30).for { page }.to have_css "div[resource=\"#{current_tenant}/c_a\"]"
+
+    return unless email
+
+    current_email_check = "match = LRS.store.find(LRS.namespaces.app('c_a'), LRS.namespaces.argu('primaryEmail')); "\
+      "return match && match.object.value;"
+    expect(page.execute_script(current_email_check)).to eq(email)
   end
 
   def verify_not_logged_in
