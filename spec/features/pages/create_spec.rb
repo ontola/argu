@@ -10,7 +10,7 @@ RSpec.describe 'Page create', type: :feature do
     wait_for(page).to have_css('.ContainerHeader')
     container_header = page.find('.ContainerHeader')
     resource_selector(
-      'https://app.argu.localtest/argu/u/fg_shortname3end/o',
+      'https://argu.localtest/argu/u/fg_shortname3end/o',
       child: '.fa-plus',
       parent: container_header
     ).click

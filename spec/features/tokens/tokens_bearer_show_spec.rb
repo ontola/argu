@@ -42,14 +42,14 @@ RSpec.describe 'Token bearer show', type: :feature do
 
     example 'user visits bearer token' do
       as('user1@example.com')
-      visit "https://app.argu.localtest#{token}"
+      visit "https://argu.localtest#{token}"
 
       accept_token
     end
 
     example 'member visits bearer token' do
       as('member@example.com')
-      visit "https://app.argu.localtest#{token}"
+      visit "https://argu.localtest#{token}"
 
       accept_token result: :member_already
     end

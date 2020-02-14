@@ -80,7 +80,7 @@ RSpec.describe 'User settings', type: :feature do
       wait_for(page).to have_content 'Email addresses'
       expect_email_row(1, 'user1@example.com', true, true)
       resource_selector(
-        'https://app.argu.localtest/argu/u/fg_shortname3end/email_addresses?display=settingsTable',
+        'https://argu.localtest/argu/u/fg_shortname3end/email_addresses?display=settingsTable',
         element: '.ContainerFloat',
         child: '.fa-plus'
       ).click
@@ -122,7 +122,7 @@ RSpec.describe 'User settings', type: :feature do
 
   def email_addresses_row(row = 1)
     resource_selector(
-      'https://app.argu.localtest/argu/u/fg_shortname3end/email_addresses?display=settingsTable',
+      'https://argu.localtest/argu/u/fg_shortname3end/email_addresses?display=settingsTable',
       child: "tbody tr:nth-child(#{row})",
       element: '.Card'
     )

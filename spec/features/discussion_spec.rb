@@ -16,7 +16,7 @@ RSpec.describe 'Discussions', type: :feature do
   end
 
   example 'Hide new discussion link when not allowed' do
-    self.current_tenant = 'https://app.argu.localtest/other_page'
+    self.current_tenant = 'https://argu.localtest/other_page'
     as 'member@example.com', location: '/other_page'
     within '.NavBarContent' do
       wait_for(page).to have_content 'Other page forum'
@@ -116,7 +116,7 @@ RSpec.describe 'Discussions', type: :feature do
   def expect_content(path)
     wait_for(page).to have_content(title)
     expect(page).to have_content(content)
-    resource_selector("https://app.argu.localtest/argu/#{path}/attachments", child: '.AttachmentPreview')
+    resource_selector("https://argu.localtest/argu/#{path}/attachments", child: '.AttachmentPreview')
     expect(page).to have_css('.CoverImage__wrapper')
     expect(page).to have_current_path("/argu/#{path}")
   end

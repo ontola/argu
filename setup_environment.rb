@@ -71,7 +71,7 @@ File.open(File.expand_path('docker-compose.template.yml')) do |source_file|
       if service === :argu
         <<END_HEREDOC
 healthcheck:
-      test: "curl -H 'Host: app.argu.localtest' -f http://localhost:2999/argu/d/health"
+      test: "curl -H 'Host: argu.localtest' -f http://localhost:2999/argu/d/health"
 END_HEREDOC
       end
 

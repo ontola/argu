@@ -29,7 +29,7 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
   end
 
   def as(actor, location: '/argu/freetown', password: 'password')
-    visit "https://app.argu.localtest#{location}"
+    visit "https://argu.localtest#{location}"
     return if actor == :guest
     login(actor, password)
   end
@@ -43,7 +43,7 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
   end
 
   def current_tenant
-    @current_tenant || 'https://app.argu.localtest/argu'
+    @current_tenant || 'https://argu.localtest/argu'
   end
 
   def wait_until_loaded
@@ -136,7 +136,7 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
   end
 
   def switch_organization(organization)
-    visit "https://app.argu.localtest/#{organization}"
+    visit "https://argu.localtest/#{organization}"
   end
 
   def verify_logged_in
@@ -145,10 +145,6 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
 
   def verify_not_logged_in
     wait_for { page }.not_to have_css "div[resource=\"#{current_tenant}/c_a\"]"
-  end
-
-  def visit(url)
-    super(url.gsub('https://argu', 'https://app.argu'))
   end
 
   def wait_for_terms_notice

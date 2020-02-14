@@ -88,7 +88,7 @@ RSpec.describe 'Voting', type: :feature do
           end
           # @todo add link to notification in UI
           # click_link 'Notifications'
-          visit 'https://app.argu.localtest/argu/n'
+          visit 'https://argu.localtest/argu/n'
           wait_for(page).to(
             have_content("Please confirm your vote by clicking the link we've sent to new_user@example.com")
           )
@@ -104,7 +104,7 @@ RSpec.describe 'Voting', type: :feature do
           wait_for(page).to have_snackbar('Your password has been updated successfully.')
           logout
           login('new_user@example.com', 'new password')
-          visit 'https://app.argu.localtest/argu/n'
+          visit 'https://argu.localtest/argu/n'
           wait_for(page).to have_content('Finish your profile to be more recognizable.')
         end
 

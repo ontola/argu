@@ -74,7 +74,7 @@ end
 Capybara.configure do |config|
   config.run_server = false
   config.default_driver = :selenium_chrome
-  config.app_host = 'https://app.argu.localtest'
+  config.app_host = 'https://argu.localtest'
 end
 
 Capybara.register_driver :selenium_chrome do |app|

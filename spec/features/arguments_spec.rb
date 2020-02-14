@@ -39,7 +39,7 @@ RSpec.describe 'Arguments', type: :feature do
     context 'question#show' do
       let(:location) { '/argu/q/41' }
       let(:result_element) { '.Column .CardList' }
-      let(:parent_resource) { 'https://app.argu.localtest/argu/m/42' }
+      let(:parent_resource) { 'https://argu.localtest/argu/m/42' }
       let(:expect_argument_content) { false }
 
       example 'pro from motion preview' do

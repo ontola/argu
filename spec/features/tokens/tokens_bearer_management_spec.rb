@@ -10,7 +10,7 @@ RSpec.describe 'Token bearer management', type: :feature do
     wait_for(page).to have_content 'Invite links'
 
     resource_selector(
-      'https://app.argu.localtest/argu/tokens/bearer/g/111?display=settingsTable',
+      'https://argu.localtest/argu/tokens/bearer/g/111?display=settingsTable',
       element: '.ContainerFloat',
       child: '.fa-plus'
     ).click
@@ -42,7 +42,7 @@ RSpec.describe 'Token bearer management', type: :feature do
 
   def token_row(row = 1)
     resource_selector(
-      'https://app.argu.localtest/argu/tokens/bearer/g/111?display=settingsTable',
+      'https://argu.localtest/argu/tokens/bearer/g/111?display=settingsTable',
       child: "tbody tr:nth-child(#{row})",
       element: '.Card'
     )

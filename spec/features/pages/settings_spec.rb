@@ -25,7 +25,7 @@ RSpec.describe 'Page settings', type: :feature do
       expect(components_row(2)).to have_content('Freetown')
 
       resource_selector(
-        'https://app.argu.localtest/argu/container_nodes?display=settingsTable',
+        'https://argu.localtest/argu/container_nodes?display=settingsTable',
         element: '.ContainerFloat',
         child: '.fa-plus'
       ).click
@@ -108,7 +108,7 @@ RSpec.describe 'Page settings', type: :feature do
 
   def components_row(row = 1)
     resource_selector(
-      'https://app.argu.localtest/argu/container_nodes?display=settingsTable',
+      'https://argu.localtest/argu/container_nodes?display=settingsTable',
       child: "tbody tr:nth-child(#{row})",
       element: '.Card'
     )
