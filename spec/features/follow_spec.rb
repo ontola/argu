@@ -70,7 +70,7 @@ RSpec.describe 'Follow', type: :feature do
 
     unsubscribe_link = notifications_email.links.detect { |link| link.include?('follows') }
     post_request = Faraday.new(unsubscribe_link.sub('https://', 'https://app.'), ssl: {verify: false}).post
-    expect(post_request.status).to eq(200)
+    expect(post_request.status).to eq(204)
 
     verify_not_following(unsubscribe_link)
   end
