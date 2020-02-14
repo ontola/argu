@@ -40,7 +40,7 @@ RSpec.describe 'Drafts', type: :feature do
 
   def expect_no_publish_action
     wait_until_loaded
-    expect(page).not_to have_content 'Draft version, not yet published.'
+    wait_for(page).not_to have_content 'Draft version, not yet published.'
     expect(page).not_to have_button 'Publish'
   end
 
