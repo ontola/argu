@@ -23,7 +23,9 @@ services = {
     image: 'registry.gitlab.com/ontola/apex'
   },
   email: {},
-  token: {},
+  token: {
+    image: 'registry.gitlab.com/ontola/token_service'
+  },
   vote_compare: {},
   deku: {
     image: 'eu.gcr.io/active-gasket-113610/deku'
