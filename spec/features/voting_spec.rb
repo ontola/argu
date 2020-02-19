@@ -12,7 +12,7 @@ RSpec.describe 'Voting', type: :feature do
   let(:actor) { :guest }
   let(:after_confirmation) { nil }
   let(:after_vote) do
-    wait_for(page).to have_snackbar 'Thanks for your vote!'
+    wait_for { page }.to have_snackbar 'Thanks for your vote!'
     expect_voted(side: @side)
   end
   let(:before_vote) {}
@@ -76,7 +76,7 @@ RSpec.describe 'Voting', type: :feature do
         end
         let(:after_confirmation) do
           wait_until_loaded
-          wait_for(page).to(
+          wait_for { page }.to(
             have_content(
               'Please confirm your vote by clicking the link we\'ve sent to '\
               'new_user@example.com'
@@ -89,23 +89,23 @@ RSpec.describe 'Voting', type: :feature do
           # @todo add link to notification in UI
           # click_link 'Notifications'
           visit 'https://argu.localtest/argu/n'
-          wait_for(page).to(
+          wait_for { page }.to(
             have_content("Please confirm your vote by clicking the link we've sent to new_user@example.com")
           )
           expect_email(:confirm_vote_email)
           expect(confirm_vote_email.body).to have_content('In favour of Fg motion title 8end')
           visit confirm_vote_email.links.last
-          wait_for(page).to have_snackbar('Your account has been confirmed.')
-          wait_for(page).to have_content('Choose a password')
+          wait_for { page }.to have_snackbar('Your account has been confirmed.')
+          wait_for { page }.to have_content('Choose a password')
           fill_in 'https://argu.co/ns/core#password', with: 'new password'
           fill_in 'https://argu.co/ns/core#passwordConfirmation', with: 'new password'
           click_button 'Save'
-          wait_for(page).to have_content('Set how you will be visible to others on Argu')
-          wait_for(page).to have_snackbar('Your password has been updated successfully.')
+          wait_for { page }.to have_content('Set how you will be visible to others on Argu')
+          wait_for { page }.to have_snackbar('Your password has been updated successfully.')
           logout
           login('new_user@example.com', 'new password')
           visit 'https://argu.localtest/argu/n'
-          wait_for(page).to have_content('Finish your profile to be more recognizable.')
+          wait_for { page }.to have_content('Finish your profile to be more recognizable.')
         end
 
         it_behaves_like 'confirm vote'
@@ -123,7 +123,7 @@ RSpec.describe 'Voting', type: :feature do
       let(:motion_sequence) { 3 }
       let(:after_vote) do
         accept_terms
-        wait_for(page).to have_snackbar 'Thanks for your vote!'
+        wait_for { page }.to have_snackbar 'Thanks for your vote!'
         expect_voted(side: @side)
       end
       let(:before_vote) { accept_token }
@@ -171,21 +171,21 @@ RSpec.describe 'Voting', type: :feature do
 
   def vote_in_favour
     @side = 'yes'
-    wait_for(page).to have_content 'Agree'
+    wait_for { page }.to have_content 'Agree'
     click_button 'Agree'
     after_vote
   end
 
   def vote_against
     @side = 'no'
-    wait_for(page).to have_content 'Disagree'
+    wait_for { page }.to have_content 'Disagree'
     click_button 'Disagree'
     after_vote
-    wait_for(page).to have_snackbar 'Thanks for your vote!'
+    wait_for { page }.to have_snackbar 'Thanks for your vote!'
     expect_voted(side: @side)
   end
 
   def expect_voted(side: 'yes')
-    wait_for(page).to have_css ".Button--variant-#{side}.Button--active"
+    wait_for { page }.to have_css ".Button--variant-#{side}.Button--active"
   end
 end

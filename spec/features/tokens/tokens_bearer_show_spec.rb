@@ -9,7 +9,7 @@ RSpec.describe 'Token bearer show', type: :feature do
     example 'new user visits bearer token' do
       as(:guest, location: token)
 
-      wait_for(page).to have_content("You have been invited for the group 'Members'")
+      wait_for { page }.to have_content("You have been invited for the group 'Members'")
 
       click_button 'Log in'
       fill_in_registration_form
@@ -20,7 +20,7 @@ RSpec.describe 'Token bearer show', type: :feature do
     example 'logged out user visits bearer token' do
       as(:guest, location: token)
 
-      wait_for(page).to have_content("You have been invited for the group 'Members'")
+      wait_for { page }.to have_content("You have been invited for the group 'Members'")
 
       click_button 'Log in'
       fill_in_login_form
@@ -31,7 +31,7 @@ RSpec.describe 'Token bearer show', type: :feature do
     example 'logged out member visits bearer token' do
       as(:guest, location: token)
 
-      wait_for(page).to have_content("You have been invited for the group 'Members'")
+      wait_for { page }.to have_content("You have been invited for the group 'Members'")
 
       click_button 'Log in'
 

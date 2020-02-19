@@ -7,7 +7,7 @@ RSpec.describe 'Sign up', type: :feature do
 
   example 'register as user' do
     as(:guest)
-    wait_for(page).to have_content 'Log in / sign up'
+    wait_for { page }.to have_content 'Log in / sign up'
     page.click_link('Log in / sign up')
 
     fill_in_registration_form email
@@ -16,14 +16,14 @@ RSpec.describe 'Sign up', type: :feature do
 
     visit set_password_email.links.last
 
-    wait_for(page).to have_content 'Choose a password'
+    wait_for { page }.to have_content 'Choose a password'
 
     fill_in 'https://argu.co/ns/core#password', with: 'new password'
     fill_in 'https://argu.co/ns/core#passwordConfirmation', with: 'new password'
     click_button 'Save'
 
     verify_logged_in
-    wait_for(page).to have_snackbar('Your password has been updated successfully.')
+    wait_for { page }.to have_snackbar('Your password has been updated successfully.')
     expect(page).to have_content('Welcome!')
 
     logout
@@ -32,10 +32,10 @@ RSpec.describe 'Sign up', type: :feature do
 
   example 'change email during registration' do
     as(:guest)
-    wait_for(page).to have_content 'Log in / sign up'
+    wait_for { page }.to have_content 'Log in / sign up'
     page.click_link('Log in / sign up')
 
-    wait_for(page).to have_content('login or register')
+    wait_for { page }.to have_content('login or register')
 
     fill_in placeholder: 'email@example.com', with: 'other_email@example.com'
 

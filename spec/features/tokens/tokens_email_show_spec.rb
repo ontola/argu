@@ -9,7 +9,7 @@ RSpec.describe 'Token email show', type: :feature do
     example 'new user visits token' do
       as(:guest, location: token)
 
-      wait_for(page).to have_content("invitee@example.com is invited for the group 'Members'")
+      wait_for { page }.to have_content("invitee@example.com is invited for the group 'Members'")
 
       accept_token
     end
@@ -18,7 +18,7 @@ RSpec.describe 'Token email show', type: :feature do
       as('user1@example.com')
       visit "https://argu.localtest#{token}"
 
-      wait_for(page).to have_content('The invitation you are following is meant for invitee@example.com')
+      wait_for { page }.to have_content('The invitation you are following is meant for invitee@example.com')
       expect(page).to have_content('add invitee@example.com')
       click_button 'Create new account'
 
@@ -31,7 +31,7 @@ RSpec.describe 'Token email show', type: :feature do
       as('user1@example.com')
       visit "https://argu.localtest#{token}"
 
-      wait_for(page).to have_content('The invitation you are following is meant for invitee@example.com')
+      wait_for { page }.to have_content('The invitation you are following is meant for invitee@example.com')
       click_button 'Add invitee@example.com'
 
       accept_token
@@ -44,12 +44,12 @@ RSpec.describe 'Token email show', type: :feature do
     example 'logged out user visits token' do
       as(:guest, location: token)
 
-      wait_for(page).to have_content('An account for this email address already exists.')
+      wait_for { page }.to have_content('An account for this email address already exists.')
       click_button 'Log in'
 
       fill_in_login_form
 
-      wait_for(page).to have_content("user1@example.com is invited for the group 'Members'")
+      wait_for { page }.to have_content("user1@example.com is invited for the group 'Members'")
 
       accept_token
     end
@@ -58,7 +58,7 @@ RSpec.describe 'Token email show', type: :feature do
       as('user1@example.com')
       visit "https://argu.localtest#{token}"
 
-      wait_for(page).to have_content("You have been invited for the group 'Members'")
+      wait_for { page }.to have_content("You have been invited for the group 'Members'")
       accept_token
     end
 
@@ -73,7 +73,7 @@ RSpec.describe 'Token email show', type: :feature do
 
       fill_in_login_form modal: false
 
-      wait_for(page).to have_content("You have been invited for the group 'Members'")
+      wait_for { page }.to have_content("You have been invited for the group 'Members'")
 
       accept_token
     end
@@ -87,7 +87,7 @@ RSpec.describe 'Token email show', type: :feature do
     example 'logged out member visits token' do
       as(:guest, location: token)
 
-      wait_for(page).to have_content('An account for this email address already exists.')
+      wait_for { page }.to have_content('An account for this email address already exists.')
       click_button 'Log in'
 
       fill_in_login_form 'member@example.com'

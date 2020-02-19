@@ -9,26 +9,26 @@ RSpec.describe 'Discussions', type: :feature do
   example 'Show new discussion link as guest' do
     as :guest, location: '/argu/freetown'
 
-    wait_for(page).to have_content 'New idea'
+    wait_for { page }.to have_content 'New idea'
     click_link 'New idea'
     # @todo AOD-407
-    # wait_for(page).to have_content 'You have to be logged in to view this resource.'
+    # wait_for { page }.to have_content 'You have to be logged in to view this resource.'
   end
 
   example 'Hide new discussion link when not allowed' do
     self.current_tenant = 'https://argu.localtest/other_page'
     as 'member@example.com', location: '/other_page'
     within '.NavBarContent' do
-      wait_for(page).to have_content 'Other page forum'
+      wait_for { page }.to have_content 'Other page forum'
       click_link 'Other page forum'
     end
 
-    wait_for(page).not_to have_content 'New idea'
+    wait_for { page }.not_to have_content 'New idea'
     expect(page).not_to have_content 'New challenge'
 
     switch_organization 'argu'
-    wait_for(page).to have_content 'Freetown'
-    wait_for(page).to have_content 'New idea'
+    wait_for { page }.to have_content 'Freetown'
+    wait_for { page }.to have_content 'New idea'
     expect(page).to have_content 'New challenge'
   end
 
@@ -62,7 +62,7 @@ RSpec.describe 'Discussions', type: :feature do
       expect(page).not_to have_link(href: '/argu/u/member')
     end
     fill_in_form
-    wait_for(page).to have_content 'Welcome!'
+    wait_for { page }.to have_content 'Welcome!'
     within "[role='dialog']" do
       click_button 'Save'
     end
@@ -75,7 +75,7 @@ RSpec.describe 'Discussions', type: :feature do
     end
 
     within '.Page > .FullResource' do
-      wait_for(page).to have_content 'first_name_26 last_name_26'
+      wait_for { page }.to have_content 'first_name_26 last_name_26'
     end
   end
 
@@ -114,7 +114,7 @@ RSpec.describe 'Discussions', type: :feature do
   end
 
   def expect_content(path)
-    wait_for(page).to have_content(title)
+    wait_for { page }.to have_content(title)
     expect(page).to have_content(content)
     resource_selector("https://argu.localtest/argu/#{path}/attachments", child: '.AttachmentPreview')
     expect(page).to have_css('.CoverImage__wrapper')

@@ -2,17 +2,17 @@
 
 module Selectors
   def application_menu
-    wait_for(page).to have_css('.AppMenu')
+    wait_for { page }.to have_css('.AppMenu')
     page.find('.AppMenu')
   end
 
   def application_menu_button
-    wait_for(page).to have_button(text: 'Menu')
+    wait_for { page }.to have_button(text: 'Menu')
     page.find(:button, text: 'Menu')
   end
 
   def count_bubble_count(element = nil)
-    wait_for(page).to have_css('.CountBubble__number')
+    wait_for { page }.to have_css('.CountBubble__number')
     found = page.find('.CountBubble__number')
     return found if element.nil?
 
@@ -27,7 +27,7 @@ module Selectors
   end
 
   def navbar_tabs(element = nil)
-    wait_for(page).to have_css('.Navbar .NavBarContent__items')
+    wait_for { page }.to have_css('.Navbar .NavBarContent__items')
     found = page.find('.Navbar .NavBarContent__items')
     return found if element.nil?
 

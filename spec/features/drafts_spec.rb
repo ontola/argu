@@ -6,12 +6,12 @@ RSpec.describe 'Drafts', type: :feature do
   example 'User shows drafts' do
     as 'user48@example.com', location: '/argu/u/fg_shortname54end/drafts'
 
-    wait_for(page).to have_content 'My drafts'
-    wait_for(page).to have_content 'Fg question title 10end'
+    wait_for { page }.to have_content 'My drafts'
+    wait_for { page }.to have_content 'Fg question title 10end'
     expect(page).to have_css('.Card', count: 1)
     click_link 'Fg question title 10end'
-    wait_for(page).to have_content 'Fg motion title 12end'
-    wait_for(page).to have_content 'Fg argument title 8end'
+    wait_for { page }.to have_content 'Fg motion title 12end'
+    wait_for { page }.to have_content 'Fg argument title 8end'
     expect_publish_action
   end
 
@@ -22,14 +22,14 @@ RSpec.describe 'Drafts', type: :feature do
       click_button 'Publish'
     end
     expect_published_message('Challenge')
-    wait_for(page).to have_content 'Fg question title 10end'
+    wait_for { page }.to have_content 'Fg question title 10end'
     expect_no_publish_action
   end
 
   private
 
   def expect_publish_action
-    wait_for(page).to have_content 'Draft version, not yet published.'
+    wait_for { page }.to have_content 'Draft version, not yet published.'
     expect(page).not_to have_content 'Save as draft'
   end
 
@@ -40,7 +40,7 @@ RSpec.describe 'Drafts', type: :feature do
 
   def expect_no_publish_action
     wait_until_loaded
-    wait_for(page).not_to have_content 'Draft version, not yet published.'
+    wait_for { page }.not_to have_content 'Draft version, not yet published.'
     expect(page).not_to have_button 'Publish'
   end
 

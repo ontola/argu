@@ -6,7 +6,7 @@ RSpec.describe 'Upvoting', type: :feature do
   before do
     as actor, location: location
     before_vote
-    wait_for(page).to have_content "fg motion content #{motion_sequence}end"
+    wait_for { page }.to have_content "fg motion content #{motion_sequence}end"
   end
 
   let(:actor) { :guest }
@@ -59,32 +59,32 @@ RSpec.describe 'Upvoting', type: :feature do
   private
 
   def upvote(success: true)
-    wait_for(page).to have_content 'Upvote'
+    wait_for { page }.to have_content 'Upvote'
     click_button 'Upvote'
     return unless success
 
-    wait_for(page).to have_snackbar 'Thanks for your vote!'
+    wait_for { page }.to have_snackbar 'Thanks for your vote!'
     click_link class: 'MuiIconButton-root'
     expect_voted
   end
 
   def downvote(success: true)
-    wait_for(page).to have_content 'Upvote'
+    wait_for { page }.to have_content 'Upvote'
     click_button 'Upvote'
     return unless success
 
-    wait_for(page).to have_snackbar 'Vote deleted successfully'
+    wait_for { page }.to have_snackbar 'Vote deleted successfully'
     click_link class: 'MuiIconButton-root'
     expect_not_voted
   end
 
   def expect_voted
-    wait_for(page).to have_css '.Button--variant-yes.Button--active'
+    wait_for { page }.to have_css '.Button--variant-yes.Button--active'
     expect(page).to have_content "Upvote#{expected_count > 0 ? " (#{expected_count})" : ''}"
   end
 
   def expect_not_voted
-    wait_for(page).not_to have_css '.Button--variant-yes.Button--active'
+    wait_for { page }.not_to have_css '.Button--variant-yes.Button--active'
     expect(page).to have_content 'Upvote'
     expect(page).not_to have_content 'Upvote (1)'
   end

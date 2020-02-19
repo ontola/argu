@@ -10,7 +10,7 @@ RSpec.describe 'Sign in', type: :feature do
 
   it 'denies a user with wrong email' do
     as(:guest)
-    wait_for(page).to have_content('Log in / sign up')
+    wait_for { page }.to have_content('Log in / sign up')
     page.click_link('Log in / sign up')
 
     fill_in placeholder: 'email@example.com', with: 'wrong@example.com'
@@ -30,7 +30,7 @@ RSpec.describe 'Sign in', type: :feature do
 
   it 'denies a user with wrong password' do
     as(:guest)
-    wait_for(page).to have_content('Log in / sign up')
+    wait_for { page }.to have_content('Log in / sign up')
     page.click_link('Log in / sign up')
 
     fill_in_login_form 'user1@example.com', 'wrong_password'

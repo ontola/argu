@@ -20,7 +20,7 @@ RSpec.describe 'Page settings', type: :feature do
     example 'as staff' do
       as 'staff@example.com'
       visit_settings
-      wait_for(page).to have_content 'Components'
+      wait_for { page }.to have_content 'Components'
       expect(components_row(1)).to have_content('Holland')
       expect(components_row(2)).to have_content('Freetown')
 
@@ -30,10 +30,10 @@ RSpec.describe 'Page settings', type: :feature do
         child: '.fa-plus'
       ).click
 
-      wait_for(page).to have_content('New forum')
+      wait_for { page }.to have_content('New forum')
       click_link 'New forum'
 
-      wait_for(page).to have_css('.Page form')
+      wait_for { page }.to have_css('.Page form')
       fill_in 'http://schema.org/name', with: 'New Forum'
       fill_in 'https://argu.co/ns/core#shortname', with: 'new_forum'
       wait_until_loaded
@@ -43,7 +43,7 @@ RSpec.describe 'Page settings', type: :feature do
       select_radio 'Participate'
       click_button 'Save'
 
-      wait_for(page).to have_snackbar 'Forum created successfully'
+      wait_for { page }.to have_snackbar 'Forum created successfully'
       # @todo expect new forum in topbar navigation
 
       # @todo fetch /container_nodes instead of /forums after posting a forum, so the reload can be removed
@@ -51,7 +51,7 @@ RSpec.describe 'Page settings', type: :feature do
       # visit_settings
 
       wait_until_loaded
-      wait_for(page).to have_content 'Components'
+      wait_for { page }.to have_content 'Components'
       expect(components_row(1)).to have_content('New Forum')
       expect(components_row(2)).to have_content('Holland')
       expect(components_row(3)).to have_content('Freetown')
@@ -64,7 +64,7 @@ RSpec.describe 'Page settings', type: :feature do
       )
       fill_in 'https://argu.co/ns/core#confirmationString', with: 'remove'
       click_button 'Delete'
-      wait_for(page).to have_snackbar 'Forum deleted successfully'
+      wait_for { page }.to have_snackbar 'Forum deleted successfully'
       # @todo expect redirected to page settings
       # @todo expect new forum removed from sidebar navigation
 
@@ -120,7 +120,7 @@ RSpec.describe 'Page settings', type: :feature do
   end
 
   def visit_settings
-    wait_for(page).to have_content('Settings')
+    wait_for { page }.to have_content('Settings')
     within('.NavBarContent') do
       click_link 'Settings'
     end

@@ -6,25 +6,25 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
   attr_writer :current_tenant
 
   def accept_terms
-    wait_for(page).to have_content 'Terms of use'
+    wait_for { page }.to have_content 'Terms of use'
     click_button 'Accept'
-    wait_for(page).not_to have_content 'Terms of use'
+    wait_for { page }.not_to have_content 'Terms of use'
   end
 
   def accept_token(result: :success)
-    wait_for(page).to have_button('Accept')
+    wait_for { page }.to have_button('Accept')
     click_button('Accept')
 
     case result
     when :success
       # @todo snackbars are shown, but the page is instantly reloaded.
       # This prevents the matcher from seeing the snackbar
-      # wait_for(page).to have_snackbar("You have joined the group 'Members'")
+      # wait_for { page }.to have_snackbar("You have joined the group 'Members'")
     when :already_member
-      wait_for(page).to have_snackbar('You are already member of this group')
+      wait_for { page }.to have_snackbar('You are already member of this group')
     end
     wait(30).for(page).to have_current_path('/argu/holland')
-    wait_for(page).to have_content('Holland')
+    wait_for { page }.to have_content('Holland')
     verify_logged_in
   end
 
@@ -37,7 +37,7 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
   def click_application_menu_button(button)
     application_menu_button.click
     wait_until_loaded
-    wait_for(page).to have_css '.AppMenu'
+    wait_for { page }.to have_css '.AppMenu'
     wait_for { application_menu }.to have_content button
     click_link button
   end
@@ -58,7 +58,7 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
 
     page.click_link('Log in / sign up') if modal
 
-    wait_for(page).to have_content 'login or register'
+    wait_for { page }.to have_content 'login or register'
 
     fill_in_login_form email, password, modal: modal
 
@@ -70,7 +70,7 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
   end
 
   def fill_in_login_form(email = 'user1@example.com', password = 'password', modal: true)
-    wait_for(page).to have_content('login or register')
+    wait_for { page }.to have_content('login or register')
 
     wrapper = modal ? "[role='dialog']" : "form[action='/users']"
     within wrapper do
@@ -85,14 +85,14 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
   end
 
   def fill_in_markdown(locator, **args)
-    wait_for(page).to have_button('Opmaak')
+    wait_for { page }.to have_button('Opmaak')
     id = [args[:parent] || page.current_url, locator].join('.')
     click_button 'Opmaak'
     fill_in(id, args.except(:parent).merge(fill_options: {clear: :backspace}))
   end
 
   def fill_in_registration_form(email = 'new_user@example.com')
-    wait_for(page).to have_content('login or register')
+    wait_for { page }.to have_content('login or register')
 
     fill_in placeholder: 'email@example.com', with: email, fill_options: {clear: :backspace}
 
@@ -119,7 +119,7 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
     resource_selector("#{resource}/menus/#{menu}").click
     wait_until_loaded
     yield if block_given?
-    wait_for(page).to have_css('.MuiListItem-button', text: text)
+    wait_for { page }.to have_css('.MuiListItem-button', text: text)
     sleep(1)
     find('.MuiListItem-button', text: text).click
   end
@@ -129,7 +129,7 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
   end
 
   def select_tab(tab)
-    wait_for(page).to have_css('.MuiTabs-root')
+    wait_for { page }.to have_css('.MuiTabs-root')
     within '.MuiTabs-root' do
       click_link tab
     end
@@ -148,7 +148,7 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
   end
 
   def wait_for_terms_notice
-    wait_for(page).to(
+    wait_for { page }.to(
       have_content("Door je te registreren ga je akkoord met de\n algemene voorwaarden \nen de\n privacy policy\n.")
     )
   end

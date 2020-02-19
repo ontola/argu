@@ -76,10 +76,10 @@ RSpec.describe 'Arguments', type: :feature do
       )
 
     within scope do
-      wait_for(page).to have_content('Share your response...')
+      wait_for { page }.to have_content('Share your response...')
       click_button 'Share your response...' if click_to_open
       click_button @side.capitalize
-      wait_for(page).to have_field 'http://schema.org/name'
+      wait_for { page }.to have_field 'http://schema.org/name'
       fill_in 'http://schema.org/name', with: title
       fill_in 'http://schema.org/text', with: content
       within '.Form__footer--right' do
@@ -91,16 +91,16 @@ RSpec.describe 'Arguments', type: :feature do
   end
 
   def expect_argument_posted
-    wait_for(page).to(
+    wait_for { page }.to(
       have_snackbar(
         "#{@side.capitalize} published successfully. It can take a few moments before it's visible on other pages."
       )
     )
     wait_until_loaded
-    wait_for(page).to have_content title
+    wait_for { page }.to have_content title
     within resource_selector("#{parent_resource}/#{@side}s", element: result_element) do
-      wait_for(page).to have_content title
-      wait_for(page).to have_content content if expect_argument_content
+      wait_for { page }.to have_content title
+      wait_for { page }.to have_content content if expect_argument_content
     end
   end
 end

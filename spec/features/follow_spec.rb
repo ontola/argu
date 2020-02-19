@@ -9,14 +9,14 @@ RSpec.describe 'Follow', type: :feature do
     go_to_menu_item('Important items', menu: :follow) do
       expect_following 2
     end
-    wait_for(page).to have_snackbar 'Your notification settings are updated'
+    wait_for { page }.to have_snackbar 'Your notification settings are updated'
     expect_following 0
 
     visit '/argu/m/38'
     go_to_menu_item('Never receive notifications', menu: :follow) do
       expect_following 0
     end
-    wait_for(page).to have_snackbar 'Your notification settings are updated'
+    wait_for { page }.to have_snackbar 'Your notification settings are updated'
     expect_following 2
   end
 
@@ -40,12 +40,12 @@ RSpec.describe 'Follow', type: :feature do
 
     unsubscribe_link = notifications_email.links.detect { |link| link.include?('follows') }
     visit unsubscribe_link
-    wait_for(page).to have_content "You are receiving notifications for all replies to 'Freetown'."
-    wait_for(page).to have_button 'Stop following'
+    wait_for { page }.to have_content "You are receiving notifications for all replies to 'Freetown'."
+    wait_for { page }.to have_button 'Stop following'
     click_button 'Stop following'
 
-    wait_for(page).to have_snackbar "You no longer receive notifications for 'Freetown'."
-    wait_for(page).to have_current_path('/argu/freetown')
+    wait_for { page }.to have_snackbar "You no longer receive notifications for 'Freetown'."
+    wait_for { page }.to have_current_path('/argu/freetown')
 
     verify_not_following(unsubscribe_link)
   end
@@ -91,7 +91,7 @@ RSpec.describe 'Follow', type: :feature do
 
   def verify_not_following(unsubscribe_link)
     visit unsubscribe_link
-    wait_for(page).to have_content "You are not receiving notifications for 'Freetown'."
+    wait_for { page }.to have_content "You are not receiving notifications for 'Freetown'."
     wait_until_loaded
     expect(page).not_to have_button 'Stop following'
   end

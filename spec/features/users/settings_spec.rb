@@ -59,7 +59,7 @@ RSpec.describe 'User settings', type: :feature do
     example 'as user' do
       as 'user1@example.com'
       visit_settings
-      wait_for(page).to have_button 'Remove account'
+      wait_for { page }.to have_button 'Remove account'
       click_button 'Remove account'
       fill_in_form(submit: 'Delete')
     end
@@ -77,7 +77,7 @@ RSpec.describe 'User settings', type: :feature do
     example 'as user' do
       as 'user1@example.com'
       visit_settings
-      wait_for(page).to have_content 'Email addresses'
+      wait_for { page }.to have_content 'Email addresses'
       expect_email_row(1, 'user1@example.com', true, true)
       resource_selector(
         'https://argu.localtest/argu/u/fg_shortname3end/email_addresses?display=settingsTable',
@@ -86,7 +86,7 @@ RSpec.describe 'User settings', type: :feature do
       ).click
       fill_in 'http://schema.org/email', with: new_email
       click_button 'Add'
-      wait_for(page).to have_content 'Email addresses'
+      wait_for { page }.to have_content 'Email addresses'
       expect_email_row(1, new_email, false, false)
       expect_email_row(2, 'user1@example.com', true, true)
 
@@ -99,12 +99,12 @@ RSpec.describe 'User settings', type: :feature do
 
       visit confirmation_email.links.last
       visit_settings
-      wait_for(page).to have_content 'Email addresses'
+      wait_for { page }.to have_content 'Email addresses'
       expect_email_row(1, new_email, false, true)
       expect_email_row(2, 'user1@example.com', true, true)
 
       click_button 'Make primary email address'
-      wait_for(page).to have_snackbar('Email address saved successfully')
+      wait_for { page }.to have_snackbar('Email address saved successfully')
       expect_email_row(1, new_email, true, true)
       expect_email_row(2, 'user1@example.com', false, true)
     end
@@ -129,7 +129,7 @@ RSpec.describe 'User settings', type: :feature do
   end
 
   def expect_email_row(row, email, primary, confirmed)
-    wait_for(page).to have_content(email)
+    wait_for { page }.to have_content(email)
     expect(email_addresses_row(row)).to have_content(email)
     expect(email_addresses_row(row)).send(primary ? :to : :not_to, have_content('Primary e-mail address'))
     expect(email_addresses_row(row)).send(confirmed ? :to : :not_to, have_content('Already confirmed'))

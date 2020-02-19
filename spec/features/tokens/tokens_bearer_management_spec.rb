@@ -7,7 +7,7 @@ RSpec.describe 'Token bearer management', type: :feature do
     as('staff@example.com', location: '/argu/g/111/settings')
     select_tab('Invite by link')
 
-    wait_for(page).to have_content 'Invite links'
+    wait_for { page }.to have_content 'Invite links'
 
     resource_selector(
       'https://argu.localtest/argu/tokens/bearer/g/111?display=settingsTable',
@@ -15,13 +15,13 @@ RSpec.describe 'Token bearer management', type: :feature do
       child: '.fa-plus'
     ).click
 
-    wait_for(page).to have_content('New invite link')
+    wait_for { page }.to have_content('New invite link')
     fill_in 'https://argu.co/ns/core#redirectUrl', with: 'https://www.example.com'
     click_button 'Create'
 
-    wait_for(page).to have_snackbar 'Invite link created successfully'
+    wait_for { page }.to have_snackbar 'Invite link created successfully'
 
-    wait_for(page).to have_content('https://www.example.com')
+    wait_for { page }.to have_content('https://www.example.com')
     expect(token_row(1)).to have_content('https://www.example.com')
 
     within(token_row(1)) do
@@ -29,12 +29,12 @@ RSpec.describe 'Token bearer management', type: :feature do
       find('td:last-child a').click
     end
 
-    wait_for(page).to(
+    wait_for { page }.to(
       have_content('This object and all related data will be permanently removed. This cannot be undone.')
     )
     click_button 'Delete'
 
-    wait_for(page).to have_snackbar 'Invite link deleted successfully'
+    wait_for { page }.to have_snackbar 'Invite link deleted successfully'
     expect(page).not_to have_content('https://www.example.com')
   end
 
