@@ -16,6 +16,8 @@ require 'support/docker_helper'
 require 'support/test_methods'
 require 'support/selectors'
 
+OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE
+
 Dotenv.load
 
 RSpec.configure do |config|

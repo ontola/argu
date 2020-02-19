@@ -29,9 +29,24 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
   end
 
   def as(actor, location: '/argu/freetown', password: 'password')
+    if actor != :guest
+      visit 'https://argu.localtest/wait_for_login'
+      cookies, csrf = authentication_values
+
+      Faraday.post(
+        'https://argu.localtest/login',
+        {email: actor, password: password, r: location},
+        'Cookie' => HTTP::Cookie.cookie_value(cookies),
+        'X-CSRF-Token' => csrf,
+        'Website-IRI' => 'https://argu.localtest/argu'
+      )
+
+      cookies.each do |cookie|
+        page.driver.browser.manage.add_cookie(name: cookie.name, value: cookie.value)
+      end
+    end
+
     visit "https://argu.localtest#{location}"
-    return if actor == :guest
-    login(actor, password)
   end
 
   def click_application_menu_button(button)
@@ -45,6 +60,15 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
 
   def current_tenant
     @current_tenant || 'https://argu.localtest/argu'
+  end
+
+  def authentication_values
+    response = Faraday.get('https://argu.localtest/argu')
+
+    cookies = HTTP::CookieJar.new.parse(response.headers['set-cookie'], 'https://argu.localtest')
+    csrf = response.body.match(/<meta name=\"csrf-token\" content=\"(.*)\">/)[1]
+
+    [cookies, csrf]
   end
 
   def wait_until_loaded
