@@ -39,6 +39,7 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
     wait_until_loaded
     wait_for { page }.to have_css '.AppMenu'
     wait_for { application_menu }.to have_content button
+    sleep 1
     click_link button
   end
 

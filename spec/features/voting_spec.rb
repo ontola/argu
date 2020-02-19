@@ -170,6 +170,7 @@ RSpec.describe 'Voting', type: :feature do
   end
 
   def vote_in_favour
+    wait_until_loaded
     @side = 'yes'
     wait_for { page }.to have_content 'Agree'
     click_button 'Agree'
@@ -177,6 +178,7 @@ RSpec.describe 'Voting', type: :feature do
   end
 
   def vote_against
+    wait_until_loaded
     @side = 'no'
     wait_for { page }.to have_content 'Disagree'
     click_button 'Disagree'

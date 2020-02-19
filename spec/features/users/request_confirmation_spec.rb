@@ -113,6 +113,7 @@ RSpec.describe 'User request confirmation', type: :feature do
   end
 
   def expect_confirmed
+    wait.for { page }.to have_current_path('/argu')
     wait_for { page }.to(
       have_snackbar('Your account has been confirmed.')
     )
