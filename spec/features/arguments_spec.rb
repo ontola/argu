@@ -28,8 +28,30 @@ RSpec.describe 'Arguments', type: :feature do
   end
 
   context 'As guest' do
-    # @todo login flow in omniform
-    # it_behaves_like 'post argument'
+    let(:actor) { :guest }
+
+    context 'continue as new user' do
+      let(:after_post) do
+        fill_in_registration_form
+        verify_logged_in
+        expect(page).to have_current_path("#{location}/pros/new")
+        wait_for { page }.to have_button 'Save'
+        click_button 'Save'
+        expect_argument_posted
+      end
+      it_behaves_like 'post argument'
+    end
+
+    context 'continue as existing user' do
+      let(:after_post) do
+        login('user1@example.com', open_modal: false)
+        expect(page).to have_current_path("#{location}/pros/new")
+        wait_for { page }.to have_button 'Save'
+        click_button 'Save'
+        expect_argument_posted
+      end
+      it_behaves_like 'post argument'
+    end
   end
 
   context 'As user' do

@@ -6,15 +6,6 @@ RSpec.describe 'Discussions', type: :feature do
   let(:title) { 'Title' }
   let(:content) { 'Content of discussion' }
 
-  example 'Show new discussion link as guest' do
-    as :guest, location: '/argu/freetown'
-
-    wait_for { page }.to have_content 'New idea'
-    click_link 'New idea'
-    # @todo AOD-407
-    # wait_for { page }.to have_content 'You have to be logged in to view this resource.'
-  end
-
   example 'Hide new discussion link when not allowed' do
     self.current_tenant = 'https://argu.localtest/other_page'
     as 'member@example.com', location: '/other_page'
@@ -30,6 +21,31 @@ RSpec.describe 'Discussions', type: :feature do
     wait_for { page }.to have_content 'Freetown'
     wait_for { page }.to have_content 'New idea'
     expect(page).to have_content 'New challenge'
+  end
+
+  example 'Guest posts a question as new user' do
+    as :guest, location: '/argu/freetown/q/new'
+    expect_form('/argu/freetown/q')
+    fill_in_form
+    fill_in_registration_form
+    verify_logged_in
+    expect(page).to have_current_path('/argu/freetown/q/new')
+    wait_for { page }.to have_button 'Save'
+    click_button 'Save'
+    expect_draft_message('Challenge')
+    expect_content('q/71', images: false)
+  end
+
+  example 'Guest posts a question as existing user' do
+    as :guest, location: '/argu/freetown/q/new'
+    expect_form('/argu/freetown/q')
+    fill_in_form
+    login('user1@example.com', open_modal: false)
+    expect(page).to have_current_path('/argu/freetown/q/new')
+    wait_for { page }.to have_button 'Save'
+    click_button 'Save'
+    expect_draft_message('Challenge')
+    expect_content('q/71', images: false)
   end
 
   example 'Member posts a question' do
@@ -113,11 +129,11 @@ RSpec.describe 'Discussions', type: :feature do
     click_button 'Save'
   end
 
-  def expect_content(path)
+  def expect_content(path, images: true)
     wait_for { page }.to have_content(title)
     expect(page).to have_content(content)
-    resource_selector("https://argu.localtest/argu/#{path}/attachments", child: '.AttachmentPreview')
-    expect(page).to have_css('.CoverImage__wrapper')
+    resource_selector("https://argu.localtest/argu/#{path}/attachments", child: '.AttachmentPreview') if images
+    expect(page).to have_css('.CoverImage__wrapper') if images
     expect(page).to have_current_path("/argu/#{path}")
   end
 end

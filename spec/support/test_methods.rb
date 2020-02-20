@@ -78,10 +78,10 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
     wait_for { page.execute_script(is_done) }.to be_truthy
   end
 
-  def login(email, password = 'password', modal: true)
+  def login(email, password = 'password', modal: true, open_modal: true)
     wait_for { page }.to have_content 'Log in / sign up'
 
-    page.click_link('Log in / sign up') if modal
+    page.click_link('Log in / sign up') if modal && open_modal
 
     wait_for { page }.to have_content 'login or register'
 
