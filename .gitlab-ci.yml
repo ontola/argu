@@ -1,0 +1,56 @@
+image: circleci/buildpack-deps:bionic-curl-dind
+
+variables:
+  DOCKER_DRIVER: overlay2
+
+test:
+  stage: test
+  services:
+    - docker:18.09-dind
+  before_script:
+    - sudo apt-get update && sudo apt-get -y install ruby postgresql-client
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" "$CI_REGISTRY" --password-stdin
+  script:
+    - sudo sh -c "echo '127.0.0.1 app.argu.localtest' >> /etc/hosts"
+    - sudo sh -c "echo '127.0.0.1 argu.localtest' >> /etc/hosts"
+    - echo "" > ./.env.dev
+    - echo NEO_URL=${NEO_URL} >> ./.env.template
+    - echo DEFAULT_LOCALE=en >> ./.env.template
+    - sed -i "s/{bugsnag_key}/$BUGSNAG_KEY/g" ./.env.template
+    - BACKEND_HOST=argu:3000 ./setup.sh
+    - TESTRUNNER=true IP=127.0.0.1 HOST_IP=172.99.0.1 ENV=test ./setup_environment.rb
+    - sudo chown -R $(whoami):$(whoami) ./ssl
+    - "[[ $CI_COMMIT_BRANCH	= master ]] && RAILS_ENV=production || RAILS_ENV=staging"
+    - docker create -v /cfg --name certdata alpine:3.4 /bin/true
+    - sudo chown -R $(whoami):$(whoami) ./devproxyCA
+    - docker cp ./devproxyCA/cacert.pem certdata:/cacert.pem
+    - RAILS_ENV=$RAILS_ENV docker-compose pull
+    - docker-compose up -d elastic rabbitmq devproxy
+    - docker-compose up -d sidekiq postgres mailcatcher redis
+    - RAILS_ENV=$RAILS_ENV docker-compose up -d argu
+    - RAILS_ENV=$RAILS_ENV docker-compose up -d token token_sidekiq frontend email email_subscriber email_sidekiq
+    - docker-compose build --build-arg "TEST_FILES=$TEST_FILES"
+    - docker push $CI_REGISTRY_IMAGE:latest
+    - docker-compose run testrunner bundle exec rake test:setup
+    - docker restart devproxy_argu_1
+    - docker restart devproxy_sidekiq_1
+    - ./restart.sh devproxy || true
+    - until [ $(docker ps -f name=devproxy_argu_1 -f health=healthy -q | wc -l) -gt 0 ]; do sleep 1; done
+    - docker ps -a
+    - docker images
+    - docker-compose run --name testrunner testrunner
+  after_script:
+    - mkdir $CI_PROJECT_DIR/test-results || true
+    - docker cp testrunner:/tmp/test-results/rspec.xml $CI_PROJECT_DIR/test-results/rspec.xml || true
+    - docker cp testrunner:/usr/src/app/tmp/exceptions $CI_PROJECT_DIR/test-results/exceptions || true
+    - docker ps --no-trunc -a > $CI_PROJECT_DIR/test-results/docker-ps.txt || true
+    - docker-compose logs > $CI_PROJECT_DIR/test-results/docker-compose-logs.txt || true
+    - ls -la $CI_PROJECT_DIR/test-results
+  artifacts:
+    paths:
+      - test-results/
+    expire_in: 1 week
+    when: on_failure
+
+stages:
+  - test

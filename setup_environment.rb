@@ -15,7 +15,7 @@ local_ports =
   end
 services = {
   frontend: {
-    image: 'eu.gcr.io/active-gasket-113610/aod_demo',
+    image: 'registry.gitlab.com/ontola/libro',
     command: 'node --use-openssl-ca ./dist/private/server.js',
     port: 8080
   },
@@ -23,9 +23,7 @@ services = {
     image: 'registry.gitlab.com/ontola/apex'
   },
   email: {},
-  token: {
-    image: 'registry.gitlab.com/ontola/token_service'
-  }
+  token: {}
 }
 
 # Create symlink to .env
@@ -63,7 +61,7 @@ File.open(File.expand_path('docker-compose.template.yml')) do |source_file|
   contents.gsub!(/\$\{RESTRICT_EXTERNAL_NETWORK:-true\}/, ENV['ENV'] == 'test' ? 'true' : 'false')
   # set webservices
   webservices = services.reject { |service, _opts| local_ports.key?(service.to_s) }.map do |service, opts|
-    image = opts[:image] || "eu.gcr.io/active-gasket-113610/#{service}_service"
+    image = opts[:image] || "registry.gitlab.com/ontola/#{service}_service"
     command = opts[:command] || './bin/rails server -b 0.0.0.0 -p 2999'
     health_check =
       if service === :argu
@@ -109,6 +107,9 @@ END_HEREDOC
     build:
       context: .
       dockerfile: dockerfiles/testrunner.Dockerfile
+      cache_from:
+        - registry.gitlab.com/ontola/core:latest
+    image: registry.gitlab.com/ontola/core:latest
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /dev/shm:/dev/shm

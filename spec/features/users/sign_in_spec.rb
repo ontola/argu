@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Sign in', type: :feature do
+RSpec.describe 'User sign in', type: :feature do
   it 'authenticates a valid user' do
     as('user1@example.com')
     wait_for { page }.to have_content 'Fg motion title 8end'

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Sign up', type: :feature do
+RSpec.describe 'User sign up', type: :feature do
   let(:email) { 'new_user@example.com' }
 
   example 'register as user' do

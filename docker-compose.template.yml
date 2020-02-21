@@ -25,7 +25,7 @@ services:
     volumes:
       - certdata:/etc/ssl/certs
   email_subscriber:
-    image: eu.gcr.io/active-gasket-113610/email_service:${RAILS_ENV:-staging}
+    image: registry.gitlab.com/ontola/email_service:${RAILS_ENV:-staging}
     env_file:
       - ${ENV_FILE:-./.env}
     volumes:
@@ -35,7 +35,7 @@ services:
       - rabbitmq
     restart: unless-stopped
   email_sidekiq:
-    image: eu.gcr.io/active-gasket-113610/email_service:${RAILS_ENV:-staging}
+    image: registry.gitlab.com/ontola/email_service:${RAILS_ENV:-staging}
     env_file:
       - ${ENV_FILE:-./.env}
     volumes:

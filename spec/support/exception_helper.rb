@@ -17,14 +17,14 @@ module ExceptionHelper
       ['', '_sidekiq', '_subscriber'].each do |suffix|
         container = "#{service}#{suffix}"
         if docker_container(container)
-          upload_exception_file(docker_container(container).logs(stdout: true), example, "#{container}.log")
+          upload_exception_file(docker_container(container).logs(stdout: true), example, "#{container}.txt")
         end
       end
     end
   end
 
   def example_filename(example, suffix = nil)
-    [example.full_description.tr(' ', '-'), suffix].compact.join('.')
+    [example.full_description.tr(' ', '-'), suffix].compact.join('/')
   end
 
   def upload_browser_logs(example)
@@ -35,7 +35,7 @@ module ExceptionHelper
 
   def upload_javascript_console_logs(example)
     errors = page.driver.browser.manage.logs.get(:browser)
-    upload_exception_file(errors.map(&:message).join("\n"), example, 'javascript-console.log') if errors
+    upload_exception_file(errors.map(&:message).join("\n"), example, 'javascript-console.txt') if errors
   rescue StandardError => e
     LOGGER.error "Failed to show console logs: #{e.message}"
   end
@@ -44,14 +44,14 @@ module ExceptionHelper
     errors = page.execute_script('return (window.logging && window.logging.errors)')
     return unless errors&.length&.positive?
 
-    upload_exception_file(errors.map { |message| JSON.pretty_generate(message) }.join("\n"), example, 'javascript-errors.log')
+    upload_exception_file(errors.map { |message| JSON.pretty_generate(message) }.join("\n"), example, 'javascript-errors.txt')
   rescue StandardError => e
     LOGGER.error "Failed to show javascript errors: #{e.message}"
   end
 
   def upload_javascript_logs(example)
     logs = page.execute_script('return (window.logging && window.logging.logs)')
-    upload_exception_file(logs.map { |message| message.join(' ') }.join("\n"), example, 'javascript-logs.log') if logs
+    upload_exception_file(logs.map { |message| message.join(' ') }.join("\n"), example, 'javascript-logs.txt') if logs
   rescue StandardError => e
     LOGGER.error "Failed to show javascript logs: #{e.message}"
   end
@@ -79,6 +79,7 @@ module ExceptionHelper
 
   def upload_exception_file(content, example, suffix)
     filename = [exception_file_dir, example_filename(example, suffix)].join('/')
+    FileUtils.mkdir_p(filename.split('/')[0...-1].join('/'))
     File.open(filename, 'w') { |f| f.write(content) }
 
     Timeout::timeout(30) do
