@@ -17,13 +17,6 @@ services:
           - argu.localtest
           {devproxy_aliases}
       external:
-  mockserver:
-    image: jamesdbloom/mockserver
-    ports:
-      - 1090:1080
-    networks:
-      default:
-      external:
   sidekiq:
     image: registry.gitlab.com/ontola/apex:${RAILS_ENV:-staging}
     env_file:

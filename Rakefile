@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'rspec/core/rake_task'
-require_relative 'spec/support/mock'
 require_relative 'spec/support/docker_helper'
 
 RSpec::Core::RakeTask.new(:spec)
@@ -15,7 +14,6 @@ namespace :test do
   desc 'Setup for running tests'
   task :setup do
     include DockerHelper
-    Mock.new.nominatim
     check_env
 
     puts 'setting up argu'

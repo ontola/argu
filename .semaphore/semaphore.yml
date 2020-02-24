@@ -38,7 +38,7 @@ blocks:
             - sudo chown -R $(whoami):$(whoami) ./devproxyCA
             - docker cp ./devproxyCA/cacert.pem certdata:/cacert.pem
             - RAILS_ENV=$RAILS_ENV docker-compose pull
-            - docker-compose up -d elastic rabbitmq mockserver devproxy
+            - docker-compose up -d elastic rabbitmq devproxy
             - docker-compose up -d sidekiq postgres mailcatcher redis
             - RAILS_ENV=$RAILS_ENV docker-compose up -d argu
             - RAILS_ENV=$RAILS_ENV docker-compose up -d token token_sidekiq frontend email email_subscriber email_sidekiq

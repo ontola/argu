@@ -59,7 +59,7 @@ jobs:
 
       # Setup services
       - run: RAILS_ENV=$RAILS_ENV docker-compose pull
-      - run: docker-compose up -d elastic rabbitmq mockserver devproxy
+      - run: docker-compose up -d elastic rabbitmq devproxy
       - run: docker-compose up -d sidekiq postgres mailcatcher redis
       - run: RAILS_ENV=$RAILS_ENV docker-compose up -d argu
       - run: RAILS_ENV=$RAILS_ENV docker-compose up -d token token_sidekiq frontend email email_subscriber email_sidekiq

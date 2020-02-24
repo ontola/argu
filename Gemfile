@@ -2,13 +2,14 @@
 
 source 'https://rubygems.org/'
 
+gem 'activesupport'
 gem 'capybara'
 gem 'capybara-screenshot'
 gem 'docker-api'
 gem 'dotenv'
 gem 'faraday'
+gem 'http-cookie'
 gem 'mailcatcher-api'
-gem 'mockserver-client', git: 'https://github.com/ArthurWD/mockserver-client-ruby'
 gem 'rake'
 gem 'rspec'
 gem 'rspec-instafail'

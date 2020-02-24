@@ -3,7 +3,6 @@
 require 'capybara/rspec'
 require 'capybara-screenshot/rspec'
 require 'dotenv'
-require 'support/mock'
 require 'selenium/webdriver'
 require 'webdrivers'
 require 'rspec/wait'

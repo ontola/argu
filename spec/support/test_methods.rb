@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'active_support'
+require 'http-cookie'
 require 'mailcatcher/api'
 
 module TestMethods # rubocop:disable Metrics/ModuleLength
