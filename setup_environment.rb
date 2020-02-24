@@ -25,10 +25,6 @@ services = {
   email: {},
   token: {
     image: 'registry.gitlab.com/ontola/token_service'
-  },
-  vote_compare: {},
-  deku: {
-    image: 'eu.gcr.io/active-gasket-113610/deku'
   }
 }
 

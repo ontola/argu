@@ -25,11 +25,9 @@ clone_project() {
 clone_projects() {
  clone_project bitbucket.org arguweb devproxy
  clone_project bitbucket.org arguweb argu
- clone_project bitbucket.org arguweb deku
  clone_project bitbucket.org arguweb aod_search
  clone_project bitbucket.org arguweb email_service
  clone_project bitbucket.org arguweb token_service
- clone_project bitbucket.org arguweb vote_compare_service
  clone_project bitbucket.org arguweb service_module
  clone_project bitbucket.org arguweb surveys
  clone_project bitbucket.org arguweb survey_builder
@@ -120,7 +118,6 @@ install_hosts() {
   ensure_hosts '127.0.0.1' 'mailcatcher'
   ensure_hosts '127.0.0.1' 'mockserver'
   ensure_hosts '127.0.0.1' 'token.svc.cluster.local'
-  ensure_hosts '127.0.0.1' 'deku.svc.cluster.local'
   ensure_hosts '127.0.0.1' 'email.svc.cluster.local'
   ensure_hosts '127.0.0.1' 'argu.svc.cluster.local'
 }

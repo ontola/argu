@@ -41,7 +41,7 @@ blocks:
             - docker-compose up -d elastic rabbitmq mockserver devproxy
             - docker-compose up -d sidekiq postgres mailcatcher redis
             - RAILS_ENV=$RAILS_ENV docker-compose up -d argu
-            - RAILS_ENV=$RAILS_ENV docker-compose up -d token token_sidekiq deku vote_compare vote_compare_sidekiq frontend email email_subscriber email_sidekiq
+            - RAILS_ENV=$RAILS_ENV docker-compose up -d token token_sidekiq frontend email email_subscriber email_sidekiq
             - docker-compose build --build-arg "TEST_FILES=$TEST_FILES"
             - docker-compose run testrunner bundle exec rake test:setup
             - docker restart devproxy_argu_1

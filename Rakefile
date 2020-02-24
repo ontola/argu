@@ -24,8 +24,6 @@ namespace :test do
     docker_setup('token', seed: :test)
     puts 'setting up email'
     docker_setup('email', seed: :test)
-    # docker_setup('deku')
-    # docker_setup('vote_compare')
 
     puts 'dumping databases'
     SERVICES.keys.each do |db|
@@ -52,7 +50,5 @@ namespace :dev do
     docker_setup('argu')
     docker_setup('token')
     docker_setup('email')
-    # docker_setup('deku')
-    # docker_setup('vote_compare')
   end
 end
