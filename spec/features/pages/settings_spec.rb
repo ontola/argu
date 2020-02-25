@@ -21,8 +21,8 @@ RSpec.describe 'Page settings', type: :feature do
       as 'staff@example.com'
       visit_settings
       wait_for { page }.to have_content 'Components'
-      expect(components_row(1)).to have_content('Holland')
-      expect(components_row(2)).to have_content('Freetown')
+      wait_for(components_row(1)).to have_content('Holland')
+      wait_for(components_row(2)).to have_content('Freetown')
 
       resource_selector(
         'https://argu.localtest/argu/container_nodes?display=settingsTable',
