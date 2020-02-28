@@ -35,13 +35,16 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
       visit 'https://argu.localtest/wait_for_login'
       cookies, csrf = authentication_values
 
-      Faraday.post(
+      response = Faraday.post(
         'https://argu.localtest/login',
         {email: actor, password: password, r: location},
         'Cookie' => HTTP::Cookie.cookie_value(cookies),
         'X-CSRF-Token' => csrf,
         'Website-IRI' => 'https://argu.localtest/argu'
       )
+
+      expect(response.status).to eq(200)
+      expect(JSON.parse(response.body)['status']).to eq('SIGN_IN_LOGGED_IN')
 
       cookies.each do |cookie|
         page.driver.browser.manage.add_cookie(name: cookie.name, value: cookie.value)
@@ -70,6 +73,7 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
     cookies = HTTP::CookieJar.new.parse(response.headers['set-cookie'], 'https://argu.localtest')
     csrf = response.body.match(/<meta name=\"csrf-token\" content=\"(.*)\">/)[1]
 
+    expect(response.status).to eq(200)
     [cookies, csrf]
   end
 
