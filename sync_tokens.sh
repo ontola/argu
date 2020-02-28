@@ -16,6 +16,7 @@ echo "  token = Doorkeeper::AccessToken.find_or_create_for(Doorkeeper::Applicati
 echo "end"
 
 # Replace ENV vars
-sed -i "s/RAILS_OAUTH_TOKEN=.*/RAILS_OAUTH_TOKEN=${NEW_FRONTEND_TOKEN}/g" .env
-sed -i "s/SERVICE_TOKEN=.*/SERVICE_TOKEN=${NEW_SERVICE_TOKEN}/g" .env
-sed -i "s/SERVICE_GUEST_TOKEN=.*/SERVICE_GUEST_TOKEN=${NEW_SERVICE_GUEST_TOKEN}/g" .env
+ENV_FILE=$(readlink -f .env)
+sed -i "s/RAILS_OAUTH_TOKEN=.*/RAILS_OAUTH_TOKEN=${NEW_FRONTEND_TOKEN}/g" $ENV_FILE
+sed -i "s/SERVICE_TOKEN=.*/SERVICE_TOKEN=${NEW_SERVICE_TOKEN}/g" $ENV_FILE
+sed -i "s/SERVICE_GUEST_TOKEN=.*/SERVICE_GUEST_TOKEN=${NEW_SERVICE_GUEST_TOKEN}/g" $ENV_FILE
