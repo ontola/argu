@@ -26,8 +26,8 @@ test:
     - docker cp ./devproxyCA/cacert.pem certdata:/cacert.pem
     - RAILS_ENV=$RAILS_ENV docker-compose pull
     - docker-compose up -d elastic rabbitmq devproxy
-    - docker-compose up -d sidekiq postgres mailcatcher redis
-    - RAILS_ENV=$RAILS_ENV docker-compose up -d argu
+    - docker-compose up -d postgres mailcatcher redis
+    - RAILS_ENV=$RAILS_ENV docker-compose up -d argu sidekiq
     - RAILS_ENV=$RAILS_ENV docker-compose up -d token token_sidekiq frontend email email_subscriber email_sidekiq
     - docker-compose build --build-arg "TEST_FILES=$TEST_FILES"
     - docker push $CI_REGISTRY_IMAGE:latest
