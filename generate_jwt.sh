@@ -19,11 +19,11 @@ header='{
 if [ ${2} == 'false' ]
 then
     payload="{
-      \"application_id\": 1
+      \"application_id\": ${3}
     }"
 else
     payload="{
-      \"application_id\": 1,
+      \"application_id\": ${3},
       \"user\": {
         \"type\": \"user\",
         \"id\": ${2}
@@ -35,7 +35,7 @@ fi
 # fields on the header using the current time.
 # `iat` is set to now, and `exp` is now + 1 second.
 payload=$(
-	echo "${payload}" | jq --arg time_str "$(date +%s)" --arg scope1 ${3} --arg scope2 "${4}" \
+	echo "${payload}" | jq --arg time_str "$(date +%s)" --arg scope1 ${4} --arg scope2 "${5}" \
 	'
 	($time_str | tonumber) as $time_num
 	| .iat=$time_num

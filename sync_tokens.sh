@@ -4,15 +4,15 @@
 export $(egrep -v '^#' .env | xargs)
 
 # Generate frontend token jwt
-NEW_FRONTEND_TOKEN=$(./generate_jwt.sh $SECRET_TOKEN -2 service afe)
-NEW_SERVICE_TOKEN=$(./generate_jwt.sh $SECRET_TOKEN -2 service)
-NEW_SERVICE_GUEST_TOKEN=$(./generate_jwt.sh $SECRET_TOKEN false guest afe)
+NEW_FRONTEND_TOKEN=$(./generate_jwt.sh $SECRET_TOKEN -2 1 service)
+NEW_SERVICE_TOKEN=$(./generate_jwt.sh $SECRET_TOKEN -2 0 service)
+NEW_SERVICE_GUEST_TOKEN=$(./generate_jwt.sh $SECRET_TOKEN false 1 guest)
 
 echo "Now run in Argu Rails console: "
 echo "Apartment::Tenant.each do"
-echo "  token = Doorkeeper::AccessToken.find_or_create_for(Doorkeeper::Application.argu, User::SERVICE_ID, 'service', 1.year.from_now, false); token.update(token: '${NEW_SERVICE_TOKEN}')"
-echo "  token = Doorkeeper::AccessToken.find_or_create_for(Doorkeeper::Application.argu_front_end, User::COMMUNITY_ID, 'service afe', 1.year.from_now, false); token.update(token: '${NEW_FRONTEND_TOKEN}')"
-echo "  token = Doorkeeper::AccessToken.find_or_create_for(Doorkeeper::Application.argu_front_end, nil, 'guest afe', 1.year.from_now, false); token.update(token: '${NEW_SERVICE_GUEST_TOKEN}')"
+echo "  token = Doorkeeper::AccessToken.find_or_create_for(Doorkeeper::Application.argu, User::SERVICE_ID, 'service', 1.year.from_now, false); token.token = '${NEW_SERVICE_TOKEN}'; token.save(validate: false)"
+echo "  token = Doorkeeper::AccessToken.find_or_create_for(Doorkeeper::Application.argu_front_end, User::COMMUNITY_ID, 'service', 1.year.from_now, false); token.token = '${NEW_FRONTEND_TOKEN}'; token.save(validate: false)"
+echo "  token = Doorkeeper::AccessToken.find_or_create_for(Doorkeeper::Application.argu_front_end, nil, 'guest', 1.year.from_now, false); token.token = '${NEW_SERVICE_GUEST_TOKEN}'; token.save(validate: false)"
 echo "end"
 
 # Replace ENV vars

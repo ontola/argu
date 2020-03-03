@@ -60,9 +60,9 @@ if [ ! -f ./.env.test ]; then
     ARGU_CLIENT_ID=client_id
     ARGU_CLIENT_SECRET=client_secret
     DB_SUFFIX=test
-    FRONTEND_TOKEN=$(./generate_jwt.sh $SECRET -2 service afe)
-    SERVICE_TOKEN=$(./generate_jwt.sh $SECRET -2 service)
-    SERVICE_GUEST_TOKEN=$(./generate_jwt.sh $SECRET false guest afe)
+    FRONTEND_TOKEN=$(./generate_jwt.sh $SECRET -2 1 service)
+    SERVICE_TOKEN=$(./generate_jwt.sh $SECRET -2 0 service)
+    SERVICE_GUEST_TOKEN=$(./generate_jwt.sh $SECRET false 1 guest)
     write_env test;
 fi
 
