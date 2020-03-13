@@ -17,8 +17,7 @@ RSpec.describe 'Page create', type: :feature do
 
     wait_until_loaded
 
-    fill_in 'http://xmlns.com/foaf/0.1/name', with: 'My Website'
-    fill_in 'http://schema.org/description', with: 'About my website'
+    fill_in 'http://schema.org/name', with: 'My Website'
     fill_in 'https://argu.co/ns/core#shortname', with: 'my_website'
     check 'I accept the terms of use'
     click_button 'Save'
@@ -27,6 +26,6 @@ RSpec.describe 'Page create', type: :feature do
     expect(page).to have_content 'My Website'
     expect(page).to have_title "My Website"
     click_application_menu_button('My Argu websites')
-    wait_for { page }.to have_content 'About my website'
+    wait_for { main_content }.to have_content 'My Website'
   end
 end

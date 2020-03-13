@@ -86,9 +86,7 @@ RSpec.describe 'Voting', type: :feature do
           within navbar do
             wait_for { count_bubble_count }.to have_content '1'
           end
-          # @todo add link to notification in UI
-          # click_link 'Notifications'
-          visit 'https://argu.localtest/argu/n'
+          go_to_user_page('Notifications')
           wait_for { page }.to(
             have_content("Please confirm your vote by clicking the link we've sent to new_user@example.com")
           )
@@ -104,7 +102,7 @@ RSpec.describe 'Voting', type: :feature do
           wait_for { page }.to have_snackbar('Your password has been updated successfully.')
           logout
           login('new_user@example.com', 'new password')
-          visit 'https://argu.localtest/argu/n'
+          go_to_user_page('Notifications')
           wait_for { page }.to have_content('Finish your profile to be more recognizable.')
         end
 

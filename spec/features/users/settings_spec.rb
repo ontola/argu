@@ -3,15 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'User settings', type: :feature do
-  context 'general' do
-    let(:tab) {}
-
-    example 'as user' do
-      as 'user1@example.com'
-      visit_settings
-      fill_in_form
-    end
-  end
+  let(:form_group) { nil }
 
   context 'profile' do
     let(:tab) { 'Profile' }
@@ -24,7 +16,8 @@ RSpec.describe 'User settings', type: :feature do
   end
 
   context 'authentication' do
-    let(:tab) { 'Authentication' }
+    let(:tab) { 'Settings' }
+    let(:form_group) { 'Authentication' }
 
     example 'as user' do
       as 'user1@example.com'
@@ -34,7 +27,8 @@ RSpec.describe 'User settings', type: :feature do
   end
 
   context 'notifications' do
-    let(:tab) { 'Notifications' }
+    let(:tab) { 'Settings' }
+    let(:form_group) { 'Notifications' }
 
     example 'as user' do
       as 'user1@example.com'
@@ -44,7 +38,8 @@ RSpec.describe 'User settings', type: :feature do
   end
 
   context 'privacy' do
-    let(:tab) { 'Privacy' }
+    let(:tab) { 'Settings' }
+    let(:form_group) { 'Privacy' }
 
     example 'as user' do
       as 'user1@example.com'
@@ -54,7 +49,8 @@ RSpec.describe 'User settings', type: :feature do
   end
 
   context 'delete' do
-    let(:tab) { 'Privacy' }
+    let(:tab) { 'Settings' }
+    let(:form_group) { 'Privacy' }
 
     example 'as user' do
       as 'user1@example.com'
@@ -71,13 +67,13 @@ RSpec.describe 'User settings', type: :feature do
   end
 
   context 'email addresses' do
-    let(:tab) { 'Authentication' }
+    let(:tab) { 'Settings' }
+    let(:form_group) { 'Email addresses' }
     let(:new_email) { 'new_email@example.com' }
 
     example 'as user' do
       as 'user1@example.com'
       visit_settings
-      wait_for { page }.to have_content 'Email addresses'
       expect_email_row(1, 'user1@example.com', true, true)
       resource_selector(
         'https://argu.localtest/argu/u/fg_shortname3end/email_addresses?display=settingsTable',
@@ -87,6 +83,7 @@ RSpec.describe 'User settings', type: :feature do
       fill_in 'http://schema.org/email', with: new_email
       click_button 'Add'
       wait_for { page }.to have_content 'Email addresses'
+      expand_form_group('Email addresses')
       expect_email_row(1, new_email, false, false)
       expect_email_row(2, 'user1@example.com', true, true)
 
@@ -141,7 +138,11 @@ RSpec.describe 'User settings', type: :feature do
   end
 
   def visit_settings
-    click_application_menu_button 'User settings'
-    select_tab(tab) if tab
+    go_to_user_page(tab)
+
+    return unless form_group
+
+    wait_for { page }.to have_content form_group
+    expand_form_group form_group
   end
 end

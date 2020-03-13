@@ -77,6 +77,10 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
     [cookies, csrf]
   end
 
+  def expand_form_group(label)
+    click_button(label)
+  end
+
   def wait_until_loaded
     is_done =
       'return LRS.api.requestMap.size === 0 && '\
@@ -153,6 +157,17 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
     wait_for { page }.to have_css('.MuiListItem-button', text: text)
     sleep(1)
     find('.MuiListItem-button', text: text).click
+  end
+
+  def go_to_user_page(tab = nil)
+    within(resource_selector("#{current_tenant}/c_a")) do
+      find('.NavbarLink__link').click
+    end
+
+    return if tab.nil?
+
+    wait_for { page }.to have_link tab
+    click_link tab
   end
 
   def select_radio(label)

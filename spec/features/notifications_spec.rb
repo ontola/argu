@@ -9,9 +9,8 @@ RSpec.describe 'Notifications', type: :feature do
     within navbar do
       wait_for { count_bubble_count }.to have_content '5'
     end
-    # @todo add link to notification in UI
-    # click_link 'Notifications'
-    visit 'https://argu.localtest/argu/n'
+
+    go_to_user_page('Notifications')
 
     expect(page).to have_content 'first_name_32 last_name_32 posted a challenge in Freetown'
     expect(page).to have_content 'first_name_30 last_name_30 posted a idea in Freetown'

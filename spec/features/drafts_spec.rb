@@ -4,11 +4,15 @@ require 'spec_helper'
 
 RSpec.describe 'Drafts', type: :feature do
   example 'User shows drafts' do
-    as 'user48@example.com', location: '/argu/u/fg_shortname54end/drafts'
+    as 'user48@example.com'
 
-    wait_for { page }.to have_content 'My drafts'
+    go_to_user_page('My drafts')
+
+    wait_for { page }.to have_css('.Heading', text: 'My drafts')
     wait_for { page }.to have_content 'Fg question title 10end'
-    expect(page).to have_css('.Card', count: 1)
+    within(resource_selector('https://argu.localtest/argu/u/fg_shortname54end/profile#drafts')) do
+      expect(page).to have_css('.Card', count: 1)
+    end
     click_link 'Fg question title 10end'
     wait_for { page }.to have_content 'Fg motion title 12end'
     wait_for { page }.to have_content 'Fg argument title 8end'

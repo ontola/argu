@@ -84,16 +84,6 @@ RSpec.describe 'Page settings', type: :feature do
     end
   end
 
-  context 'profile' do
-    let(:tab) { 'Organisation profile' }
-
-    example 'as staff' do
-      as 'staff@example.com'
-      visit_settings
-      fill_in_form
-    end
-  end
-
   context 'redirects' do
     let(:tab) { 'Redirects' }
 

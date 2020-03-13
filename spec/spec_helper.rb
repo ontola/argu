@@ -130,3 +130,27 @@ Capybara::Screenshot.register_filename_prefix_formatter(:rspec) do |example|
   ExceptionHelper.example_filename(example)
 end
 Capybara::Screenshot.append_timestamp = false
+
+module CapybaraNodeFix
+  private
+
+  def synced_resolve(*args)
+    super
+  rescue Capybara::ElementNotFound
+    sleep 1
+    super
+  end
+end
+
+Capybara::Node::Base.prepend CapybaraNodeFix
+
+module CapybaraExecuteFix
+  def execute(*args)
+    super
+  rescue Selenium::WebDriver::Error::StaleElementReferenceError
+    sleep 1
+    super
+  end
+end
+
+Selenium::WebDriver::Remote::OSS::Bridge.prepend CapybaraExecuteFix
