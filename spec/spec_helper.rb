@@ -154,3 +154,14 @@ module CapybaraExecuteFix
 end
 
 Selenium::WebDriver::Remote::OSS::Bridge.prepend CapybaraExecuteFix
+
+module WaitFix
+  def with_wait(*args)
+    super
+  rescue Selenium::WebDriver::Error::StaleElementReferenceError
+    sleep 1
+    super
+  end
+end
+
+RSpec::Wait::Target.prepend WaitFix
