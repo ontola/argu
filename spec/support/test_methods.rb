@@ -17,16 +17,17 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
     wait_for { page }.to have_button('Accept')
     click_button('Accept')
 
-    case result
-    when :success
-      # @todo snackbars are shown, but the page is instantly reloaded.
-      # This prevents the matcher from seeing the snackbar
-      # wait_for { page }.to have_snackbar("You have joined the group 'Members'")
-    when :already_member
-      wait_for { page }.to have_snackbar('You are already member of this group')
-    end
+    # @todo snackbars are shown, but the page is instantly reloaded.
+    # This prevents the matcher from seeing the snackbar
+    # case result
+    # when :success
+    #   wait_for { page }.to have_snackbar("You have joined the group 'Members'")
+    # when :already_member
+    #   wait_for { page }.to have_snackbar('You are already member of this group')
+    # end
     wait(30).for(page).to have_current_path('/argu/holland')
-    wait_for { page }.to have_content('Holland')
+    wait_for { navbar_tabs }.to have_content 'Holland'
+    wait_for { main_content }.to have_content('Holland')
     verify_logged_in
   end
 
