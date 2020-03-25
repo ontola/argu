@@ -27,7 +27,7 @@ namespace :test do
     SERVICES.keys.each do |db|
       docker_run(
         'postgres',
-        ['pg_dump', "#{db}_test", '--username=postgres', "--file=/var/lib/postgresql/data/dump_#{db}"]
+        ['pg_dump', "#{db}_test", '--username=postgres', '-Fc', '--data-only', "--file=/var/lib/postgresql/data/dump_#{db}"]
       )
     end
   end

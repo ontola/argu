@@ -8,29 +8,34 @@ module DockerHelper
     token: :token_service,
     email: :email_service
   }.freeze
+  CLEAN_TABLES = <<END_HEREDOC
+DO
+$func$
+BEGIN
+  EXECUTE
+  (SELECT 'TRUNCATE TABLE '
+    || string_agg(quote_ident(schemaname) || '.' || quote_ident(tablename), ', ')
+    || ' CASCADE'
+   FROM pg_tables
+   WHERE schemaname IN ('public', 'argu')
+  );
+END
+$func$;
+END_HEREDOC
 
   def docker_reset_databases
     SERVICES.keys.each do |db|
-      docker_drop_database(db)
-      docker_postgres_command('--command', "CREATE DATABASE #{db}_test;")
-      docker_postgres_command('-d', "#{db}_test", '-f', "/var/lib/postgresql/data/dump_#{db}")
+      docker_postgres_command('-d', "#{db}_test", '--command', CLEAN_TABLES)
+
+      docker_run(
+        'postgres',
+        ['pg_restore', "/var/lib/postgresql/data/dump_#{db}", '-Fc', '--username=postgres', '--clean', '-d', "#{db}_test"]
+      )
     end
   end
 
   def docker_reset_redis
     docker_run('redis', ['redis-cli', 'FLUSHALL'])
-  end
-
-  def docker_drop_database(database)
-    docker_postgres_command('--command', "UPDATE pg_database SET datallowconn=false WHERE datname='#{database}_test';")
-
-    docker_postgres_command(
-      '--command',
-      'SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pg_stat_activity.datname = '\
-        "'#{database}_test' AND pid <> pg_backend_pid();"
-    )
-
-    docker_postgres_command('--command', "DROP DATABASE #{database}_test;")
   end
 
   def docker_container(name)
