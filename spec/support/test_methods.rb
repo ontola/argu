@@ -121,10 +121,7 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
   end
 
   def fill_in_markdown(locator, **args)
-    wait_for { page }.to have_button('Opmaak')
-    id = [args[:parent] || page.current_url, locator].join('.')
-    click_button 'Opmaak'
-    fill_in(id, args.except(:parent).merge(fill_options: {clear: :backspace}))
+    return fill_in("#{page.current_url}.#{locator}", args)
   end
 
   def fill_in_registration_form(email = 'new_user@example.com')
