@@ -6,7 +6,7 @@ RSpec.describe 'Page create', type: :feature do
   example 'user creates page' do
     as 'user1@example.com'
     click_application_menu_button('My Argu websites')
-    wait_for { page }.to have_content 'No items yet'
+    wait_for { page }.to have_content 'First page'
     wait_for { page }.to have_css('.ContainerHeader')
     container_header = page.find('.ContainerHeader')
     resource_selector(
@@ -26,6 +26,7 @@ RSpec.describe 'Page create', type: :feature do
     expect(page).to have_content 'My Website'
     expect(page).to have_title "My Website"
     click_application_menu_button('My Argu websites')
+    wait_for { main_content }.to have_content 'First page'
     wait_for { main_content }.to have_content 'My Website'
   end
 end
