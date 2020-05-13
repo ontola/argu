@@ -101,9 +101,9 @@ RSpec.describe 'Arguments', type: :feature do
       wait_for { page }.to have_content('Share a response...')
       click_button 'Share a response...' if click_to_open
       click_button @side.capitalize
-      wait_for { page }.to have_field 'http://schema.org/name'
-      fill_in 'http://schema.org/name', with: title
-      fill_in 'http://schema.org/text', with: content
+      wait_for { page }.to have_field field_name('http://schema.org/name')
+      fill_in field_name('http://schema.org/name'), with: title
+      fill_in field_name('http://schema.org/text'), with: content
       within '.Form__footer--right' do
         find('.Button--submit').click
       end

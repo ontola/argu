@@ -16,8 +16,8 @@ RSpec.describe 'Page create', type: :feature do
 
     wait_until_loaded
 
-    fill_in 'http://schema.org/name', with: 'My Website'
-    fill_in 'https://argu.co/ns/core#shortname', with: 'my_website'
+    fill_in field_name('http://schema.org/name'), with: 'My Website'
+    fill_in field_name('https://argu.co/ns/core#shortname'), with: 'my_website'
     check 'I accept the terms of use'
     click_button 'Save'
 

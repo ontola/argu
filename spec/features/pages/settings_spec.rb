@@ -34,13 +34,19 @@ RSpec.describe 'Page settings', type: :feature do
       click_link 'New forum'
 
       wait_for { page }.to have_css('.Page form')
-      fill_in 'http://schema.org/name', with: 'New Forum'
-      fill_in 'https://argu.co/ns/core#shortname', with: 'new_forum'
+      fill_in field_name('http://schema.org/name'), with: 'New Forum'
+      fill_in field_name('https://argu.co/ns/core#shortname'), with: 'new_forum'
       wait_until_loaded
       click_button 'Grants'
       wait_until_loaded
-      select_radio 'Public'
-      select_radio 'Participate'
+      fill_in_select(
+        field_name('https://argu.co/ns/core#grants', 0, 'https://argu.co/ns/core#group'),
+        with: 'Public'
+      )
+      fill_in_select(
+        field_name('https://argu.co/ns/core#grants', 0, 'https://argu.co/ns/core#grantSet'),
+        with: 'Participate'
+      )
       click_button 'Save'
 
       wait_for { page }.to have_snackbar 'Forum created successfully'
@@ -62,7 +68,7 @@ RSpec.describe 'Page settings', type: :feature do
       expect(page).to(
         have_content('This object and all related data will be permanently removed. This cannot be undone.')
       )
-      fill_in 'https://argu.co/ns/core#confirmationString', with: 'remove'
+      fill_in field_name('https://argu.co/ns/core#confirmationString'), with: 'remove'
       click_button 'Delete'
       wait_for { page }.to have_snackbar 'Forum deleted successfully'
       # @todo expect redirected to page settings

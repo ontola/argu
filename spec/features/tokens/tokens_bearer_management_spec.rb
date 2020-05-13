@@ -16,7 +16,7 @@ RSpec.describe 'Token bearer management', type: :feature do
     ).click
 
     wait_for { page }.to have_content('New invite link')
-    fill_in 'https://argu.co/ns/core#redirectUrl', with: 'https://www.example.com'
+    fill_in field_name('https://argu.co/ns/core#redirectUrl'), with: 'https://www.example.com'
     click_button 'Create'
 
     wait_for { page }.to have_snackbar 'Invite link created successfully'

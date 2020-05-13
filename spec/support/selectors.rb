@@ -19,6 +19,10 @@ module Selectors
     found.find(element)
   end
 
+  def field_name(*names)
+    names.map { |name| name.is_a?(String) ? Base64.encode64(name).gsub("\n", '') : name }.join('.')
+  end
+
   def navbar(element = nil)
     found = page.find('.Navbar')
     return found if element.nil?

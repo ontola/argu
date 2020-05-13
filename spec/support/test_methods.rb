@@ -38,7 +38,12 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
 
       response = Faraday.post(
         'https://argu.localtest/login',
-        {email: actor, password: password, r: location},
+        {
+          'http://schema.org/email' => [actor],
+          'https://argu.co/ns/core#password' => [password],
+          'https://argu.co/ns/core#redirectUrl' => [location]
+        }.to_json,
+        'Content-Type': 'application/json',
         'Cookie' => HTTP::Cookie.cookie_value(cookies),
         'X-CSRF-Token' => csrf,
         'Website-IRI' => 'https://argu.localtest/argu'
@@ -86,7 +91,7 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
     is_done =
       'return LRS.api.requestMap.size === 0 && '\
       '(LRS.broadcastHandle || LRS.currentBroadcast || LRS.lastPostponed) === undefined;'
-    wait_for { page.execute_script(is_done) }.to be_truthy
+    wait(30).for { page.execute_script(is_done) }.to be_truthy
   end
 
   def login(email, password = 'password', modal: true, open_modal: true)
@@ -121,7 +126,7 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
   end
 
   def fill_in_markdown(locator, **args)
-    return fill_in("#{page.current_url}.#{locator}", args)
+    fill_in("#{page.current_url}.#{locator}", args)
   end
 
   def fill_in_registration_form(email = 'new_user@example.com')
@@ -137,14 +142,17 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
   end
 
   def fill_in_select(name = nil, with: nil, selector: nil)
-    select = lambda do
-      input_field = find("input[id='#{name}-input'].Input").native
-      with.split('').each { |key| input_field.send_keys key }
-      selector ||= /#{with}/
-      wait_for { page }.to have_css('.SelectItem', text: selector)
-      find('.SelectItem', text: selector).click
+    within "div[aria-labelledby='#{name}-label']" do
+      click_button
+      select = lambda do
+        input_field = find('.Input').native
+        with.split('').each { |key| input_field.send_keys key } if with
+        selector ||= /#{with}/
+        wait_for { page }.to have_css('.SelectItem', text: selector)
+        find('.SelectItem', text: selector).click
+      end
+      select.call
     end
-    select.call
   end
 
   def go_to_menu_item(text, menu: :actions, resource: page.current_url)

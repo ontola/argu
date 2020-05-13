@@ -9,7 +9,7 @@ RSpec.describe 'Decisions', type: :feature do
     wait_for { page }.to have_content 'Take a decision'
     select_radio 'Approve'
     fill_in_markdown(
-      'http://schema.org/text',
+      field_name('http://schema.org/text'),
       with: 'Reason for decision',
     )
     click_button 'Save'
@@ -26,7 +26,7 @@ RSpec.describe 'Decisions', type: :feature do
     wait_for { page }.to have_content 'Take a decision'
     select_radio 'Reject'
     fill_in_markdown(
-      'http://schema.org/text',
+      field_name('http://schema.org/text'),
       with: 'Reason for decision',
     )
     click_button 'Save'

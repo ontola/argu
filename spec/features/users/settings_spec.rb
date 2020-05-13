@@ -53,11 +53,12 @@ RSpec.describe 'User settings', type: :feature do
     let(:form_group) { 'Privacy' }
 
     example 'as user' do
-      as 'user1@example.com'
+      as 'user23@example.com'
       visit_settings
       wait_for { page }.to have_button 'Remove account'
       click_button 'Remove account'
       fill_in_form(submit: 'Delete')
+      # @todo What happens after remove?
     end
     # @todo Not allowed to delete as super admin
     # example 'as staff' do
@@ -75,15 +76,17 @@ RSpec.describe 'User settings', type: :feature do
       as 'user1@example.com'
       visit_settings
       expect_email_row(1, 'user1@example.com', true, true)
+      wait_until_loaded
       resource_selector(
-        'https://argu.localtest/argu/u/fg_shortname3end/email_addresses?display=settingsTable',
+        'https://argu.localtest/argu/email_addresses?display=settingsTable',
         element: '.ContainerFloat',
         child: '.fa-plus'
       ).click
-      fill_in 'http://schema.org/email', with: new_email
+      fill_in field_name('http://schema.org/email'), with: new_email
       click_button 'Add'
-      wait_for { page }.to have_content 'Email addresses'
-      expand_form_group('Email addresses')
+      wait_for { page }.to have_content form_group
+      wait_until_loaded
+      expand_form_group form_group
       expect_email_row(1, new_email, false, false)
       expect_email_row(2, 'user1@example.com', true, true)
 
@@ -119,7 +122,7 @@ RSpec.describe 'User settings', type: :feature do
 
   def email_addresses_row(row = 1)
     resource_selector(
-      'https://argu.localtest/argu/u/fg_shortname3end/email_addresses?display=settingsTable',
+      'https://argu.localtest/argu/email_addresses?display=settingsTable',
       child: "tbody tr:nth-child(#{row})",
       element: '.Card'
     )

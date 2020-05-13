@@ -31,6 +31,8 @@ RSpec.describe 'Discussions', type: :feature do
     verify_logged_in
     expect(page).to have_current_path('/argu/freetown/q/new')
     wait_for { page }.to have_button 'Save'
+    select_cover_photo
+    select_attachment
     click_button 'Save'
     expect_draft_message('Challenge')
     expect_content('q/71', images: false)
@@ -43,6 +45,8 @@ RSpec.describe 'Discussions', type: :feature do
     login('user1@example.com', open_modal: false)
     expect(page).to have_current_path('/argu/freetown/q/new')
     wait_for { page }.to have_button 'Save'
+    select_cover_photo
+    select_attachment
     click_button 'Save'
     expect_draft_message('Challenge')
     expect_content('q/71', images: false)
@@ -69,6 +73,7 @@ RSpec.describe 'Discussions', type: :feature do
       :argu,
       'Apartment::Tenant.switch(\'argu\') do'\
       '  Shortname.where(owner_type: \'User\').destroy_all;'\
+      '  User.update_all(first_name: nil);'\
       '  Page.argu.update(requires_intro: true) '\
       'end'
     )
@@ -80,6 +85,8 @@ RSpec.describe 'Discussions', type: :feature do
     fill_in_form
     wait_for { page }.to have_content 'Welcome!'
     within "[role='dialog']" do
+      fill_in field_name('https://argu.co/ns/core#shortname'), with: 'member'
+      fill_in field_name('http://schema.org/givenName'), with: 'username'
       click_button 'Save'
     end
     expect_draft_message('Idea')
@@ -91,7 +98,7 @@ RSpec.describe 'Discussions', type: :feature do
     end
 
     within '.Page > .FullResource' do
-      wait_for { page }.to have_content 'first_name_26 last_name_26'
+      wait_for { page }.to have_content 'username last_name_26'
     end
   end
 
@@ -116,16 +123,12 @@ RSpec.describe 'Discussions', type: :feature do
   private
 
   def fill_in_form
-    fill_in 'http://schema.org/name', with: title, fill_options: {clear: :backspace}
-    fill_in_markdown 'http://schema.org/text', with: content
-    within('fieldset[property="https://ns.ontola.io/coverPhoto"]') do
-      click_button 'Cover photo'
-      attach_file(nil, File.absolute_path('spec/fixtures/cover_photo.jpg'), make_visible: true)
-    end
-    within 'fieldset[property="https://argu.co/ns/core#attachments"]' do
-      click_button 'Attachments'
-      attach_file(nil, File.absolute_path('spec/fixtures/profile_photo.png'), make_visible: true)
-    end
+    fill_in field_name('http://schema.org/name'), with: title, fill_options: {clear: :backspace}
+    fill_in_markdown field_name('http://schema.org/text'), with: content
+    click_button 'Cover photo'
+    select_cover_photo
+    click_button 'Attachments'
+    select_attachment
     click_button 'Save'
   end
 
@@ -135,5 +138,18 @@ RSpec.describe 'Discussions', type: :feature do
     resource_selector("https://argu.localtest/argu/#{path}/attachments", child: '.AttachmentPreview') if images
     expect(page).to have_css('.CoverImage__wrapper') if images
     expect(page).to have_current_path("/argu/#{path}")
+  end
+
+  def select_attachment
+    within 'fieldset[property="https://argu.co/ns/core#attachments"]' do
+      click_button 'On my computer'
+      attach_file(nil, File.absolute_path('spec/fixtures/profile_photo.png'), make_visible: true)
+    end
+  end
+
+  def select_cover_photo
+    within('fieldset[property="https://ns.ontola.io/core#coverPhoto"]') do
+      attach_file(nil, File.absolute_path('spec/fixtures/cover_photo.jpg'), make_visible: true)
+    end
   end
 end

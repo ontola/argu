@@ -18,8 +18,8 @@ RSpec.describe 'User reset password', type: :feature do
 
     visit password_reset_email.links.last
     wait_for { page }.to have_content('Choose a password')
-    fill_in 'https://argu.co/ns/core#password', with: 'new password'
-    fill_in 'https://argu.co/ns/core#passwordConfirmation', with: 'new password'
+    fill_in field_name('https://argu.co/ns/core#password'), with: 'new password'
+    fill_in field_name('https://argu.co/ns/core#passwordConfirmation'), with: 'new password'
     click_button 'Save'
 
     wait_for { page }.to have_snackbar('Your password has been updated successfully.')

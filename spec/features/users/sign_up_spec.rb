@@ -18,8 +18,8 @@ RSpec.describe 'User sign up', type: :feature do
 
     wait_for { page }.to have_content 'Choose a password'
 
-    fill_in 'https://argu.co/ns/core#password', with: 'new password'
-    fill_in 'https://argu.co/ns/core#passwordConfirmation', with: 'new password'
+    fill_in field_name('https://argu.co/ns/core#password'), with: 'new password'
+    fill_in field_name('https://argu.co/ns/core#passwordConfirmation'), with: 'new password'
     click_button 'Save'
 
     verify_logged_in

@@ -82,7 +82,7 @@ RSpec.describe 'Comments', type: :feature do
 
     within scope do
       click_button 'Share a response...' if click_to_open
-      fill_in 'http://schema.org/text', with: content
+      fill_in field_name('http://schema.org/text'), with: content
       within '.Form__footer--right' do
         find('.Button--submit').click
       end

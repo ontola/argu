@@ -17,7 +17,7 @@ module Matchers
   def is_snackbar_action?(log)
     log.is_a?(Array) &&
       log.first == 'Link action:' &&
-      action_log_iri(log)&.start_with?('https://ns.ontola.io/actions/snackbar')
+      action_log_iri(log)&.start_with?('https://ns.ontola.io/libro/actions/snackbar')
   end
 
   def action_log_snackbar_message(log)
