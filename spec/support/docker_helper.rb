@@ -36,7 +36,7 @@ END_HEREDOC
   def docker_clean_database(db, times = 0)
     docker_postgres_command('-d', "#{db}_test", '--command', CLEAN_TABLES)
   rescue
-    docker_clear_database(db, times + 1) unless times >= 3
+    docker_clean_database(db, times + 1) unless times >= 3
   end
 
   def docker_reset_redis

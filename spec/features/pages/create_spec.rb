@@ -4,8 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Page create', type: :feature do
   example 'user creates page' do
-    as 'user1@example.com'
-    click_application_menu_button('My Argu websites')
+    as 'user1@example.com', location: '/argu/u/fg_shortname3end/o'
     wait_for { page }.to have_content 'First page'
     wait_for { page }.to have_css('.ContainerHeader')
     container_header = page.find('.ContainerHeader')
@@ -23,9 +22,10 @@ RSpec.describe 'Page create', type: :feature do
     click_button 'Save'
 
     wait(30).for(page).to have_current_path('/my_website')
-    expect(page).to have_content 'My Website'
+    wait_for { main_content }.to have_content 'My Website'
     expect(page).to have_title "My Website"
-    click_application_menu_button('My Argu websites')
+
+    visit('https://argu.localtest/argu/u/fg_shortname3end/o')
     wait_for { main_content }.to have_content 'First page'
     wait_for { main_content }.to have_content 'My Website'
   end
