@@ -25,13 +25,18 @@ END_HEREDOC
 
   def docker_reset_databases
     SERVICES.keys.each do |db|
-      docker_postgres_command('-d', "#{db}_test", '--command', CLEAN_TABLES)
-
+      docker_clean_database(db)
       docker_run(
         'postgres',
         ['pg_restore', "/var/lib/postgresql/data/dump_#{db}", '-Fc', '--username=postgres', '--clean', '-d', "#{db}_test"]
       )
     end
+  end
+
+  def docker_clean_database(db, times = 0)
+    docker_postgres_command('-d', "#{db}_test", '--command', CLEAN_TABLES)
+  rescue
+    docker_clear_database(db, times + 1) unless times >= 3
   end
 
   def docker_reset_redis
