@@ -7,7 +7,7 @@ RSpec.describe 'Notifications', type: :feature do
     as 'user1@example.com'
 
     within navbar do
-      wait_for { count_bubble_count }.to have_content '5'
+      wait_for { count_bubble_count }.to have_content '6'
     end
 
     go_to_user_page('Notifications')
@@ -18,12 +18,12 @@ RSpec.describe 'Notifications', type: :feature do
 
     wait_until_loaded
 
-    wait_for { page.all('[data-test="Notification-Unread"]').count }.to eq(5)
+    wait_for { page.all('[data-test="Notification-Unread"]').count }.to eq(6)
     page.all('[data-test="Notification-Unread"]').first.click
     within navbar do
-      wait_for { count_bubble_count }.to have_content '4'
+      wait_for { count_bubble_count }.to have_content '5'
     end
 
-    expect(page.all('[data-test="Notification-Unread"]').count).to eq(4)
+    expect(page.all('[data-test="Notification-Unread"]').count).to eq(5)
   end
 end

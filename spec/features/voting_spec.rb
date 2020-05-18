@@ -42,7 +42,7 @@ RSpec.describe 'Voting', type: :feature do
 
   context 'on motion#show' do
     let(:location) { '/argu/m/38' }
-    let(:motion_sequence) { 8 }
+    let(:motion_sequence) { 9 }
 
     context 'as guest' do
       it_behaves_like 'voting'
@@ -91,7 +91,7 @@ RSpec.describe 'Voting', type: :feature do
             have_content("Please confirm your vote by clicking the link we've sent to new_user@example.com")
           )
           expect_email(:confirm_vote_email)
-          expect(confirm_vote_email.body).to have_content('In favour of Fg motion title 8end')
+          expect(confirm_vote_email.body).to have_content('In favour of Fg motion title 9end')
           visit confirm_vote_email.links.last
           wait_for { page }.to have_snackbar('Your account has been confirmed.')
           wait_for { page }.to have_content('Choose a password')
@@ -136,7 +136,7 @@ RSpec.describe 'Voting', type: :feature do
 
   context 'on question#show' do
     let(:location) { '/argu/q/41' }
-    let(:motion_sequence) { 9 }
+    let(:motion_sequence) { 10 }
 
     context 'as guest' do
       it_behaves_like 'voting'

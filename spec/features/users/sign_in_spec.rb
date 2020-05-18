@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'User sign in', type: :feature do
   it 'authenticates a valid user' do
     as('user1@example.com')
-    wait_for { page }.to have_content 'Fg motion title 8end'
+    wait_for { page }.to have_content 'Fg motion title 9end'
   end
 
   it 'denies a user with wrong email' do
@@ -25,7 +25,7 @@ RSpec.describe 'User sign in', type: :feature do
 
     verify_logged_in
 
-    wait_for { page }.to have_content 'Fg motion title 8end'
+    wait_for { page }.to have_content 'Fg motion title 9end'
   end
 
   it 'denies a user with wrong password' do

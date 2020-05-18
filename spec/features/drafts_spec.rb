@@ -14,7 +14,7 @@ RSpec.describe 'Drafts', type: :feature do
       expect(page).to have_css('.Card', count: 1)
     end
     click_link 'Fg question title 10end'
-    wait_for { page }.to have_content 'Fg motion title 12end'
+    wait_for { page }.to have_content 'Fg motion title 13end'
     wait_for { page }.to have_content 'Fg argument title 8end'
     expect_publish_action
   end

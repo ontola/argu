@@ -7,7 +7,7 @@ RSpec.describe 'Navigations', type: :feature do
     as :guest, location: '/argu'
 
     go_to_child 'Fg question title 7end'
-    go_to_child 'Fg motion title 9end'
+    go_to_child 'Fg motion title 10end'
     go_to_child 'Fg argument title 6end'
     wait_for { page }.to have_content 'fg comment body 2end'
   end
@@ -16,7 +16,7 @@ RSpec.describe 'Navigations', type: :feature do
     as :guest, location: '/argu/pro/47'
 
     wait_for { page }.to have_content 'fg comment body 2end'
-    go_to_parent 'Fg motion title 9end'
+    go_to_parent 'Fg motion title 10end'
     go_to_parent 'Fg question title 7end'
     go_to_parent 'Freetown'
     wait_for { page }.to have_content 'Do you have a good idea?'

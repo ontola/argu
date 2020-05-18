@@ -13,7 +13,7 @@ RSpec.describe 'Direct messages', type: :feature do
     wait_for { page }.to have_snackbar 'The mail will be sent'
     expect_email :direct_message_email
     expect(direct_message_email.body).to(
-      have_content('first_name_1 last_name_1 has sent you a message in response to Fg motion title 8end.')
+      have_content('first_name_1 last_name_1 has sent you a message in response to Fg motion title 9end.')
     )
   end
 

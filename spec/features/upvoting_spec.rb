@@ -13,7 +13,7 @@ RSpec.describe 'Upvoting', type: :feature do
   let(:before_vote) {}
   let(:expected_count) { 1 }
   let(:location) { '/argu/m/38' }
-  let(:motion_sequence) { 8 }
+  let(:motion_sequence) { 9 }
 
   shared_examples_for 'upvoting' do
     example 'remember upvote' do
