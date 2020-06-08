@@ -24,7 +24,11 @@ RSpec.describe 'Follow', type: :feature do
     expect(mailcatcher_email).to be_nil
     rails_runner(
       :argu,
-      'Apartment::Tenant.switch(\'argu\') { User.find(3).update(notifications_viewed_at: 1.year.ago) }'
+      'Apartment::Tenant.switch(\'argu\') do '\
+        'ActsAsTenant.with_tenant(Page.find_via_shortname(\'argu\')) do '\
+          'User.find(3).update(notifications_viewed_at: 1.year.ago) '\
+        'end '\
+      'end'
     )
     rails_runner(
       :argu,
