@@ -195,6 +195,7 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
 
   def verify_not_logged_in
     wait_for { page }.not_to have_css "div[resource=\"#{current_tenant}/c_a\"]"
+    wait_for { navbar }.to have_content 'Log in / sign up'
   end
 
   def wait_for_terms_notice

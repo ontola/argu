@@ -50,6 +50,7 @@ RSpec.describe 'User request confirmation', type: :feature do
       wait_for { page }.to(
         have_snackbar("You'll receive a mail containing instructions to confirm your account within a few minutes.")
       )
+      logout
       expect_email(:confirmation_email)
 
       visit confirmation_email.links.last
@@ -96,13 +97,16 @@ RSpec.describe 'User request confirmation', type: :feature do
       wait_for { page }.to(
         have_snackbar("You'll receive a mail containing instructions to confirm your account within a few minutes.")
       )
+
+      logout
       expect_email(:confirmation_email)
 
       visit confirmation_email.links.last
 
       wait_for { page }.to have_snackbar 'Email was already confirmed, try to log in.'
 
-      verify_not_logged_in
+      wait_until_loaded
+      verify_logged_in
     end
   end
 
