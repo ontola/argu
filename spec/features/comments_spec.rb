@@ -54,6 +54,24 @@ RSpec.describe 'Comments', type: :feature do
   context 'As user' do
     let(:actor) { 'user1@example.com' }
     it_behaves_like 'post comment'
+
+    example 'post nested comment' do
+      as actor, location: '/argu/pro/47'
+
+      within(resource_selector('https://argu.localtest/argu/c/50')) do
+        wait_for(page).to have_link('New comment')
+        click_link('New comment')
+        expect_form('/argu/c/50/c')
+        fill_in field_name('http://schema.org/text'), with: 'Nested comment'
+        click_button('save')
+        wait_for { page }.to have_snackbar("Comment published successfully. It can take a few moments before it's visible on other pages.")
+      end
+
+      wait_for { page }.to have_content('Show 1 additional replies...')
+      expect(page).not_to have_content('Nested comment')
+      click_link('Show 1 additional replies...')
+      wait_for(page).to have_content('Nested comment')
+    end
   end
 
   context 'as invitee' do

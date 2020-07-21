@@ -162,7 +162,7 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
     yield if block_given?
     wait_for { page }.to have_css('.MuiListItem-button', text: text)
     sleep(1)
-    find('.MuiListItem-button', text: text).click
+    find('.MuiListItem-button', text: text, match: :prefer_exact).click
   end
 
   def go_to_user_page(tab = nil)

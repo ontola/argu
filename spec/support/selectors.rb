@@ -30,6 +30,14 @@ module Selectors
     found.find(element)
   end
 
+  def details_bar(parent: resource_selector(page.current_url, element: '.Card'))
+    within(parent) do
+      wait_for { page }.to have_css('.DetailsBar')
+
+      page.find('.DetailsBar')
+    end
+  end
+
   def navbar_tabs(element = nil)
     wait_for { page }.to have_css('.Navbar .NavBarContent__items')
     found = page.find('.Navbar .NavBarContent__items')

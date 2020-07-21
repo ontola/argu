@@ -4,14 +4,20 @@ require 'spec_helper'
 
 RSpec.describe 'Drafts', type: :feature do
   example 'User shows drafts' do
-    as 'user48@example.com'
+    as 'user48@example.com', location: '/argu/freetown/q/new'
+    expect_form('/argu/freetown/q')
+    fill_in field_name('http://schema.org/name'), with: 'Draft title'
+    fill_in_markdown field_name('http://schema.org/text'), with: 'Draft content'
+    click_button 'Save'
+    wait_for(page).to have_content('Draft version, not yet published.')
 
     go_to_user_page('My drafts')
 
     wait_for { page }.to have_css('.Heading', text: 'My drafts')
     wait_for { page }.to have_content 'Fg question title 10end'
+    wait_for { page }.to have_content 'Draft title'
     within(resource_selector('https://argu.localtest/argu/u/fg_shortname54end/profile#drafts')) do
-      expect(page).to have_css('.Card', count: 1)
+      expect(page).to have_css('.Card', count: 2)
     end
     click_link 'Fg question title 10end'
     wait_for { page }.to have_content 'Fg motion title 13end'

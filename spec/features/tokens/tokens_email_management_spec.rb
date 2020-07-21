@@ -44,6 +44,11 @@ RSpec.describe 'Token email management', type: :feature do
     expect(invite_email.body).to include("I invite you to join the group 'Members'.")
   end
 
+  # @todo send invite as different actor
+  # @todo send invite as with empty message
+  # @todo validate email format
+  # @todo redirect url
+
   private
 
   def invite_email
