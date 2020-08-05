@@ -10,7 +10,7 @@ RSpec.describe 'Invites', type: :feature do
     fill_in field_name('https://argu.co/ns/core#emailAddresses'), with: 'invitee1@example.com, invitee2@example.com'
     fill_in field_name('https://argu.co/ns/core#message'), with: 'Example body'
     fill_in_select field_name('https://argu.co/ns/core#groupId'), with: 'custom'
-    fill_in field_name('https://argu.co/ns/core#redirectUrl'), with: 'https://www.example.com'
+    fill_in field_name('https://ns.ontola.io/core#redirectUrl'), with: 'https://www.example.com'
     click_button 'Save'
     wait_for { page }.to have_snackbar 'Invite created successfully'
     expect(token_row(1)).to have_content('invitee2@example.com')
@@ -28,7 +28,7 @@ RSpec.describe 'Invites', type: :feature do
     wait_for { page }.to have_content 'Invite people'
     fill_in field_name('https://argu.co/ns/core#emailAddresses'), with: 'invitee1@example.com, invitee2@example.com'
     fill_in field_name('https://argu.co/ns/core#message'), with: 'Example body'
-    fill_in field_name('https://argu.co/ns/core#redirectUrl'), with: 'https://www.example.com'
+    fill_in field_name('https://ns.ontola.io/core#redirectUrl'), with: 'https://www.example.com'
 
     wait_for(page).to have_button('Add group')
     click_button('Add group')

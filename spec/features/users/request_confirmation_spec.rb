@@ -131,6 +131,6 @@ RSpec.describe 'User request confirmation', type: :feature do
   def request_confirmation_link
     wait_for { page }.to have_content('Send confirmation link again')
     fill_in placeholder: 'email@example.com', with: email
-    click_button 'Save'
+    click_button 'Send'
   end
 end

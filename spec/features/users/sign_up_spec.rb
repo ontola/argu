@@ -18,13 +18,13 @@ RSpec.describe 'User sign up', type: :feature do
 
     wait_for { page }.to have_content 'Choose a password'
 
-    fill_in field_name('https://argu.co/ns/core#password'), with: 'new password'
-    fill_in field_name('https://argu.co/ns/core#passwordConfirmation'), with: 'new password'
+    fill_in field_name('https://ns.ontola.io/core#password'), with: 'new password'
+    fill_in field_name('https://ns.ontola.io/core#passwordConfirmation'), with: 'new password'
     click_button 'Save'
 
     verify_logged_in
     wait_for { page }.to have_snackbar('Your password has been updated successfully.')
-    expect(page).to have_content('Welcome!')
+    wait_for { page }.to have_content('Welcome!')
 
     logout
     login(email, 'new password')
@@ -35,7 +35,7 @@ RSpec.describe 'User sign up', type: :feature do
     wait_for { page }.to have_content 'Log in / sign up'
     page.click_link('Log in / sign up')
 
-    wait_for { page }.to have_content('login or register')
+    wait_for { page }.to have_content('Sign in or register')
 
     fill_in placeholder: 'email@example.com', with: 'other_email@example.com'
 
@@ -43,7 +43,7 @@ RSpec.describe 'User sign up', type: :feature do
 
     wait_for_terms_notice
 
-    click_button 'back'
+    click_link 'cancel'
 
     fill_in_registration_form email
 

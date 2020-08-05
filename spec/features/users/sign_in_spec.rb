@@ -19,7 +19,7 @@ RSpec.describe 'User sign in', type: :feature do
 
     wait_for_terms_notice
 
-    click_button 'back'
+    click_link 'cancel'
 
     fill_in_login_form 'user1@example.com'
 
@@ -35,6 +35,6 @@ RSpec.describe 'User sign in', type: :feature do
 
     fill_in_login_form 'user1@example.com', 'wrong_password'
 
-    # @todo Wrong password behaviour
+    wait_for { page }.to have_content 'Invalid password'
   end
 end

@@ -95,8 +95,8 @@ RSpec.describe 'Voting', type: :feature do
           visit confirm_vote_email.links.last
           wait_for { page }.to have_snackbar('Your account has been confirmed.')
           wait_for { page }.to have_content('Choose a password')
-          fill_in field_name('https://argu.co/ns/core#password'), with: 'new password'
-          fill_in field_name('https://argu.co/ns/core#passwordConfirmation'), with: 'new password'
+          fill_in field_name('https://ns.ontola.io/core#password'), with: 'new password'
+          fill_in field_name('https://ns.ontola.io/core#passwordConfirmation'), with: 'new password'
           click_button 'Save'
           wait_for { page }.to have_content('Set how you will be visible to others on Argu')
           wait_for { page }.to have_snackbar('Your password has been updated successfully.')
@@ -159,7 +159,7 @@ RSpec.describe 'Voting', type: :feature do
     click_button 'Confirm'
     return unless password
 
-    fill_in field_name('https://argu.co/ns/core#password'), with: password
+    fill_in field_name('https://ns.ontola.io/core#password'), with: password
     click_button 'Continue'
   end
 

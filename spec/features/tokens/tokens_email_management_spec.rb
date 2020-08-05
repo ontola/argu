@@ -18,7 +18,7 @@ RSpec.describe 'Token email management', type: :feature do
     wait_for { page }.to have_content('New email invite')
 
     fill_in field_name('https://argu.co/ns/core#emailAddresses'), with: 'user3@example.com'
-    fill_in field_name('https://argu.co/ns/core#redirectUrl'), with: 'https://www.example.com'
+    fill_in field_name('https://ns.ontola.io/core#redirectUrl'), with: 'https://www.example.com'
     click_button 'Create'
 
     wait_for { page }.to have_snackbar 'Email invite created successfully'

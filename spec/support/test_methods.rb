@@ -31,26 +31,36 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
     verify_logged_in
   end
 
+  def login_body(actor, password, location)
+    body = <<-FOO
+    <http://purl.org/link-lib/targetResource> <http://schema.org/email> "#{actor}" .
+    <http://purl.org/link-lib/targetResource> <https://ns.ontola.io/core#password> "#{password}" .
+    <http://purl.org/link-lib/targetResource> <https://ns.ontola.io/core#redirectUrl> <#{location}> .
+    FOO
+    Faraday::UploadIO.new(StringIO.new(body), 'application/n-triples')
+  end
+
   def as(actor, location: '/argu/freetown', password: 'password')
     if actor != :guest
       visit 'https://argu.localtest/wait_for_login'
       cookies, csrf = authentication_values
 
-      response = Faraday.post(
-        'https://argu.localtest/login',
-        {
-          'http://schema.org/email' => [actor],
-          'https://argu.co/ns/core#password' => [password],
-          'https://argu.co/ns/core#redirectUrl' => [location]
-        }.to_json,
-        'Content-Type': 'application/json',
-        'Cookie' => HTTP::Cookie.cookie_value(cookies),
-        'X-CSRF-Token' => csrf,
-        'Website-IRI' => 'https://argu.localtest/argu'
-      )
+      conn = Faraday.new(url: 'https://argu.localtest/argu/login') do |faraday|
+        faraday.request :multipart
+        faraday.adapter :net_http
+      end
+      response = conn.post do |req|
+        req.headers.merge!(
+          'Accept': 'application/hex+x-ndjson',
+          'Content-Type': 'multipart/form-data',
+          'Cookie' => HTTP::Cookie.cookie_value(cookies),
+          'X-CSRF-Token' => csrf,
+          'Website-IRI' => 'https://argu.localtest/argu'
+        )
+        req.body = {'<http://purl.org/link-lib/graph>' => login_body(actor, password, location)}
+      end
 
       expect(response.status).to eq(200)
-      expect(JSON.parse(response.body)['status']).to eq('SIGN_IN_LOGGED_IN')
 
       cookies.each do |cookie|
         page.driver.browser.manage.add_cookie(name: cookie.name, value: cookie.value)
@@ -99,7 +109,7 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
 
     page.click_link('Log in / sign up') if modal && open_modal
 
-    wait_for { page }.to have_content 'login or register'
+    wait_for { page }.to have_content 'Sign in or register'
 
     fill_in_login_form email, password, modal: modal
 
@@ -111,15 +121,17 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
   end
 
   def fill_in_login_form(email = 'user1@example.com', password = 'password', modal: true)
-    wait_for { page }.to have_content('login or register')
+    wait_for { page }.to have_content('Sign in or register')
 
-    wrapper = modal ? "[role='dialog']" : "form[action='/users']"
+    wrapper = modal ? "[role='dialog']" : 'form.Form'
     within wrapper do
+      wait_for(page).to have_content('Email')
       fill_in placeholder: 'email@example.com', with: email, fill_options: {clear: :backspace}
 
       click_button 'Confirm'
 
-      fill_in type: :password, with: password
+      wait_for(page).to have_content('Password')
+      fill_in field_name('https://ns.ontola.io/core#password'), with: password
 
       click_button 'Continue'
     end
@@ -130,7 +142,7 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
   end
 
   def fill_in_registration_form(email = 'new_user@example.com')
-    wait_for { page }.to have_content('login or register')
+    wait_for { page }.to have_content('Sign in or register')
 
     fill_in placeholder: 'email@example.com', with: email, fill_options: {clear: :backspace}
 
@@ -208,7 +220,7 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
 
   def wait_for_terms_notice
     wait_for { page }.to(
-      have_content("Door je te registreren ga je akkoord met de\n algemene voorwaarden \nen de\n privacy policy\n.")
+      have_content("By continuing you agree to our\nTerms of use\nand our\nPrivacy policy\n.")
     )
   end
 

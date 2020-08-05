@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Logout', type: :feature do
+RSpec.describe 'User sign out', type: :feature do
   it 'authenticates a valid user' do
     as('user1@example.com')
     logout
