@@ -140,7 +140,7 @@ RSpec.describe 'Page settings', type: :feature do
 
   def visit_settings
     wait_for { page }.to have_content('Settings')
-    within('.NavBarContent') do
+    within('.NavBarContent__items') do
       click_link 'Settings'
     end
     select_tab(tab) if tab

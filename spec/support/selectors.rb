@@ -24,7 +24,7 @@ module Selectors
   end
 
   def navbar(element = nil)
-    found = page.find('.Navbar')
+    found = page.find('.App__container > .MuiAppBar-root')
     return found if element.nil?
 
     found.find(element)
@@ -39,8 +39,8 @@ module Selectors
   end
 
   def navbar_tabs(element = nil)
-    wait_for { page }.to have_css('.Navbar .NavBarContent__items')
-    found = page.find('.Navbar .NavBarContent__items')
+    wait_for { page }.to have_css('.MuiAppBar-root .NavBarContent__items')
+    found = page.find('.MuiAppBar-root .NavBarContent__items')
     return found if element.nil?
 
     found.find(element)

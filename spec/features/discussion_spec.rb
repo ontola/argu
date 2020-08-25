@@ -9,7 +9,7 @@ RSpec.describe 'Discussions', type: :feature do
   example 'Hide new discussion link when not allowed' do
     self.current_tenant = 'https://argu.localtest/other_page'
     as 'member@example.com', location: '/other_page'
-    within '.NavBarContent' do
+    within '.NavBarContent__items' do
       wait_for { page }.to have_content 'Other page forum'
       click_link 'Other page forum'
     end
@@ -94,8 +94,8 @@ RSpec.describe 'Discussions', type: :feature do
     expect_content('m/71', creator: 'username last_name_26')
 
     within navbar do
-      expect(page).to have_link(href: '/argu/u/member')
-      click_link(href: '/argu/u/member')
+      expect(page).to have_link(href: '/argu/u/member/profile')
+      click_link(href: '/argu/u/member/profile')
     end
 
     within '.Page > .FullResource' do

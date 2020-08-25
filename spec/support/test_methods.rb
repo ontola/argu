@@ -15,6 +15,7 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
 
   def accept_token(result: :success)
     wait_for { page }.to have_button('Accept')
+    wait_until_loaded
     click_button('Accept')
 
     # @todo snackbars are shown, but the page is instantly reloaded.
@@ -76,7 +77,9 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
     wait_for { page }.to have_css '.AppMenu'
     wait_for { application_menu }.to have_content button
     sleep 1
-    click_link button
+    within application_menu do
+      click_link button
+    end
   end
 
   def current_tenant
@@ -86,15 +89,18 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
   def authentication_values
     response = Faraday.get('https://argu.localtest/argu')
 
+    expect(response.status).to eq(200)
     cookies = HTTP::CookieJar.new.parse(response.headers['set-cookie'], 'https://argu.localtest')
     csrf = response.body.match(/<meta name=\"csrf-token\" content=\"(.*)\">/)[1]
 
-    expect(response.status).to eq(200)
     [cookies, csrf]
   end
 
   def expand_form_group(label)
-    click_button(label)
+    wait_for { page }.to have_css('form')
+    within 'form' do
+      click_button(label)
+    end
   end
 
   def wait_until_loaded
@@ -179,13 +185,13 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
 
   def go_to_user_page(tab = nil)
     within(resource_selector("#{current_tenant}/c_a")) do
-      find('.NavbarLink__link').click
+      find('.MuiButton-root').click
     end
 
     return if tab.nil?
 
-    wait_for { page }.to have_link tab
-    click_link tab
+    wait_for { page }.to have_button tab
+    click_button tab
   end
 
   def select_radio(label)
@@ -195,7 +201,7 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
   def select_tab(tab)
     wait_for { page }.to have_css('.MuiTabs-root')
     within '.MuiTabs-root' do
-      click_link tab
+      click_button tab
     end
   end
 

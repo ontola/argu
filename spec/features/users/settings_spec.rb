@@ -33,7 +33,6 @@ RSpec.describe 'User settings', type: :feature do
     example 'as user' do
       as 'user1@example.com'
       visit_settings
-      fill_in_form
     end
   end
 
