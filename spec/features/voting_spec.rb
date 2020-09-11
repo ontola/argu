@@ -94,7 +94,7 @@ RSpec.describe 'Voting', type: :feature do
           expect(confirm_vote_email.body).to have_content('In favour of Fg motion title 9end')
           visit confirm_vote_email.links.last
           wait_for { page }.to have_snackbar('Your account has been confirmed.')
-          wait_for { page }.to have_content('Choose a password')
+          wait_for { page }.to have_content('Set your password')
           fill_in field_name('https://ns.ontola.io/core#password'), with: 'new password'
           fill_in field_name('https://ns.ontola.io/core#passwordConfirmation'), with: 'new password'
           click_button 'Save'

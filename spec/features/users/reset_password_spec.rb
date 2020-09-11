@@ -17,7 +17,7 @@ RSpec.describe 'User reset password', type: :feature do
     expect_email(:password_reset_email)
 
     visit password_reset_email.links.last
-    wait_for { page }.to have_content('Choose a password')
+    wait_for { page }.to have_content('Set your password')
     fill_in field_name('https://ns.ontola.io/core#password'), with: 'new password'
     fill_in field_name('https://ns.ontola.io/core#passwordConfirmation'), with: 'new password'
     click_button 'Save'
