@@ -2,6 +2,7 @@
 
 require 'rspec/core/rake_task'
 require_relative 'spec/support/docker_helper'
+require_relative 'services'
 
 RSpec::Core::RakeTask.new(:spec)
 
@@ -24,8 +25,8 @@ namespace :test do
     docker_setup('email', seed: :test)
 
     puts 'dumping databases'
-    SERVICES.keys.each do |db|
-      docker_run(
+    db_managed_services.each do |db|
+      docker_exec(
         'postgres',
         ['pg_dump', "#{db}_test", '--username=postgres', '-Fc', '--data-only', "--file=/var/lib/postgresql/data/dump_#{db}"]
       )

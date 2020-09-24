@@ -15,6 +15,8 @@ require 'support/docker_helper'
 require 'support/test_methods'
 require 'support/selectors'
 
+require_relative '../services'
+
 OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE
 
 Dotenv.load
@@ -43,7 +45,7 @@ RSpec.configure do |config|
   config.wait_timeout = ENV['RSPEC_WAIT']&.to_i || 15
 
   config.before(:suite) do
-    DockerHelper::SERVICES.keys.each do |service|
+    db_managed_services.each do |service|
       puts "Checking #{service}"
       table_exists =
         docker_container('postgres')

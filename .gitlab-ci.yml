@@ -10,6 +10,7 @@ test:
   before_script:
     - sudo apt-get update && sudo apt-get -y install ruby postgresql-client
     - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" "$CI_REGISTRY" --password-stdin
+    - sudo gem install activesupport
   script:
     - sudo sh -c "echo '127.0.0.1 app.argu.localtest' >> /etc/hosts"
     - sudo sh -c "echo '127.0.0.1 argu.localtest' >> /etc/hosts"
@@ -25,17 +26,18 @@ test:
     - sudo chown -R $(whoami):$(whoami) ./devproxyCA
     - docker cp ./devproxyCA/cacert.pem certdata:/cacert.pem
     - RAILS_ENV=$RAILS_ENV docker-compose pull
-    - docker-compose up -d elastic rabbitmq devproxy
-    - docker-compose up -d postgres mailcatcher redis
+    - docker-compose up -d postgres elastic devproxy
+    - docker-compose up -d rabbitmq mailcatcher redis
     - RAILS_ENV=$RAILS_ENV docker-compose up -d argu sidekiq
-    - RAILS_ENV=$RAILS_ENV docker-compose up -d token token_sidekiq frontend email email_subscriber email_sidekiq
+    - RAILS_ENV=$RAILS_ENV docker-compose up apex_rs_setup # Wait until finished
+    - RAILS_ENV=$RAILS_ENV DISABLE_PERSISTENCE=$DISABLE_PERSISTENCE docker-compose up -d token token_sidekiq frontend email email_subscriber email_sidekiq apex_rs
     - docker-compose build --build-arg "TEST_FILES=$TEST_FILES"
     - docker push $CI_REGISTRY_IMAGE:latest
     - docker-compose run testrunner bundle exec rake test:setup
     - docker restart devproxy_argu_1
     - docker restart devproxy_sidekiq_1
     - ./restart.sh devproxy || true
-    - until [ $(docker ps -f name=devproxy_argu_1 -f health=healthy -q | wc -l) -gt 0 ]; do sleep 1; done
+    - timeout 5m bash -c 'until [ $(docker ps -f name=devproxy_argu_1 -f health=healthy -q | wc -l) -gt 0 ]; do sleep 1; done'
     - docker ps -a
     - docker images
     - TEST_TIMEOUT=${TEST_TIMEOUT:-50m}

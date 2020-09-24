@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 require 'logger'
 
+require_relative '../../services'
+
 module ExceptionHelper
   module_function
   LOGGER = Logger.new(STDOUT)
@@ -13,7 +15,7 @@ module ExceptionHelper
   end
 
   def upload_container_logs(example)
-    (DockerHelper::SERVICES.keys + %w[devproxy frontend sidekiq]).each do |service|
+    (SERVICES.keys + %w[devproxy frontend sidekiq]).each do |service|
       ['', '_sidekiq', '_subscriber'].each do |suffix|
         container = "#{service}#{suffix}"
         if docker_container(container)

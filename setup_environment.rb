@@ -2,6 +2,8 @@
 # frozen_string_literal: true
 
 require 'yaml'
+require_relative 'services'
+require_relative 'compose_creator'
 
 raise 'No ENV given' if ENV['ENV'].empty?
 
@@ -13,28 +15,33 @@ local_ports =
   else
     {}
   end
-services = {
-  frontend: {
-    image: 'registry.gitlab.com/ontola/libro',
-    command: 'node --use-openssl-ca ./dist/private/server.js',
-    port: 8080
-  },
-  argu: {
-    image: 'registry.gitlab.com/ontola/apex'
-  },
-  email: {},
-  token: {}
-}
+
+def env_keys(file)
+  File.read(File.expand_path(file, __dir__))
+    .split("\n")
+    .map { |l| l.index('#').nil? ? l : l[l.index('#')..-1] }
+    .map(&:strip)
+    .select(&:presence)
+    .map { |l| l.split("=").first }
+end
 
 # Create symlink to .env
 File.delete(File.expand_path('.env', __dir__)) if File.symlink?(File.expand_path('.env', __dir__))
 File.symlink(File.expand_path("../.env.#{ENV['ENV']}", __FILE__), File.expand_path('.env', __dir__))
 
+template_keys = env_keys('.env.template')
+actual_keys = env_keys('.env')
+all_keys_present = (template_keys & actual_keys).length == template_keys.length
+
+unless all_keys_present
+  puts "Warning! Missing environment variables present in template: #{template_keys - actual_keys}"
+end
+
 # Create nginx.conf
 File.open(File.expand_path('nginx.template.conf')) do |source_file|
   contents = source_file.read
   contents.gsub!(/\{your_local_ip\}/, ENV['IP'])
-  services.each do |service, opts|
+  SERVICES.each do |service, opts|
     location =
       if local_ports.key?(service.to_s)
         "#{ENV['IP']}:#{local_ports[service.to_s]}"
@@ -48,6 +55,8 @@ end
 
 # Create docker-compose.yml
 File.open(File.expand_path('docker-compose.template.yml')) do |source_file|
+  include ComposeCreator
+
   contents = source_file.read
   # Set aliases for services run locally to the devproxy, so it can route the internal requests to the host machine
   devproxy_aliases =
@@ -60,66 +69,16 @@ File.open(File.expand_path('docker-compose.template.yml')) do |source_file|
   # Set external to true for test env
   contents.gsub!(/\$\{RESTRICT_EXTERNAL_NETWORK:-true\}/, ENV['ENV'] == 'test' ? 'true' : 'false')
   # set webservices
-  webservices = services.reject { |service, _opts| local_ports.key?(service.to_s) }.map do |service, opts|
-    image = opts[:image] || "registry.gitlab.com/ontola/#{service}_service"
-    command = opts[:command] || './bin/rails server -b 0.0.0.0 -p 2999'
-    health_check =
-      if service === :argu
-        <<END_HEREDOC
-healthcheck:
-      test: "curl -H 'Host: argu.localtest' -f http://localhost:2999/argu/d/health"
-END_HEREDOC
-      end
-
-    <<END_HEREDOC
-  #{service}:
-    image: #{image}:${RAILS_ENV:-staging}
-    env_file:
-      - ${ENV_FILE:-./.env}
-    volumes:
-      - ./devproxyCA/cacert.pem:/etc/ssl/certs/cacert.pem
-    command: #{command}
-    depends_on:
-      - redis
-      - postgres
-      - rabbitmq
-      - elastic
-    expose:
-      - 2999
-      - 9200
-    networks:
-      default:
-        aliases:
-          - #{service}.svc.cluster.local
-    extra_hosts:
-      - "elastic:#{ENV['HOST_IP'] || ENV['IP']}"
-    #{health_check}
-END_HEREDOC
-  end.join
+  webservices = SERVICES
+                  .reject { |service, _opts| local_ports.key?(service.to_s) }
+                  .map { |service, opts| service_entry(service, opts) }
+                  .join
   contents.gsub!(/\{webservices\}/, webservices)
 
-  # set testrunner
-  testrunner = ''
-  if ENV['TESTRUNNER']
-    testrunner = <<END_HEREDOC
-  testrunner:
-    privileged: true
-    build:
-      context: .
-      dockerfile: dockerfiles/testrunner.Dockerfile
-      cache_from:
-        - registry.gitlab.com/ontola/core:latest
-    image: registry.gitlab.com/ontola/core:latest
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - /dev/shm:/dev/shm
-    networks:
-      default:
-      external:
-END_HEREDOC
-  end
-  contents.gsub!(/\{testrunner\}/, testrunner)
+  contents.gsub!(/\{testrunner\}/, testrunner_entry)
 
   # Write to docker-compose file
   File.open(File.expand_path('docker-compose.yml'), 'w+') { |f| f.write(contents) }
 end
+
+

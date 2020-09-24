@@ -1,13 +1,9 @@
 # frozen_string_literal: true
 
 require 'docker-api'
+require_relative '../../services'
 
 module DockerHelper
-  SERVICES = {
-    argu: :argu,
-    token: :token_service,
-    email: :email_service
-  }.freeze
   CLEAN_TABLES = <<END_HEREDOC
 DO
 $func$
@@ -24,9 +20,9 @@ $func$;
 END_HEREDOC
 
   def docker_reset_databases
-    SERVICES.keys.each do |db|
+    db_managed_services.each do |db|
       docker_clean_database(db)
-      docker_run(
+      docker_exec(
         'postgres',
         ['pg_restore', "/var/lib/postgresql/data/dump_#{db}", '-Fc', '--username=postgres', '--clean', '-d', "#{db}_test"]
       )
@@ -40,7 +36,7 @@ END_HEREDOC
   end
 
   def docker_reset_redis
-    docker_run('redis', ['redis-cli', 'FLUSHALL'])
+    docker_exec('redis', ['redis-cli', 'FLUSHALL'])
   end
 
   def docker_container(name)
@@ -51,16 +47,16 @@ END_HEREDOC
   end
 
   def docker_setup(container, seed: nil)
-    docker_run(container, %w[bundle exec rake db:create])
-    docker_run(container, %w[bundle exec rake db:schema:load])
+    docker_exec(container, %w[bundle exec rake db:create])
+    docker_exec(container, %w[bundle exec rake db:schema:load])
     if seed
-      docker_run(container, ['bundle', 'exec', 'rake', "db:seed:single[#{seed}]"])
+      docker_exec(container, ['bundle', 'exec', 'rake', "db:seed:single[#{seed}]"])
     else
-      docker_run(container, %w[bundle exec rake db:seed])
+      docker_exec(container, %w[bundle exec rake db:seed])
     end
   end
 
-  def docker_run(service, commands)
+  def docker_exec(service, commands)
     container = docker_container(service)
     return run_local(service, commands) if container.nil?
 
@@ -72,13 +68,19 @@ END_HEREDOC
     raise "#{service} results in exit code #{result[2]}"
   end
 
+  def db_managed_services
+    SERVICES
+      .filter { |_, v| v[:manage_db] != false }
+      .map { |k, _| k }
+  end
+
   def rails_runner(service, command)
     raise 'command may not include double quotes' if command.include?('"')
-    docker_run(service, ['bin/rails', 'runner', docker_container(service) ? command : "\"#{command}\""])
+    docker_exec(service, ['bin/rails', 'runner', docker_container(service) ? command : "\"#{command}\""])
   end
 
   def run_local(service, commands)
-    path = File.expand_path("../#{SERVICES[service.to_sym]}")
+    path = File.expand_path("../#{SERVICES[service.to_sym][:path] || service}")
     system(
       "cd #{path}; "\
       "BUNDLE_GEMFILE=#{path}/Gemfile #{commands.join(' ').gsub('bundle exec ', "bundle exec #{path}/bin/")}"
@@ -86,6 +88,6 @@ END_HEREDOC
   end
 
   def docker_postgres_command(*args)
-    docker_run('postgres', ['psql', '--username', 'postgres'] + args)
+    docker_exec('postgres', ['psql', '--username', 'postgres'] + args)
   end
 end
