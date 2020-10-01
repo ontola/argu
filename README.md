@@ -11,7 +11,7 @@ This serves as the installer, testing suite and development proxy server for all
 
 1. Make sure node, docker, docker-compose, ruby and the [Google Cloud SDK](https://cloud.google.com/sdk/) are installed and available in your shell path.
 1. Sign in to our gitlab registry, make sure you have the correct rights. `docker login registry.gitlab.com`. When asked for a password, enter a [gitlab personal access token](https://gitlab.com/profile/personal_access_tokens) with access to the registry (tick `api`).
-1. Set up the authentication for the Argu GCloud registries. `
+1. Set up the authentication for the Argu GCloud registries.
 1. Set up your ENV variables (see below)
 1. Set up the database `rake db:setup` from the `argu` image. Access the image using `docker-compose exec argu sh`.
 1. Run `./dev.sh` to start all Argu services.
