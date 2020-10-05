@@ -16,37 +16,6 @@ services:{testrunner}
           - argu.localtest
           {devproxy_aliases}
       external:
-  sidekiq:
-    image: registry.gitlab.com/ontola/apex:${RAILS_ENV:-staging}
-    env_file:
-      - ${ENV_FILE:-./.env}
-    command: bundle exec sidekiq
-    volumes:
-      - certdata:/etc/ssl/certs
-  email_subscriber:
-    image: registry.gitlab.com/ontola/email_service:${RAILS_ENV:-staging}
-    env_file:
-      - ${ENV_FILE:-./.env}
-    volumes:
-      - certdata:/etc/ssl/certs
-    command: bundle exec rake broadcast:subscribe
-    depends_on:
-      - rabbitmq
-    restart: unless-stopped
-  email_sidekiq:
-    image: registry.gitlab.com/ontola/email_service:${RAILS_ENV:-staging}
-    env_file:
-      - ${ENV_FILE:-./.env}
-    volumes:
-      - certdata:/etc/ssl/certs
-    command: bundle exec sidekiq -e staging
-  token_sidekiq:
-    image: registry.gitlab.com/ontola/token_service:${RAILS_ENV:-staging}
-    env_file:
-      - ${ENV_FILE:-./.env}
-    volumes:
-      - certdata:/etc/ssl/certs
-    command: bundle exec sidekiq -e staging
   postgres:
     image: mdillon/postgis:9.5
     env_file:

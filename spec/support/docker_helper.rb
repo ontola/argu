@@ -39,6 +39,14 @@ END_HEREDOC
     docker_exec('redis', ['redis-cli', 'FLUSHALL'])
   end
 
+  def docker_containers
+    Docker::Container.all
+  end
+
+  def docker_container_name(container)
+    container.json["Name"][1..]
+  end
+
   def docker_container(name)
     container = Docker::Container.get("devproxy_#{name}_1")
     container if container.info['State']['Running']

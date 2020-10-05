@@ -13,6 +13,9 @@ SERVICES = {
     health: 'curl -H "Host: argu.localtest" -f http://localhost:3030/link-lib/d/health',
     setup: {
       command: '/usr/local/bin/migrate --version setup',
+    },
+    worker: {
+      command: '/usr/local/bin/invalidator_redis',
     }
   },
   frontend: {
@@ -24,12 +27,25 @@ SERVICES = {
   argu: {
     path: :argu,
     image: 'registry.gitlab.com/ontola/apex',
-    health: "curl -H 'Host: argu.localtest' -f http://localhost:2999/argu/d/health"
+    health: 'curl -H "Host: argu.localtest" -f http://localhost:2999/argu/d/health',
+    worker: {
+      command: 'bundle exec sidekiq'
+    }
   },
   email: {
-    path: :email_service
+    path: :email_service,
+    subscriber: {
+      command: 'bundle exec rake broadcast:subscribe',
+      depends_on: 'rabbitmq'
+    },
+    worker: {
+      command: 'bundle exec sidekiq -e staging'
+    }
   },
   token: {
-    path: :token_service
+    path: :token_service,
+    worker: {
+      command: ' bundle exec sidekiq -e staging'
+    }
   }
 }.with_indifferent_access

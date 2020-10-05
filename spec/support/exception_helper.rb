@@ -15,13 +15,12 @@ module ExceptionHelper
   end
 
   def upload_container_logs(example)
-    (SERVICES.keys + %w[devproxy frontend sidekiq]).each do |service|
-      ['', '_sidekiq', '_subscriber'].each do |suffix|
-        container = "#{service}#{suffix}"
-        if docker_container(container)
-          upload_exception_file(docker_container(container).logs(stdout: true), example, "#{container}.txt")
-        end
-      end
+    docker_containers.each do |container|
+        upload_exception_file(
+          container.logs(stdout: true, stderr: true),
+          example,
+          "#{docker_container_name(container)}_#{container.id}.txt"
+        )
     end
   end
 

@@ -1,63 +1,172 @@
 # frozen_string_literal: true
 
 module ComposeCreator
-  def service_entry(name, opts)
-    service_entry_item(name, opts)
+  SERVICE_INDENTATION = ' ' * 2
 
-    setup_service = opts[:setup] ? service_entry_item("#{name}_setup", opts.merge(opts[:setup])) : ''
+  def service_entry(name, opts)
+    opts = opts.with_indifferent_access
+    opts[:name] = name
+    opts[:image] = opts[:image] || "registry.gitlab.com/ontola/#{name}_service"
+    opts[:image] = "#{opts[:image]}:${RAILS_ENV:-staging}"
+
+    setup_service =
+      if opts[:setup]
+        setup_opts = opts
+                       .merge(setup_template(opts))
+                       .merge({name: "#{name}_setup"})
+                       .merge(opts[:setup])
+        service_entry_item(setup_opts)
+      end
     opts[:depends_on] = opts[:setup] ? "#{name}_setup" : nil
 
-    [service_entry_item(name, opts), setup_service].join
+    service_base = service_entry_item(opts.merge(base_service_template(opts)))
+
+    derivative_opts = derivative_opts_filter(opts)
+    subscriber_service =
+      if opts[:subscriber]
+        subscriber_opts = derivative_opts
+                            .merge(subscriber_template_opts(derivative_opts))
+                            .merge(name: "#{name}_subscriber")
+                            .merge(derivative_opts[:subscriber])
+        service_entry_item(subscriber_opts)
+      end
+    worker_service =
+      if opts[:worker]
+        worker_opts = derivative_opts
+                 .merge(worker_template_opts(derivative_opts))
+                 .merge(name: "#{name}_worker")
+                 .merge(derivative_opts[:worker])
+        service_entry_item(worker_opts)
+      end
+
+    [service_base, setup_service, worker_service, subscriber_service].compact.join
   end
 
-  def service_entry_item(name, opts)
-    image = opts[:image] || "registry.gitlab.com/ontola/#{name}_service"
-    command = opts[:command] || './bin/rails server -b 0.0.0.0 -p 2999'
+  def service_entry_item(opts)
+    template = base_template(opts)
+    overrides = {
+      'command' => opts[:command] || template[:command],
+      'depends_on' => (template['depends_on'] || [])
+                        .concat([opts[:depends_on]])
+                        .flatten
+                        .compact
+                        .presence,
+      'expose' => opts[:port],
+      'extra_hosts' => [
+        "elastic:#{ENV['HOST_IP'] || ENV['IP']}"
+      ],
+      'restart' => opts[:restart]
+    }
 
-    <<END_HEREDOC
-  #{name}:
-    image: #{image}:${RAILS_ENV:-staging}
-    env_file:
-      - ${ENV_FILE:-./.env}
-  #{env_entry(opts[:env])}
-    volumes:
-      - ./devproxyCA/cacert.pem:/etc/ssl/certs/cacert.pem
-    command: #{command}
-    depends_on:#{depends_on(opts[:depends_on])}
-      - redis
-      - postgres
-      - rabbitmq
-      - elastic
-    expose:#{port(opts[:port])}
-      - 2999
-      - 9200
-    networks:
-      default:
-        aliases:
-          - #{name}.svc.cluster.local
-    extra_hosts:
-      - "elastic:#{ENV['HOST_IP'] || ENV['IP']}"
-#{health_entry(opts[:health])}
-END_HEREDOC
+    entry = {
+      opts[:name] => template
+                       .merge(overrides)
+                       .compact
+    }
+
+    entry
+      .deep_stringify_keys
+      .to_hash
+      .to_yaml
+      .sub(/^---\n/, '')
+      .sub(/"\$\{ENV_FILE:-\.\/\.env\}"/, '${ENV_FILE:-./.env}')
+      .gsub(/^/, SERVICE_INDENTATION)
   end
 
-  def depends_on(depends_on)
-    "\n      - #{depends_on}" if depends_on
+  def base_template(opts)
+    {
+      'image' => opts[:image],
+      'env_file' => [
+        '${ENV_FILE:-./.env}'
+      ],
+      'networks' => opts['networks'],
+      'volumes' => [
+        "./devproxyCA/cacert.pem:/etc/ssl/certs/cacert.pem"
+      ].concat(opts[:volumes] || [])
+    }.merge(health_entry(opts[:health]))
+      .merge(env_entry(opts[:env]))
+  end
+
+  def base_service_template(opts)
+    {
+      'command' => opts[:command] || './bin/rails server -b 0.0.0.0 -p 2999',
+      'depends_on' => %w[
+        redis
+        postgres
+        rabbitmq
+        elastic
+      ],
+      'port' => port(opts[:port]),
+      'networks' => {
+        'default' => {
+          'aliases' => [
+            "#{opts[:name]}.svc.cluster.local"
+          ]
+        },
+      }
+    }
+  end
+
+  def setup_template(opts)
+    base_service_template(opts)
+      .merge('depends_on' => nil, 'networks' => nil)
+  end
+
+  def derivative_opts_filter(opts)
+    opts.merge(
+      'depends_on' => nil,
+      'port' => nil,
+      'expose' => nil,
+      'health' => nil,
+      'networks' => nil,
+    )
+  end
+
+  def subscriber_template_opts(opts)
+    base_template(opts).merge(
+      'restart' => 'unless-stopped',
+      'volumes' => ['certdata:/etc/ssl/certs']
+    )
+  end
+
+  def worker_template_opts(opts)
+    base_template(opts).merge(
+      'volumes' => ['certdata:/etc/ssl/certs']
+    )
   end
 
   def env_entry(env)
-    return unless env
+    return {} unless env
 
-    entries = env.entries.map { |key, value| "#{key}: \"#{value}\"" }.join("\n      ")
-    "  environment:\n      #{entries}"
+    {
+      "environment" => env.to_hash
+    }
   end
 
   def health_entry(health)
-    "    healthcheck:\n      test: \"#{health}\"\n" if health
+    return {} unless health
+
+    {
+      'healthcheck' => {
+        'test' => health
+      }
+    }
+  end
+
+  def worker_entry(opts)
+    return "" unless opts[:worker]
+
+    "  #{opts[:name]}_worker  "
+  end
+
+  def subscriber_entry(opts)
+    return "" unless opts[:subscriber]
+
+    "  #{opts[:name]}_subscriber  "
   end
 
   def port(port)
-    "\n      - #{port}" if port
+    [2999, 9200, port].compact
   end
 
   def testrunner_entry

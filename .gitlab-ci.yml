@@ -28,18 +28,19 @@ test:
     - RAILS_ENV=$RAILS_ENV docker-compose pull
     - docker-compose up -d postgres elastic devproxy
     - docker-compose up -d rabbitmq mailcatcher redis
-    - RAILS_ENV=$RAILS_ENV docker-compose up -d argu sidekiq
+    - RAILS_ENV=$RAILS_ENV docker-compose up -d argu argu_worker
     - RAILS_ENV=$RAILS_ENV docker-compose up apex_rs_setup # Wait until finished
-    - RAILS_ENV=$RAILS_ENV DISABLE_PERSISTENCE=$DISABLE_PERSISTENCE docker-compose up -d token token_sidekiq frontend email email_subscriber email_sidekiq apex_rs
+    - RAILS_ENV=$RAILS_ENV docker-compose up -d token token_worker frontend email email_subscriber email_worker apex_rs apex_rs_worker
     - docker-compose build --build-arg "TEST_FILES=$TEST_FILES"
     - docker push $CI_REGISTRY_IMAGE:latest
     - docker-compose run testrunner bundle exec rake test:setup
     - docker restart devproxy_argu_1
-    - docker restart devproxy_sidekiq_1
+    - docker restart devproxy_argu_worker_1
     - ./restart.sh devproxy || true
     - timeout 5m bash -c 'until [ $(docker ps -f name=devproxy_argu_1 -f health=healthy -q | wc -l) -gt 0 ]; do sleep 1; done'
     - docker ps -a
     - docker images
+    - 'curl -H "Host: argu.localtest" -f http://apex_rs.svc.cluster.local:3030/link-lib/d/health || true'
     - TEST_TIMEOUT=${TEST_TIMEOUT:-50m}
     - echo test timeout $TEST_TIMEOUT
     - timeout $TEST_TIMEOUT bash -c 'docker-compose run --name testrunner testrunner'
@@ -49,10 +50,13 @@ test:
     - docker cp testrunner:/usr/src/app/tmp/exceptions $CI_PROJECT_DIR/test-results/exceptions || true
     - docker ps --no-trunc -a > $CI_PROJECT_DIR/test-results/docker-ps.txt || true
     - docker-compose logs > $CI_PROJECT_DIR/test-results/docker-compose-logs.txt || true
+    - 'curl -H "Host: argu.localtest" -f http://localhost:3030/link-lib/d/health > apex_rs_health.txt || true'
+    - 'curl -H "Host: argu.localtest" -f http://localhost:3030/d/health > libro_health.txt || true'
     - ls -la $CI_PROJECT_DIR/test-results
   artifacts:
     paths:
       - test-results/
+      - docker-compose.yml
     expire_in: 1 week
     when: on_failure
 
