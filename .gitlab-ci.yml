@@ -33,8 +33,10 @@ test:
     - RAILS_ENV=$RAILS_ENV docker-compose up -d token token_worker frontend email email_subscriber email_worker apex_rs apex_rs_worker
     - docker-compose build --build-arg "TEST_FILES=$TEST_FILES"
     - docker push $CI_REGISTRY_IMAGE:latest
-    - docker-compose run testrunner bundle exec rake test:setup
+    - docker-compose run testrunner bundle exec rake test:initialize_db
     - docker restart devproxy_argu_1
+    - docker-compose run argu bundle exec rake cache:warm
+    - docker-compose run testrunner bundle exec rake test:dump
     - docker restart devproxy_argu_worker_1
     - ./restart.sh devproxy || true
     - timeout 5m bash -c 'until [ $(docker ps -f name=devproxy_argu_1 -f health=healthy -q | wc -l) -gt 0 ]; do sleep 1; done'

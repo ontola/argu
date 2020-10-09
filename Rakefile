@@ -8,12 +8,15 @@ RSpec::Core::RakeTask.new(:spec)
 
 def check_env
   link = File.readlink(File.expand_path('.env'))
-  raise "Trying to reset data in wrong env (expected test but got '#{link}')" unless link.end_with?('test')
+  raise "Trying run test command in wrong env (expected test but got '#{link}')" unless link.end_with?('test')
 end
 
 namespace :test do
   desc 'Setup for running tests'
-  task :setup do
+  task :setup => %w[initialize_db dump]
+
+  desc 'Run db initialization and seed commands for ruby services'
+  task :initialize_db do
     include DockerHelper
     check_env
 
@@ -23,8 +26,14 @@ namespace :test do
     docker_setup('token', seed: :test)
     puts 'setting up email'
     docker_setup('email', seed: :test)
+  end
 
-    puts 'dumping databases'
+
+  desc 'Dumps the databases of managed services to be restored before a test'
+  task :dump do
+    include DockerHelper
+    check_env
+
     db_managed_services.each do |db|
       docker_exec(
         'postgres',
