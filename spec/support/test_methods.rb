@@ -43,7 +43,7 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
 
   def as(actor, location: '/argu/freetown', password: 'password')
     if actor != :guest
-      visit 'https://argu.localtest/wait_for_login'
+      visit 'https://argu.localtest/d/health'
       cookies, csrf = authentication_values
 
       conn = Faraday.new(url: 'https://argu.localtest/argu/login') do |faraday|

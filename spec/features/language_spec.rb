@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Drafts', type: :feature do
+RSpec.describe 'Language', type: :feature do
   example 'Guest changes language' do
     as :guest
     click_application_menu_button('Set language')
