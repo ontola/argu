@@ -50,3 +50,9 @@ Run `./update.sh` to pull the latest images and run migrations.
 ## When your CSRF token is wrong
 
 Run `./sync_tokens.sh` and follow the instructions.
+
+## CI
+
+Set the max [timeout](https://www.man7.org/linux/man-pages/man1/timeout.1.html)
+of the test run by setting the TEST_TIMEOUT env. This can be useful to gather
+artifacts quickly or when otherwise unavailable due to CI timeout.

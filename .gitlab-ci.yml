@@ -38,7 +38,9 @@ test:
     - until [ $(docker ps -f name=devproxy_argu_1 -f health=healthy -q | wc -l) -gt 0 ]; do sleep 1; done
     - docker ps -a
     - docker images
-    - docker-compose run --name testrunner testrunner
+    - TEST_TIMEOUT=${TEST_TIMEOUT:-50m}
+    - echo test timeout $TEST_TIMEOUT
+    - timeout $TEST_TIMEOUT bash -c 'docker-compose run --name testrunner testrunner'
   after_script:
     - mkdir $CI_PROJECT_DIR/test-results || true
     - docker cp testrunner:/tmp/test-results/rspec.xml $CI_PROJECT_DIR/test-results/rspec.xml || true
