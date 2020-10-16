@@ -167,10 +167,15 @@ RSpec.describe 'Voting', type: :feature do
     @confirm_vote_email ||= mailcatcher_email(to: [email], subject: 'Confirm your vote')
   end
 
+  def link_race_condition_patch
+    sleep(2)
+  end
+
   def vote_in_favour
     wait_until_loaded
     @side = 'yes'
     wait_for { page }.to have_content 'Agree'
+    link_race_condition_patch
     click_button 'Agree'
     after_vote
   end
@@ -179,6 +184,7 @@ RSpec.describe 'Voting', type: :feature do
     wait_until_loaded
     @side = 'no'
     wait_for { page }.to have_content 'Disagree'
+    link_race_condition_patch
     click_button 'Disagree'
     after_vote
     wait_for { page }.to have_snackbar 'Thanks for your vote!'

@@ -108,6 +108,7 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
       'return LRS.api.requestMap.size === 0 && '\
       '(LRS.broadcastHandle || LRS.currentBroadcast || LRS.lastPostponed) === undefined;'
     wait(30).for { page.execute_script(is_done) }.to be_truthy
+    sleep(0.5)
   end
 
   def login(email, password = 'password', modal: true, open_modal: true)
