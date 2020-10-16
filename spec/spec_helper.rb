@@ -13,6 +13,7 @@ require 'support/mailcatcher_helper'
 require 'support/matchers'
 require 'support/docker_helper'
 require 'support/test_methods'
+require 'support/requests_helper'
 require 'support/selectors'
 
 require_relative '../services'
@@ -24,6 +25,7 @@ Dotenv.load
 RSpec.configure do |config|
   include DockerHelper
 
+  config.include RequestsHelper
   config.include ExceptionHelper
   config.include Expectations
   config.include MailCatcherHelper
