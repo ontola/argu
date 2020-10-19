@@ -18,6 +18,7 @@ RSpec.describe 'User request confirmation', type: :feature do
 
       visit confirmation_email.links.last
 
+      wait_for { page }.to have_current_path('/argu')
       verify_logged_in('unconfirmed@example.com')
 
       expect_confirmed
@@ -37,6 +38,8 @@ RSpec.describe 'User request confirmation', type: :feature do
 
       visit confirmation_email.links.last
 
+      wait_for { page }.to have_current_path('/argu')
+
       verify_logged_in('unconfirmed@example.com')
 
       expect_confirmed
@@ -51,9 +54,13 @@ RSpec.describe 'User request confirmation', type: :feature do
         have_snackbar("You'll receive a mail containing instructions to confirm your account within a few minutes.")
       )
       logout
+      verify_not_logged_in
+
       expect_email(:confirmation_email)
 
       visit confirmation_email.links.last
+
+      wait_for { page }.to have_current_path('/argu')
 
       verify_logged_in('unconfirmed@example.com')
 
@@ -84,9 +91,10 @@ RSpec.describe 'User request confirmation', type: :feature do
 
       visit confirmation_email.links.last
 
-      verify_logged_in('user1@example.com')
+      wait_for { page }.to have_snackbar 'was already confirmed, try to log in.'
 
-      wait_for { page }.to have_snackbar 'Email was already confirmed, try to log in.'
+      wait_until_loaded
+      verify_not_logged_in
     end
 
     example 'user requests confirmation' do
@@ -99,14 +107,16 @@ RSpec.describe 'User request confirmation', type: :feature do
       )
 
       logout
+      verify_not_logged_in
+
       expect_email(:confirmation_email)
 
       visit confirmation_email.links.last
 
-      wait_for { page }.to have_snackbar 'Email was already confirmed, try to log in.'
+      wait_for { page }.to have_snackbar 'was already confirmed, try to log in.'
 
       wait_until_loaded
-      verify_logged_in
+      verify_not_logged_in
     end
   end
 
@@ -122,10 +132,16 @@ RSpec.describe 'User request confirmation', type: :feature do
   end
 
   def expect_confirmed
-    wait_for { page }.to have_current_path('/argu')
-    wait_for { page }.to(
-      have_snackbar('Your account has been confirmed.')
-    )
+    # @todo snackbars are shown, but the page is instantly reloaded.
+    # wait_for { page }.to(have_snackbar('Your account has been confirmed.'))
+
+    go_to_user_page('Settings')
+
+    wait_for { page }.to have_content 'Email addresses'
+    expand_form_group 'Email addresses'
+
+    wait_for { page }.to have_content email
+    wait_for { page }.to have_content 'Already confirmed'
   end
 
   def request_confirmation_link
