@@ -91,7 +91,7 @@ RSpec.describe 'User request confirmation', type: :feature do
 
       visit confirmation_email.links.last
 
-      wait_for { page }.to have_snackbar 'was already confirmed, try to log in.'
+      wait_for { page }.to have_snackbar 'Email was already confirmed, try to log in.'
 
       wait_until_loaded
       verify_not_logged_in
@@ -113,7 +113,7 @@ RSpec.describe 'User request confirmation', type: :feature do
 
       visit confirmation_email.links.last
 
-      wait_for { page }.to have_snackbar 'was already confirmed, try to log in.'
+      wait_for { page }.to have_snackbar 'Email was already confirmed, try to log in.'
 
       wait_until_loaded
       verify_not_logged_in
