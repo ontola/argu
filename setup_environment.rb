@@ -55,8 +55,6 @@ end
 
 # Create docker-compose.yml
 File.open(File.expand_path('docker-compose.template.yml')) do |source_file|
-  include ComposeCreator
-
   contents = source_file.read
   # Set aliases for services run locally to the devproxy, so it can route the internal requests to the host machine
   devproxy_aliases =
@@ -71,11 +69,11 @@ File.open(File.expand_path('docker-compose.template.yml')) do |source_file|
   # set webservices
   webservices = SERVICES
                   .reject { |service, _opts| local_ports.key?(service.to_s) }
-                  .map { |service, opts| service_entry(service, opts) }
+                  .map { |service, opts| ComposeCreator.service_entry(service, opts) }
                   .join
   contents.gsub!(/\{webservices\}/, webservices)
 
-  contents.gsub!(/\{testrunner\}/, testrunner_entry)
+  contents.gsub!(/\{testrunner\}/, ComposeCreator.testrunner_entry)
 
   # Write to docker-compose file
   File.open(File.expand_path('docker-compose.yml'), 'w+') { |f| f.write(contents) }
