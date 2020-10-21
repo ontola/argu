@@ -3,36 +3,64 @@
 require 'httparty'
 require 'oj'
 require 'rdf'
+require 'rdf/vocab'
 
 module RequestsHelper
   LL = RDF::Vocabulary.new('http://purl.org/link-lib/')
+  FORM = RDF::Vocabulary.new('https://ns.ontola.io/form#')
   ONTOLA = RDF::Vocabulary.new('https://ns.ontola.io/core#')
 
   attr_reader :response, :request, :headers, :body
 
-  def get(path, **opts)
-    set_result HTTParty.get(
-      "https://argu.localtest#{path}",
-      headers: request_headers.merge(opts[:headers] || {}))
-  end
-
   def bulk(resources, **opts)
     set_result HTTParty.post(
-      "http://apex_rs.svc.cluster.local:3030/link-lib/bulk",
+      'https://argu.localtest/link-lib/bulk',
       headers: request_headers.merge(opts[:headers] || {}),
       body: Array(resources).to_query('resource'))
     verify_result
+  end
+
+  def change_language(language)
+    cookies, csrf = authentication_values
+
+    conn = Faraday.new(url: 'https://argu.localtest/argu/u/language') do |faraday|
+      faraday.request :multipart
+      faraday.adapter :net_http
+    end
+    response = conn.put do |req|
+      req.headers.merge!(
+        'Accept': 'application/hex+x-ndjson',
+        'Content-Type': 'multipart/form-data',
+        'Cookie' => HTTP::Cookie.cookie_value(cookies),
+        'X-CSRF-Token' => csrf,
+        'Website-IRI' => 'https://argu.localtest/argu'
+      )
+      req.body = {'<http://purl.org/link-lib/graph>' => change_language_body(language)}
+    end
+
+    @cookies = HTTP::CookieJar.new.parse(response.headers['set-cookie'], 'https://argu.localtest')
   end
 
   def request_headers
     {
       Accept: 'application/hex+x-ndjson',
       'Accept-Language': 'en-US',
-      'Website-IRI': 'https://argu.localtest/argu'
+      'Cookie': @cookies && HTTP::Cookie.cookie_value(@cookies),
+      'Website-IRI': 'https://argu.localtest/argu',
+      'X-Forwarded-Host': 'argu.localtest',
+      'X-Forwarded-Proto': 'https',
+      'X-Forwarded-Ssl': 'on',
     }
   end
 
   private
+
+  def change_language_body(language)
+    body = <<-FOO
+    <http://purl.org/link-lib/targetResource> <http://schema.org/language> <https://argu.localtest/argu/enums/users/language##{language}> .
+    FOO
+    Faraday::UploadIO.new(StringIO.new(body), 'application/n-triples')
+  end
 
   def requested_iri
     RDF::URI(request.uri.to_s)
@@ -78,6 +106,6 @@ module RequestsHelper
   end
 
   def verify_result
-    expect(headers['server']).to start_with("Apex/")
+    # expect(headers['server']).to start_with("Apex/")
   end
 end
