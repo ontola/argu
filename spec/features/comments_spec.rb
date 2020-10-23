@@ -58,7 +58,7 @@ RSpec.describe 'Comments', type: :feature do
     example 'post nested comment' do
       as actor, location: '/argu/pro/47'
 
-      within(resource_selector('https://argu.localtest/argu/c/50')) do
+      within(resource_selector('https://argu.localtest/argu/c/50', element: '.Collection__Depth-1 > div')) do
         wait_for(page).to have_link('New comment')
         click_link('New comment')
         expect_form('/argu/c/50/c')
