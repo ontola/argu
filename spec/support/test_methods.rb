@@ -185,6 +185,8 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
   end
 
   def go_to_user_page(tab = nil)
+    wait_until_loaded
+
     within(resource_selector("#{current_tenant}/c_a")) do
       find('.MuiButton-root').click
     end
@@ -201,6 +203,7 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
 
   def select_tab(tab)
     wait_for { page }.to have_css('.MuiTabs-root')
+    wait_until_loaded
     within '.MuiTabs-root' do
       click_button tab
     end
