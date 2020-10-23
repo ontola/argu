@@ -22,10 +22,7 @@ END_HEREDOC
   def docker_reset_databases
     db_managed_services.each do |db|
       docker_clean_database(db)
-      docker_exec(
-        'postgres',
-        ['pg_restore', "/var/lib/postgresql/data/dump_#{db}", '-Fc', '--username=postgres', '--clean', '-d', "#{db}_test"]
-      )
+      docker_restore_dump(db)
     end
   end
 
@@ -37,6 +34,15 @@ END_HEREDOC
 
   def docker_reset_redis
     docker_exec('redis', ['redis-cli', 'FLUSHALL'])
+  end
+
+  def docker_restore_dump(db, times = 0)
+    docker_exec(
+      'postgres',
+      ['pg_restore', "/var/lib/postgresql/data/dump_#{db}", '-Fc', '--username=postgres', '--clean', '-d', "#{db}_test"]
+    )
+  rescue
+    docker_restore_dump(db, times + 1) unless times >= 3
   end
 
   def docker_containers
