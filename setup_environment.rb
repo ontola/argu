@@ -46,7 +46,7 @@ File.open(File.expand_path('nginx.template.conf')) do |source_file|
       if local_ports.key?(service.to_s)
         "#{ENV['IP']}:#{local_ports[service.to_s]}"
       else
-        "#{service}.svc.cluster.local:#{opts[:port] || 2999}"
+        "#{service.to_s.dasherize}.svc.cluster.local:#{opts[:port] || 2999}"
       end
     contents.gsub!(/\{#{service}_host\}/, location)
   end
@@ -61,7 +61,7 @@ File.open(File.expand_path('docker-compose.template.yml')) do |source_file|
     if local_ports.empty?
       '- none'
     else
-      local_ports.keys.map { |service| "- #{service}.svc.cluster.local" }.join("\n          ")
+      local_ports.keys.map { |service| "- #{service.to_s.dasherize}.svc.cluster.local" }.join("\n          ")
     end
   contents.gsub!(/\{devproxy_aliases\}/, devproxy_aliases)
   # Set external to true for test env
