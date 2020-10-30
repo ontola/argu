@@ -81,7 +81,9 @@ END_HEREDOC
     container = docker_container(service)
     return run_local(service, commands) if container.nil?
 
-    result = container.exec(commands)
+    result = Timeout::timeout(120, message: "Execution of #{commands} expired for service #{service}") do
+      container.exec(commands)
+    end
     return result if result[-1] == 0
 
     result[0].each { |message| puts message }

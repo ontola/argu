@@ -61,19 +61,6 @@ module ExceptionHelper
     exception_file_dir
     saver = Capybara::Screenshot.new_saver(Capybara, Capybara.page, false, name)
     saver.save
-    upload_to_bitbucket(saver.screenshot_path)
-  end
-
-  def upload_to_bitbucket(path)
-    return unless ENV['BITBUCKET_STORAGE']
-
-    RestClient::Request.execute(
-      method: :post,
-      url: ENV['BITBUCKET_STORAGE'],
-      user: ENV['BOT_USERNAME'],
-      password: ENV['BOT_PASSWORD'],
-      payload: {files: File.new(path)}
-    )
   end
 
   private
@@ -82,10 +69,6 @@ module ExceptionHelper
     filename = [exception_file_dir, example_filename(example, suffix)].join('/')
     FileUtils.mkdir_p(filename.split('/')[0...-1].join('/'))
     File.open(filename, 'w') { |f| f.write(content) }
-
-    Timeout::timeout(30) do
-      upload_to_bitbucket(filename)
-    end
   end
 
   def exception_file_dir

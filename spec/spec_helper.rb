@@ -122,14 +122,6 @@ end
 
 Capybara.save_path = File.expand_path('../tmp/exceptions', __dir__)
 
-Capybara::Screenshot.after_save_html do |path|
-  ExceptionHelper.upload_to_bitbucket(path)
-end
-
-Capybara::Screenshot.after_save_screenshot do |path|
-  ExceptionHelper.upload_to_bitbucket(path)
-end
-
 Capybara::Screenshot.register_filename_prefix_formatter(:rspec) do |example|
   ExceptionHelper.example_filename(example)
 end
