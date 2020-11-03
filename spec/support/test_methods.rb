@@ -5,6 +5,10 @@ require 'http-cookie'
 require 'mailcatcher/api'
 
 module TestMethods # rubocop:disable Metrics/ModuleLength
+  HEALTH_CHECKS = [
+    'Redis connectivity', 'Backend connectivity', 'Backend data fetching', 'Web manifest', 'Bulk endpoint'
+  ].freeze
+
   attr_writer :current_tenant
 
   def accept_terms
@@ -44,6 +48,9 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
   def as(actor, location: '/argu/freetown', password: 'password')
     if actor != :guest
       visit 'https://argu.localtest/d/health'
+      HEALTH_CHECKS.each do |check|
+        expect(page).to have_text("#{check} 🟩 pass")
+      end
       cookies, csrf = authentication_values
 
       conn = Faraday.new(url: 'https://argu.localtest/argu/login') do |faraday|

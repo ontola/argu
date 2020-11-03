@@ -7,7 +7,8 @@ SERVICES = {
     manage_db: false,
     image: 'registry.gitlab.com/ontola/libro',
     command: 'node --use-openssl-ca ./dist/private/server.js',
-    port: 8080
+    port: 8080,
+    restart: 'unless-stopped',
   },
   argu: {
     path: :argu,

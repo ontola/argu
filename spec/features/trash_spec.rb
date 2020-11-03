@@ -15,6 +15,7 @@ RSpec.describe 'Trash', type: :feature do
 
     fill_in field_name('https://argu.co/ns/core#trashActivity', 0, 'http://schema.org/text'), with: 'Trash reason', fill_options: {clear: :backspace}
 
+    wait_for(page).to have_button('Trash')
     click_button 'Trash'
 
     wait_for(page).to have_snackbar "Idea trashed successfully"
@@ -30,6 +31,7 @@ RSpec.describe 'Trash', type: :feature do
 
     wait_for(page).to have_content 'This item will no longer be visible in public discussion. This can be undone.'
 
+    wait_for(page).to have_button('Trash')
     click_button 'Trash'
 
     wait_for(page).to have_snackbar "Idea trashed successfully"

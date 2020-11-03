@@ -99,7 +99,9 @@ RSpec.describe 'Comments', type: :feature do
       )
 
     within scope do
+      wait_for { page }.to have_content('Share a response...')
       click_button 'Share a response...' if click_to_open
+      wait_for { page }.to have_field field_name('http://schema.org/text')
       fill_in field_name('http://schema.org/text'), with: content
       within '.Form__footer--right' do
         find('.Button--submit').click
