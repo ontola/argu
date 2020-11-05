@@ -1,0 +1,22 @@
+global:
+  scrape_interval: 5s
+  scrape_timeout: 5s
+  evaluation_interval: 30s
+
+scrape_configs:
+  - job_name: apex
+    static_configs:
+      - targets:
+        - "host.docker.internal:9394"
+        labels:
+          service: apex
+          component: server
+          language: ruby
+  - job_name: cache
+    static_configs:
+      - targets:
+        - "cache.svc.cluster.local:3080"
+        labels:
+          service: cache
+          component: server
+          language: kotlin

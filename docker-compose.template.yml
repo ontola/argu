@@ -80,6 +80,34 @@ services:{testrunner}
       external:
     volumes:
       - rabbitdata:/var/lib/rabbitmq
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - 9090:9090
+    extra_hosts:
+      - host.docker.internal:${HOST_IP:-host-gateway}
+    networks:
+      default:
+        aliases:
+          - prometheus
+      external:
+        aliases:
+          - prometheus
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - promdata:/prometheus
+  grafana:
+    image: grafana/grafana
+    environment:
+      - GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-simple-json-datasource,redis-datasource
+    ports:
+      - 8888:3000
+    networks:
+      default:
+      external:
+    volumes:
+      - grafanadata:/var/lib/grafana
+      - ./grafana/:/etc/grafana/provisioning/
 {webservices}
 networks:
   default:
@@ -93,3 +121,5 @@ volumes:
   pgdata:
   rabbitdata:
   redisdata:
+  promdata:
+  grafanadata:

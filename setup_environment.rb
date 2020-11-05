@@ -77,5 +77,3 @@ File.open(File.expand_path('docker-compose.template.yml')) do |source_file|
   # Write to docker-compose file
   File.open(File.expand_path('docker-compose.yml'), 'w+') { |f| f.write(contents) }
 end
-
-
