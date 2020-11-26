@@ -35,6 +35,7 @@ test:
     - docker push $CI_REGISTRY_IMAGE:latest
     - docker-compose run testrunner bundle exec rake test:initialize_db
     - docker restart devproxy_argu_1
+    - ./restart.sh devproxy || true
     - docker-compose run argu bundle exec rake cache:warm
     - docker-compose run testrunner bundle exec rake test:dump
     - docker restart devproxy_argu_worker_1
