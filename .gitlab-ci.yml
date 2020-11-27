@@ -14,6 +14,7 @@ test:
   script:
     - sudo sh -c "echo '127.0.0.1 app.argu.localtest' >> /etc/hosts"
     - sudo sh -c "echo '127.0.0.1 argu.localtest' >> /etc/hosts"
+    - sudo sh -c "echo '127.0.0.1 demogemeente.localdev' >> /etc/hosts"
     - echo "" > ./.env.dev
     - echo NEO_URL=${NEO_URL} >> ./.env.template
     - echo DEFAULT_LOCALE=en >> ./.env.template
