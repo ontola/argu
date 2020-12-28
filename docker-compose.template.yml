@@ -15,6 +15,7 @@ services:{testrunner}
           - app.argu.localtest
           - argu.localtest
           - demogemeente.localdev
+          - veiligheidsinterventies.localdev
           {devproxy_aliases}
       external:
   postgres:
