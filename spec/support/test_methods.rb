@@ -152,7 +152,7 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
   end
 
   def fill_in_markdown(locator, **args)
-    fill_in("#{page.current_url}.#{locator}", args)
+    fill_in(locator, args)
   end
 
   def fill_in_registration_form(email = 'new_user@example.com')
