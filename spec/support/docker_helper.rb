@@ -110,6 +110,14 @@ END_HEREDOC
     )
   end
 
+  def var_from_rails_console(command)
+    rails_runner(:argu, "Apartment::Tenant.switch('argu') { puts #{command} }")
+      .first
+      .first
+      .split("\n")
+      .last
+  end
+
   def docker_postgres_command(*args)
     docker_exec('postgres', ['psql', '--username', 'postgres'] + args)
   end

@@ -118,14 +118,14 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
     sleep(0.5)
   end
 
-  def login(email, password = 'password', modal: true, open_modal: true)
+  def login(email, password = 'password', modal: true, open_modal: true, two_fa: false)
     wait_for { page }.to have_content 'Log in / sign up'
 
     page.click_link('Log in / sign up') if modal && open_modal
 
     wait_for { page }.to have_content 'Sign in or register'
 
-    fill_in_login_form email, password, modal: modal
+    fill_in_login_form email, password, modal: modal, two_fa: two_fa
 
     verify_logged_in
   end
@@ -134,7 +134,7 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
     click_application_menu_button('Sign out')
   end
 
-  def fill_in_login_form(email = 'user1@example.com', password = 'password', modal: true)
+  def fill_in_login_form(email = 'user1@example.com', password = 'password', modal: true, two_fa: false)
     wait_for { page }.to have_content('Sign in or register')
 
     wrapper = modal ? "[role='dialog']" : 'form.Form'
@@ -149,6 +149,13 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
 
       click_button 'Continue'
     end
+
+    return unless two_fa
+
+    wait_for{ page }.to have_content('Two factor authentication')
+    otp = var_from_rails_console("EmailAddress.find_by(email: '#{email}').user.otp_secret.otp_code")
+    fill_in field_name('https://argu.co/ns/core#otp'), with: otp, fill_options: {clear: :backspace}
+    click_button 'Continue'
   end
 
   def fill_in_markdown(locator, **args)

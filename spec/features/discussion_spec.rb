@@ -36,7 +36,7 @@ RSpec.describe 'Discussions', type: :feature do
     select_attachment
     click_button 'Save'
     expect_draft_message('Challenge')
-    expect_content('q/71', creator: 'User 60', images: false)
+    expect_content('q/71', creator: 'User 61', images: false)
   end
 
   example 'Guest posts a question as existing user' do
