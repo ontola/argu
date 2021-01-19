@@ -144,7 +144,6 @@ RSpec.describe 'Discussions', type: :feature do
     click_button 'Save'
     expect_updated_message('Idea')
     resource_selector('https://argu.localtest/argu/m/38/attachments', child: '.AttachmentPreview').click
-    wait_for(page).to have_content('Hoe werkt Argu?')
     wait_for(page).to have_css('iframe[src="//www.youtube.com/embed/mxQZNodm8OI"]')
   end
 
