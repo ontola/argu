@@ -69,6 +69,23 @@ RSpec.describe 'Discussions', type: :feature do
     expect_content('m/71')
   end
 
+  example 'Member posts a motion from omniform' do
+    as 'member@example.com', location: '/argu/q/41'
+    scope = resource_selector(page.current_url, element: '.FullResource div:nth-child(1) div.Card')
+
+    within scope do
+      wait_for { page }.to have_content('Share a response...')
+      click_button 'Share a response...'
+
+      expect_form('/argu/q/41/m')
+      wait_until_loaded
+      fill_in_form(submit: 'save')
+    end
+    expect_published_message('Idea')
+    wait_for { page }.to have_content(title)
+    expect(page).to have_content(content)
+  end
+
   example 'Member posts a motion with required setup' do
     rails_runner(
       :argu,
@@ -151,7 +168,7 @@ RSpec.describe 'Discussions', type: :feature do
 
   private
 
-  def fill_in_form(actor: 'first_name_26 last_name_26')
+  def fill_in_form(actor: 'first_name_26 last_name_26', submit: 'Save')
     fill_in field_name('http://schema.org/name'), with: title, fill_options: {clear: :backspace}
     fill_in_markdown field_name('http://schema.org/text'), with: content
     click_button 'Cover photo'
@@ -165,7 +182,7 @@ RSpec.describe 'Discussions', type: :feature do
     else
       expect(page).not_to have_content("div[aria-labelledby='#{field_name('http://schema.org/creator')}-label']")
     end
-    click_button 'Save'
+    click_button submit
   end
 
   def expect_content(path, creator: 'first_name_26 last_name_26', images: true)
