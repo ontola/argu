@@ -98,7 +98,7 @@ RSpec.describe 'Voting', type: :feature do
           fill_in field_name('https://ns.ontola.io/core#password'), with: 'new password'
           fill_in field_name('https://ns.ontola.io/core#passwordConfirmation'), with: 'new password'
           click_button 'Save'
-          wait_for { page }.to have_content('Set how you will be visible to others on Argu')
+          wait_for { page }.to have_content('Set how you will be visible to others')
           wait_for { page }.to have_snackbar('Your password has been updated successfully.')
           logout
           login('new_user@example.com', 'new password')
