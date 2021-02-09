@@ -10,7 +10,7 @@ RSpec.describe 'iri prefix', type: :feature do
     change_iri_prefix('demogemeente.localdev')
     click_link('Freetown')
     # @todo this should be fixed
-    wait_for(page).to have_content('Problem with the browser')
+    wait_for(page).to have_content('Internal server error')
 
     visit "https://argu.localtest/argu/q/41"
     wait_for(page).to have_content('Fg question title 7end')
