@@ -1,12 +1,14 @@
-image: circleci/buildpack-deps:bionic-curl-dind
-
+image: docker:18.09
 variables:
+  DOCKER_HOST: tcp://localhost:2376
   DOCKER_DRIVER: overlay2
+  DOCKER_TLS_CERTDIR: "/certs"
+
+services:
+  - docker:18.09.7-dind
 
 test:
   stage: test
-  services:
-    - docker:18.09-dind
   before_script:
     - sudo apt-get update && sudo apt-get -y install ruby postgresql-client
     - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" "$CI_REGISTRY" --password-stdin
