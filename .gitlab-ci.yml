@@ -1,4 +1,4 @@
-image: docker:18.09
+image: circleci/buildpack-deps:bionic-curl-dind
 variables:
   DOCKER_HOST: tcp://localhost:2376
   DOCKER_DRIVER: overlay2
