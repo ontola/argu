@@ -30,7 +30,11 @@ services:{testrunner}
     ports:
       - 5432:5432
   redis:
+<<<<<<< HEAD
     image: redis:6
+=======
+    image: redis:6-alpine
+>>>>>>> 1253de9... core#1 Upgrade redis
     ports:
       - 6379:6379
     networks:
