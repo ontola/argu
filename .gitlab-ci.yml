@@ -11,8 +11,13 @@ services:
 test:
   stage: test
   before_script:
-    - sudo apt-get update && sudo apt-get -y install rbenv postgresql-client
-    - (rbenv install 2.7.2 && rbenv init && rbenv shell 2.7.2) || true
+    - sudo apt-get update && sudo apt-get -y install build-essential postgresql-client
+    - git clone https://github.com/rbenv/rbenv.git ~/.rbenv
+    - git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build
+    - echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.bash_profile
+    - eval "$(rbenv init -)" || true
+    - source ~/.bash_profile
+    - rbenv install 2.7.2
     - ruby -v
     - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" "$CI_REGISTRY" --password-stdin
     - sudo gem install activesupport
@@ -22,7 +27,6 @@ test:
     - sudo sh -c "echo '127.0.0.1 demogemeente.localdev' >> /etc/hosts"
     - sudo sh -c "echo '127.0.0.1 veiligheidsinterventies.localdev' >> /etc/hosts"
     - echo "" > ./.env.dev
-    - echo NEO_URL=${NEO_URL} >> ./.env.template
     - echo DEFAULT_LOCALE=en >> ./.env.template
     - sed -i "s/{bugsnag_key}/$BUGSNAG_KEY/g" ./.env.template
     - BACKEND_HOST=argu:3000 ./setup.sh
@@ -65,6 +69,7 @@ test:
     - ls -la $CI_PROJECT_DIR/test-results
   artifacts:
     paths:
+      - /tmp/
       - test-results/
       - docker-compose.yml
     expire_in: 1 week
