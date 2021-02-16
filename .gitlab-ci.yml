@@ -1,4 +1,5 @@
-image: circleci/buildpack-deps:bionic-curl-dind
+image: circleci/buildpack-deps:18.04-curl-browsers
+
 variables:
   DOCKER_HOST: tcp://localhost:2376
   DOCKER_DRIVER: overlay2
@@ -10,7 +11,9 @@ services:
 test:
   stage: test
   before_script:
-    - sudo apt-get update && sudo apt-get -y install ruby postgresql-client
+    - sudo apt-get update && sudo apt-get -y install rbenv postgresql-client
+    - (rbenv install 2.7.2 && rbenv init && rbenv shell 2.7.2) || true
+    - ruby -v
     - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" "$CI_REGISTRY" --password-stdin
     - sudo gem install activesupport
   script:
