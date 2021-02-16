@@ -18,17 +18,6 @@ services:{testrunner}
           - veiligheidsinterventies.localdev
           {devproxy_aliases}
       external:
-  postgres:
-    image: mdillon/postgis:9.5
-    env_file:
-      - ${ENV_FILE:-./.env}
-    networks:
-      default:
-      external:
-    volumes:
-      - pgdata:/var/lib/postgresql/data
-    ports:
-      - 5432:5432
   redis:
     image: redis:6
     ports:

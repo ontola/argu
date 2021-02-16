@@ -2,11 +2,15 @@ image: circleci/buildpack-deps:bionic-curl-dind
 
 variables:
   DOCKER_DRIVER: overlay2
+  POSTGRES_DB: testdb
+  POSTGRES_PASSWORD: testdb
+  POSTGRES_USER: testdb
 
 test:
   stage: test
   services:
     - docker:18.09-dind
+    - mdillon/postgis:11
   before_script:
     - sudo apt-get update && sudo apt-get -y install ruby postgresql-client
     - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" "$CI_REGISTRY" --password-stdin
@@ -28,7 +32,7 @@ test:
     - sudo chown -R $(whoami):$(whoami) ./devproxyCA
     - docker cp ./devproxyCA/cacert.pem certdata:/cacert.pem
     - RAILS_ENV=$RAILS_ENV docker-compose pull
-    - docker-compose up -d postgres elastic devproxy
+    - docker-compose up -d elastic devproxy
     - docker-compose up -d rabbitmq mailcatcher redis
     - RAILS_ENV=$RAILS_ENV docker-compose up -d argu argu_worker
     - RAILS_ENV=$RAILS_ENV docker-compose up apex_rs_setup # Wait until finished

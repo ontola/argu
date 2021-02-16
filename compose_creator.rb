@@ -119,7 +119,6 @@ END_HEREDOC
         'command' => opts[:command] || './bin/rails server -b 0.0.0.0 -p 2999',
         'depends_on' => %w[
           redis
-          postgres
           rabbitmq
           elastic
         ],
