@@ -1,31 +1,60 @@
-image: circleci/buildpack-deps:18.04-curl-browsers
+image: registry.gitlab.com/ontola/core:ci-8afda5b0b751f870848dd96c8fe3e137cda26b52
 
 variables:
   DOCKER_HOST: tcp://localhost:2376
   DOCKER_DRIVER: overlay2
   DOCKER_TLS_CERTDIR: "/certs"
+  RUBY_VERSION: 2.7.2
 
 services:
   - docker:18.09.7-dind
 
+image-ci-build:
+  stage: ci_meta_build
+  script:
+    - docker build --build-arg RUBY_VERSION=$RUBY_VERSION -t $CI_REGISTRY_IMAGE:ci-$CI_COMMIT_SHA -f dockerfiles/ci.Dockerfile ./dockerfiles
+    - docker push $CI_REGISTRY_IMAGE:ci-$CI_COMMIT_SHA
+  rules:
+    - changes:
+        - ./dockerfiles/ci.Dockerfile
+
+image-testrunner-base-build:
+  stage: ci_meta_build
+  script:
+    - docker build -t $CI_REGISTRY_IMAGE:testrunner-base-$CI_COMMIT_SHA -f dockerfiles/testrunner-base.Dockerfile ./dockerfiles
+    - docker push $CI_REGISTRY_IMAGE:testrunner-base-$CI_COMMIT_SHA
+  rules:
+    - changes:
+        - ./dockerfiles/testrunner-base.Dockerfile
+
+image-ci-tag-latest:
+  stage: ci_meta_tag
+  script:
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" "$CI_REGISTRY" --password-stdin
+    - docker tag $CI_REGISTRY_IMAGE:ci-$CI_COMMIT_SHA $CI_REGISTRY_IMAGE:ci-latest
+    - docker push $CI_REGISTRY_IMAGE:ci-latest
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+image-testrunner-base-tag-latest:
+  stage: ci_meta_tag
+  script:
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" "$CI_REGISTRY" --password-stdin
+    - docker tag ${CI_REGISTRY_IMAGE}:testrunner-base-$CI_COMMIT_SHA ${CI_REGISTRY_IMAGE}:testrunner-base-latest
+    - docker push ${CI_REGISTRY_IMAGE}:testrunner-base-latest
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
 test:
   stage: test
   before_script:
-    - sudo apt-get update && sudo apt-get -y install build-essential postgresql-client
-    - git clone https://github.com/rbenv/rbenv.git ~/.rbenv
-    - git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build
-    - echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.bash_profile
-    - eval "$(rbenv init -)" || true
-    - source ~/.bash_profile
-    - rbenv install 2.7.2
-    - ruby -v
     - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" "$CI_REGISTRY" --password-stdin
-    - sudo gem install activesupport
-  script:
     - sudo sh -c "echo '127.0.0.1 app.argu.localtest' >> /etc/hosts"
     - sudo sh -c "echo '127.0.0.1 argu.localtest' >> /etc/hosts"
     - sudo sh -c "echo '127.0.0.1 demogemeente.localdev' >> /etc/hosts"
     - sudo sh -c "echo '127.0.0.1 veiligheidsinterventies.localdev' >> /etc/hosts"
+    - ruby -v
+  script:
     - echo "" > ./.env.dev
     - echo DEFAULT_LOCALE=en >> ./.env.template
     - sed -i "s/{bugsnag_key}/$BUGSNAG_KEY/g" ./.env.template
@@ -76,4 +105,6 @@ test:
     when: on_failure
 
 stages:
+  - ci_meta_build
+  - ci_meta_tag
   - test
