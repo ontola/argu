@@ -21,7 +21,7 @@ image-ci-build:
 image-testrunner-base-build:
   stage: ci_meta_build
   script:
-    - docker build -t $CI_REGISTRY_IMAGE:testrunner-base-$CI_COMMIT_SHA -f dockerfiles/testrunner-base.Dockerfile ./dockerfiles
+    - docker build --build-arg RUBY_VERSION=$RUBY_VERSION -t $CI_REGISTRY_IMAGE:testrunner-base-$CI_COMMIT_SHA -f dockerfiles/testrunner-base.Dockerfile ./dockerfiles
     - docker push $CI_REGISTRY_IMAGE:testrunner-base-$CI_COMMIT_SHA
   rules:
     - changes:
