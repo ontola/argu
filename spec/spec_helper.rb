@@ -22,6 +22,10 @@ OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE
 
 Dotenv.load
 
+Webdrivers::Chromedriver.required_version = '88.0.4324.96'
+Selenium::WebDriver.logger.level = :fine
+Webdrivers.logger.level = :FINE
+
 RSpec.configure do |config|
   include DockerHelper
 
@@ -89,7 +93,7 @@ Capybara.register_driver :selenium_chrome do |app|
     loggingPrefs: {
       browser: 'ALL'
     },
-    chromeOptions: {w3c: false}
+    chromeOptions: {w3c: true}
   )
 
   client = Selenium::WebDriver::Remote::Http::Default.new
@@ -105,7 +109,7 @@ Capybara.register_driver :selenium_chrome do |app|
   options.add_argument('--disable-popup-blocking')
   options.add_argument('--no-sandbox')
   options.add_preference('intl.accept_languages', 'en-US')
-  options.add_option('w3c', false)
+  options.add_option('w3c', true)
 
   Capybara::Selenium::Driver.new(
     app,

@@ -36,6 +36,11 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
     verify_logged_in
   end
 
+  def ensure_lrs
+    has_lrs = 'eval("LRS")'
+    wait(30).for { page.execute_script(has_lrs) }.to be_truthy
+  end
+
   def login_body(actor, password, location)
     body = <<-FOO
     <http://purl.org/link-lib/targetResource> <http://schema.org/email> "#{actor}" .
@@ -111,6 +116,7 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
   end
 
   def wait_until_loaded
+    ensure_lrs
     is_done =
       'return LRS.api.requestMap.size === 0 && '\
       '(LRS.broadcastHandle || LRS.currentBroadcast || LRS.lastPostponed) === undefined;'
@@ -232,6 +238,7 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
 
     return unless email
 
+    ensure_lrs
     current_email_check = "match = LRS.store.find(window[Symbol.for('rdfFactory')].namedNode('#{current_tenant}/c_a'), window[Symbol.for('rdfFactory')].namedNode('https://argu.co/ns/core#primaryEmail')); "\
       "return match && match.object.value;"
     expect(page.execute_script(current_email_check)).to eq(email)
