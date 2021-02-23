@@ -46,8 +46,12 @@ RSpec.configure do |config|
 
   config.wait_timeout = ENV['RSPEC_WAIT']&.to_i || 15
 
+  test_connection = Faraday.new('http://argu:2999/') do |c|
+    c.use Faraday::Response::RaiseError
+  end
+
   config.before(:suite) do
-    db_managed_services.each do |service|
+    (db_managed_services + [:argu]).each do |service|
       puts "Checking #{service}"
       table_exists =
         docker_container('postgres')
@@ -59,15 +63,24 @@ RSpec.configure do |config|
       puts '- Database ready'
     end
     puts 'Services are ready'
+
+    test_connection.post('/_public/spi/tests/suite/start')
+  end
+
+  config.after(:suite) do
+    test_connection.post('/_public/spi/tests/suite/stop')
   end
 
   config.before do
+    test_connection.post('/_public/spi/tests/single/start')
     docker_reset_databases
     docker_reset_redis
     mailcatcher_clear
   end
 
   config.after do |example|
+    test_connection.post('/_public/spi/tests/single/stop')
+
     if example.exception
       upload_container_logs(example)
       upload_browser_logs(example)

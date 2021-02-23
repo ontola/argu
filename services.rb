@@ -11,6 +11,7 @@ SERVICES = {
     restart: 'unless-stopped',
   },
   argu: {
+    manage_db: false,
     path: :argu,
     image: 'registry.gitlab.com/ontola/apex',
     health: 'curl -H "Host: argu.localtest" -f http://localhost:2999/argu/d/health',
