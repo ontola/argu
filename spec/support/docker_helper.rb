@@ -4,24 +4,10 @@ require 'docker-api'
 require_relative '../../services'
 
 module DockerHelper
-  CLEAN_TABLES = <<END_HEREDOC
-DO
-$func$
-BEGIN
-  EXECUTE
-  (SELECT 'TRUNCATE TABLE '
-    || string_agg(quote_ident(schemaname) || '.' || quote_ident(tablename), ', ')
-    || ' CASCADE'
-   FROM pg_tables
-   WHERE schemaname IN ('public', 'argu')
-  );
-END
-$func$;
-END_HEREDOC
-
   def docker_reset_databases
     db_managed_services.each do |db|
-      docker_clean_database(db)
+      docker_drop_database(db)
+      docker_postgres_command('--command', "CREATE DATABASE #{db}_test;")
       docker_restore_dump(db)
     end
   end
@@ -40,10 +26,7 @@ END_HEREDOC
   end
 
   def docker_restore_dump(db, times = 0)
-    docker_exec(
-      'postgres',
-      ['pg_restore', "/var/lib/postgresql/data/dump_#{db}", '-Fc', '--username=postgres', '--clean', '-d', "#{db}_test"]
-    )
+    docker_postgres_command('-d', "#{db}_test", '-f', "/var/lib/postgresql/data/dump_#{db}")
   rescue StandardError => e
     raise e if times >= 3
 
@@ -58,6 +41,18 @@ END_HEREDOC
 
   def docker_container_name(container)
     container.json["Name"][1..]
+  end
+
+  def docker_drop_database(database)
+    docker_postgres_command('--command', "UPDATE pg_database SET datallowconn=false WHERE datname='#{database}_test';")
+
+    docker_postgres_command(
+      '--command',
+      'SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pg_stat_activity.datname = '\
+        "'#{database}_test' AND pid <> pg_backend_pid();"
+    )
+
+    docker_postgres_command('--command', "DROP DATABASE #{database}_test;")
   end
 
   def docker_container(name)
