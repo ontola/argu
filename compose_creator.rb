@@ -54,9 +54,6 @@ module ComposeCreator
     build:
       context: .
       dockerfile: dockerfiles/testrunner.Dockerfile
-      cache_from:
-        - registry.gitlab.com/ontola/core:latest
-    image: registry.gitlab.com/ontola/core:latest
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /dev/shm:/dev/shm
