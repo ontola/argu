@@ -31,8 +31,17 @@ END_HEREDOC
   rescue StandardError => e
     raise e if times >= 3
 
+    docker_close_connections(db)
     puts "Retry to clean #{db}"
     docker_clean_database(db, times + 1)
+  end
+
+  def docker_close_connections(db)
+    docker_postgres_command(
+      '--command',
+      'SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pg_stat_activity.datname = '\
+        "'#{db}_test' AND pid <> pg_backend_pid();"
+    )
   end
 
   def docker_reset_redis
@@ -47,6 +56,7 @@ END_HEREDOC
   rescue StandardError => e
     raise e if times >= 3
 
+    docker_close_connections(db)
     docker_clean_database(db)
     puts "Retry to restore #{db}"
     docker_restore_dump(db, times + 1)

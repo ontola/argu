@@ -18,7 +18,7 @@ RSpec.describe 'Redirect', type: :feature do
       ENV['REDIS_URL'],
       'SET',
       'backend.redirects.https://app.argu.localtest/argu',
-      '"https://argu.localtest/argu"'
+      'https://argu.localtest/argu'
     ])
     visit 'https://app.argu.localtest/argu'
     wait_for(page.current_url).to include('https://argu.localtest/argu')

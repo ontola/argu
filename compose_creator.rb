@@ -83,7 +83,7 @@ END_HEREDOC
           "elastic:#{ENV['HOST_IP'] || ENV['IP']}"
         ],
         'restart' => opts[:restart]
-      }
+      }.compact
 
       entry = {
         opts[:name] => template
@@ -103,6 +103,7 @@ END_HEREDOC
     def base_template(opts)
       {
         'image' => opts[:image],
+        'restart' => 'unless-stopped',
         'env_file' => [
           '${ENV_FILE:-./.env}'
         ],
@@ -136,7 +137,7 @@ END_HEREDOC
 
     def setup_template(opts)
       base_service_template(opts)
-        .merge('depends_on' => nil, 'networks' => nil)
+        .merge('depends_on' => nil, 'networks' => nil, 'restart' => '')
     end
 
     def derivative_opts_filter(opts)
@@ -151,7 +152,6 @@ END_HEREDOC
 
     def subscriber_template_opts(opts)
       base_template(opts).merge(
-        'restart' => 'unless-stopped',
         'volumes' => ['certdata:/etc/ssl/certs']
       )
     end

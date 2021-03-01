@@ -175,6 +175,7 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
   end
 
   def fill_in_select(name = nil, with: nil, selector: nil)
+    wait_for { page }.to have_css("div[aria-labelledby='#{name}-label']")
     within "div[aria-labelledby='#{name}-label']" do
       click_button
       select = lambda do
