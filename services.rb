@@ -4,6 +4,7 @@ require 'active_support/hash_with_indifferent_access'
 
 SERVICES = {
   frontend: {
+    infra_name: 'frontend',
     manage_db: false,
     image: 'registry.gitlab.com/ontola/libro',
     command: 'node --use-openssl-ca ./dist/private/server.js',
@@ -11,6 +12,7 @@ SERVICES = {
     restart: 'unless-stopped',
   },
   argu: {
+    infra_name: 'apex',
     path: :argu,
     image: 'registry.gitlab.com/ontola/apex',
     health: 'curl -H "Host: argu.localtest" -f http://localhost:2999/argu/d/health',
@@ -19,7 +21,9 @@ SERVICES = {
     }
   },
   email: {
+    infra_name: 'email',
     path: :email_service,
+    image: 'registry.gitlab.com/ontola/email_service',
     subscriber: {
       command: 'bundle exec rake broadcast:subscribe',
       depends_on: 'rabbitmq'
@@ -29,12 +33,15 @@ SERVICES = {
     }
   },
   token: {
+    infra_name: 'token',
     path: :token_service,
+    image: 'registry.gitlab.com/ontola/token_service',
     worker: {
       command: ' bundle exec sidekiq -e staging'
     }
   },
   apex_rs: {
+    infra_name: 'cache',
     image: 'registry.gitlab.com/ontola/apex-rs',
     command: '/usr/local/bin/server',
     env: {
