@@ -8,7 +8,7 @@ module ComposeCreator
       opts = opts.with_indifferent_access
       opts[:name] = name
       opts[:image] = opts[:image] || "registry.gitlab.com/ontola/#{name}_service"
-      opts[:image] = "#{opts[:image]}:${RAILS_ENV:-staging}"
+      opts[:image] = "#{opts[:image]}:${TARGET_TAG:-staging}"
 
       setup_service =
         if opts[:setup]

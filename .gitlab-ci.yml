@@ -3,13 +3,36 @@ image: circleci/buildpack-deps:bionic-curl-dind
 variables:
   DOCKER_DRIVER: overlay2
 
-test:
-  stage: test
-  rules:
-    - if: $CI_COMMIT_TAG
-      when: never
+.bundle_base:
+  image: registry.gitlab.com/gitlab-org/release-cli:latest
   services:
     - docker:18.09-dind
+  before_script:
+    - apk add ruby ruby-etc ruby-bigdecimal
+    - gem install docker-api activesupport
+  script:
+    - export BUNDLE_INFO=$(./tag_release_bundle.rb ${SOURCE_TAG:-latest} $TARGET_TAG)
+    - "[[ -z \"$BUNDLE_INFO\" ]] && return 1;"
+    - echo $BUNDLE_INFO
+    - "echo TARGET_TAG=$TARGET_TAG >> build.env"
+    - "echo BUNDLE_INFO=$BUNDLE_INFO >> build.env"
+  artifacts:
+    reports:
+      dotenv: build.env
+
+latest_bundle:
+  extends: .bundle_base
+  stage: build
+  variables:
+    SOURCE_TAG: staging
+    TARGET_TAG: v$CI_PIPELINE_ID-dev
+
+test:
+  stage: test
+  services:
+    - docker:18.09-dind
+  needs:
+    - latest_bundle
   before_script:
     - sudo apt-get update && sudo apt-get -y install ruby postgresql-client
     - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" "$CI_REGISTRY" --password-stdin
@@ -20,22 +43,22 @@ test:
     - sudo sh -c "echo '127.0.0.1 demogemeente.localdev' >> /etc/hosts"
     - sudo sh -c "echo '127.0.0.1 veiligheidsinterventies.localdev' >> /etc/hosts"
     - echo "" > ./.env.dev
-    - echo NEO_URL=${NEO_URL} >> ./.env.template
     - echo DEFAULT_LOCALE=en >> ./.env.template
     - sed -i "s/{bugsnag_key}/$BUGSNAG_KEY/g" ./.env.template
     - BACKEND_HOST=argu:3000 ./setup.sh
     - TESTRUNNER=true IP=127.0.0.1 HOST_IP=172.99.0.1 ENV=test ./setup_environment.rb
     - sudo chown -R $(whoami):$(whoami) ./ssl
+    - TARGET_TAG=v$CI_PIPELINE_ID-dev
     - "[[ $CI_COMMIT_BRANCH	= master ]] && RAILS_ENV=production || RAILS_ENV=staging"
     - docker create -v /cfg --name certdata alpine:3.4 /bin/true
     - sudo chown -R $(whoami):$(whoami) ./devproxyCA
     - docker cp ./devproxyCA/cacert.pem certdata:/cacert.pem
-    - RAILS_ENV=$RAILS_ENV docker-compose pull
+    - RAILS_ENV=$RAILS_ENV TARGET_TAG=$TARGET_TAG docker-compose pull
     - docker-compose up -d postgres elastic devproxy
     - docker-compose up -d rabbitmq mailcatcher redis
-    - RAILS_ENV=$RAILS_ENV docker-compose up -d argu argu_worker
-    - RAILS_ENV=$RAILS_ENV docker-compose up apex_rs_setup # Wait until finished
-    - RAILS_ENV=$RAILS_ENV docker-compose up -d token token_worker frontend email email_subscriber email_worker apex_rs apex_rs_worker
+    - RAILS_ENV=$RAILS_ENV TARGET_TAG=$TARGET_TAG docker-compose up -d argu argu_worker
+    - RAILS_ENV=$RAILS_ENV TARGET_TAG=$TARGET_TAG docker-compose up apex_rs_setup # Wait until finished
+    - RAILS_ENV=$RAILS_ENV TARGET_TAG=$TARGET_TAG docker-compose up -d token token_worker frontend email email_subscriber email_worker apex_rs apex_rs_worker
     - docker-compose build --build-arg "TEST_FILES=$TEST_FILES"
     - docker push $CI_REGISTRY_IMAGE:latest
     - docker-compose run testrunner bundle exec rake test:initialize_db
@@ -68,68 +91,60 @@ test:
     expire_in: 1 week
     when: on_failure
 
-tag_bundle:
-  stage: tag
-  image: registry.gitlab.com/gitlab-org/release-cli:latest
-  services:
-    - docker:18.09-dind
-  rules:
-    - if: $CI_COMMIT_TAG
-    - if: '$CI_PIPELINE_SOURCE == "web"'
-  before_script:
-    - apk add ruby ruby-etc ruby-bigdecimal
-    - gem install docker-api activesupport
-  script:
-    - export BUNDLE_INFO=$(./tag_release_bundle.rb)
-    - "[[ -z \"$BUNDLE_INFO\" ]] && return 1;"
-    - echo $BUNDLE_INFO
-    - "echo BUNDLE_INFO=$BUNDLE_INFO >> build.env"
-  artifacts:
-    reports:
-      dotenv: build.env
-
-deploy_staging:
-  stage: deploy
+freeze:
+  extends: .bundle_base
+  stage: freeze
   when: manual
-  trigger:
-    project: ontola/infrastructure
-    branch: "core#8-release-management"
-    strategy: depend
+  needs:
+    - test
   variables:
-    COMMIT_TAG: $CI_COMMIT_TAG
-    ENVIRONMENT_SLUG: staging
+    SOURCE_TAG: v$CI_PIPELINE_ID-dev
+    TARGET_TAG: v$CI_PIPELINE_ID
 
 release:
   stage: release
   image: registry.gitlab.com/gitlab-org/release-cli:latest
+  allow_failure: true
   needs:
-    - job: tag_bundle
+    - job: freeze
       artifacts: true
-  rules:
-    - if: $CI_COMMIT_TAG
-      allow_failure: true
   before_script:
     - apk add bash
   script:
-    - "bash -c 'echo -e \"# Release $CI_COMMIT_TAG\n\n${BUNDLE_INFO@E}\" > ./RELEASE_NOTES.md'"
-    - echo Created release $CI_COMMIT_TAG
+    - "bash -c 'echo -e \"# Release v$CI_PIPELINE_ID\n\n${BUNDLE_INFO@E}\" > ./RELEASE_NOTES.md'"
+    - echo Created release v$CI_PIPELINE_ID
   release:
-    tag_name: $CI_COMMIT_TAG
+    tag_name: v$CI_PIPELINE_ID
     description: ./RELEASE_NOTES.md
 
-deploy_production:
+deploy_staging:
   stage: deploy
   when: manual
+  needs:
+    - latest_bundle
   trigger:
     project: ontola/infrastructure
     branch: "core#8-release-management"
     strategy: depend
   variables:
-    COMMIT_TAG: $CI_COMMIT_TAG
+    COMMIT_TAG: v$CI_PIPELINE_ID-dev
+    ENVIRONMENT_SLUG: staging
+
+deploy_production:
+  stage: deploy
+  needs:
+    - release
+  trigger:
+    project: ontola/infrastructure
+    branch: "core#8-release-management"
+    strategy: depend
+  variables:
+    COMMIT_TAG: v$CI_PIPELINE_ID
     ENVIRONMENT_SLUG: production
 
 stages:
+  - build
   - test
-  - tag
+  - freeze
   - release
   - deploy

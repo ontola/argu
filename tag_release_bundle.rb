@@ -6,8 +6,8 @@ require_relative './services'
 
 $stdout.sync = true
 
-SOURCE_TAG = ENV['SOURCE_TAG'] || 'latest'
-TARGET_TAG = ENV['CI_COMMIT_TAG']
+SOURCE_TAG = ARGV[0]
+TARGET_TAG = ARGV[1]
 warn "Tagging images with #{TARGET_TAG}"
 Docker.authenticate!(
   username: ENV['CI_REGISTRY_USER'],
@@ -21,18 +21,18 @@ end
 
 def tag_version(desc)
   repo = desc[:image]
-  latest = "#{repo}:#{image_source_tag(desc[:infra_name])}"
+  source = "#{repo}:#{image_source_tag(desc[:infra_name])}"
   image =
-    if Docker::Image.exist?(latest)
-      Docker::Image.get(latest)
+    if Docker::Image.exist?(source)
+      Docker::Image.get(source)
     else
-      warn "Pulling #{latest}"
+      warn "Pulling #{source}"
       Docker::Image.create(fromImage: repo, tag: image_source_tag(repo))
     end
-  throw "Image #{latest} not found" unless image
+  throw "Image #{source} not found" unless image
 
   ref = "#{repo}:#{TARGET_TAG}"
-  warn "Tagging #{latest} as #{ref}"
+  warn "Tagging #{source} as #{ref}"
   image.tag(repo: repo, tag: TARGET_TAG)
   [image, ref]
 end
@@ -45,10 +45,10 @@ SERVICES
   end
 
 versions = SERVICES.map do |_, desc|
-  image = Docker::Image.get("#{desc[:image]}:#{TARGET_TAG}")
-  commit = image.info['Config']['Env'].find { |c| c.start_with?('CI_COMMIT_SHA=') }&.split('=')&.pop
+  target = Docker::Image.get("#{desc[:image]}:#{TARGET_TAG}")
+  commit = target.info['Config']['Env'].find { |c| c.start_with?('CI_COMMIT_SHA=') }&.split('=')&.pop
   commit_link = commit.presence && "[#{commit}](https://gitlab.com/ontola/libro/-/commit/#{commit})"
-  "| #{desc[:infra_name]} | #{image.id} | #{commit_link || '-'} |"
+  "| #{desc[:infra_name]} | #{target.id} | #{commit_link || '-'} |"
 end
 
 message = "Created image bundle #{TARGET_TAG}:\\n\\n" \
