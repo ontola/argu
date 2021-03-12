@@ -48,7 +48,7 @@ test:
     - 'curl -H "Host: argu.localtest" -f http://apex-rs.svc.cluster.local:3030/link-lib/d/health || true'
     - TEST_TIMEOUT=${TEST_TIMEOUT:-50m}
     - echo test timeout $TEST_TIMEOUT
-    - timeout $TEST_TIMEOUT bash -c 'docker-compose run --name -e REDIS_URL testrunner testrunner'
+    - timeout $TEST_TIMEOUT bash -c 'docker-compose run --name testrunner -e REDIS_URL testrunner'
   after_script:
     - mkdir $CI_PROJECT_DIR/test-results || true
     - docker cp testrunner:/tmp/test-results/rspec.xml $CI_PROJECT_DIR/test-results/rspec.xml || true
