@@ -26,8 +26,11 @@ RSpec.describe 'Direct messages', type: :feature do
     wait_for { page }.to have_content('Send an e-mail to first_name_30 last_name_30')
     wait_for { page }.to have_button('New email address')
     click_button('New email address')
-    fill_in field_name('http://schema.org/email'), with: new_email
-    click_button('Add')
+    wait_until_loaded
+    within('.MuiDialog-paper') do
+      fill_in field_name('http://schema.org/email'), with: new_email
+      click_button('Add')
+    end
     expect_email(:add_address_email)
     visit add_address_email.links.last
     visit 'https://argu.localtest/argu/m/38/dm/new'

@@ -174,19 +174,23 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
     click_button 'Confirm'
   end
 
-  def fill_in_select(name = nil, with: nil, selector: nil)
-    wait_for { page }.to have_css("div[aria-labelledby='#{name}-label']")
-    within "div[aria-labelledby='#{name}-label']" do
-      click_button
-      select = lambda do
-        input_field = find('.Input').native
-        with.split('').each { |key| input_field.send_keys key } if with
-        selector ||= /#{with}/
-        wait_for { page }.to have_css('.SelectItem', text: selector)
-        find('.SelectItem', text: selector).click
+  def fill_in_select(name = nil, with: nil)
+    css = "input.MuiInputBase-input[id='#{name}']"
+    wait_for { page }.to have_css(css)
+    input = find(css)
+    input.click
+    select = lambda do
+      input_field = input.native
+      with.split('').each { |key| input_field.send_keys key } if with
+      selector ||= /#{with}/
+      without do
+        within '.MuiAutocomplete-popper' do
+          expect(page).to have_content(selector)
+          find('.SelectItem', text: selector).click
+        end
       end
-      select.call
     end
+    select.call
   end
 
   def go_to_menu_item(text, menu: :actions, resource: page.current_url)
@@ -247,6 +251,13 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
     wait_for { page }.to(
       have_content("By continuing you agree to our\nTerms of use\nand our\nPrivacy policy\n.")
     )
+  end
+
+  def without
+    current_scope = page.send(:scopes).pop
+    yield
+  ensure
+    page.send(:scopes).push(current_scope)
   end
 
   def expect_email(email_name)
