@@ -1,26 +1,59 @@
-image: circleci/buildpack-deps:bionic-curl-dind
+image: mcr.microsoft.com/playwright:bionic
 
 variables:
   DOCKER_DRIVER: overlay2
 
-before_script:
-  - sudo apt-get update && sudo apt-get -y install ruby postgresql-client
+before_script: &before_script
+  - sh -c "echo '127.0.0.1 argu.localdev' >> /etc/hosts"
+  - sh -c "echo '127.0.0.1 argu.localtest' >> /etc/hosts"
+  - sh -c "echo '127.0.0.1 demogemeente.localdev' >> /etc/hosts"
+  - sh -c "echo '127.0.0.1 demogemeente.localtest' >> /etc/hosts"
+  - sh -c "echo '127.0.0.1 veiligheidsinterventies.localdev' >> /etc/hosts"
+  - sh -c "echo '127.0.0.1 veiligheidsinterventies.localtest' >> /etc/hosts"
+  - apt-get -y install apt-transport-https ca-certificates curl gnupg lsb-release bash sudo openssh-server libnss3-tools jq
+  - mkdir -p ~/.pki/nssdb
+  - certutil -d sql:$HOME/.pki/nssdb -N --empty-password
+  - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+  - echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+  - apt-get update
+  - apt-get -y install docker-ce docker-ce-cli containerd.io
+  - apt-get update && apt-get -y install ruby postgresql-client docker-ce
   - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" "$CI_REGISTRY" --password-stdin
-  - sudo gem install activesupport
-  - sudo sh -c "echo '127.0.0.1 app.argu.localtest' >> /etc/hosts"
-  - sudo sh -c "echo '127.0.0.1 argu.localtest' >> /etc/hosts"
-  - sudo sh -c "echo '127.0.0.1 demogemeente.localdev' >> /etc/hosts"
-  - sudo sh -c "echo '127.0.0.1 veiligheidsinterventies.localdev' >> /etc/hosts"
+  - gem install activesupport --no-document --minimal-deps
   - echo "" > ./.env.dev
   - echo DEFAULT_LOCALE=en >> ./.env.template
   - sed -i "s/{bugsnag_key}/$BUGSNAG_KEY/g" ./.env.template
-  - BACKEND_HOST=argu:3000 ./setup.sh
+  - BACKEND_HOST=argu:3000 ENV=test ./setup.sh
   - TESTRUNNER=true IP=127.0.0.1 HOST_IP=172.99.0.1 ENV=test ./setup_environment.rb
-  - sudo chown -R $(whoami):$(whoami) ./ssl
+  - chown -R $(whoami):$(whoami) ./ssl
   - "[[ $CI_COMMIT_BRANCH = master ]] && RAILS_ENV=production || RAILS_ENV=staging"
   - docker create -v /cfg --name certdata alpine:3.4 /bin/true
-  - sudo chown -R $(whoami):$(whoami) ./devproxyCA
+  - chown -R $(whoami):$(whoami) ./devproxyCA
   - docker cp ./devproxyCA/cacert.pem certdata:/cacert.pem
+  - mkdir ~/.ssh && cd ~/.ssh && ssh-keygen -b 2048 -t rsa -f ~/.ssh/id_rsa -q -N "" && cat id_rsa.pub >> authorized_keys && chmod 640 authorized_keys && cd $CI_PROJECT_DIR
+  - /etc/init.d/ssh start && /etc/init.d/ssh status
+  - ssh -o StrictHostKeyChecking=no -f -N -D 55556 localhost
+
+.env_init: &env_init
+  - RAILS_ENV=$RAILS_ENV docker-compose pull -q
+  - docker-compose up -d postgres elastic devproxy
+  - docker-compose up -d rabbitmq mailcatcher redis
+  - RAILS_ENV=$RAILS_ENV docker-compose up -d argu argu_worker
+  - RAILS_ENV=$RAILS_ENV docker-compose up apex_rs_setup # Wait until finished
+  - RAILS_ENV=$RAILS_ENV docker-compose up -d token token_worker frontend email email_subscriber email_worker apex_rs apex_rs_worker
+  - docker-compose run testrunner bundle exec rake test:initialize_db
+  - docker restart devproxy_argu_1
+  - ./restart.sh devproxy || true
+  - docker-compose run argu bundle exec rake cache:warm
+  - docker-compose run testrunner bundle exec rake test:dump
+  - docker restart devproxy_argu_worker_1
+  - ./restart.sh devproxy || true
+  - timeout 5m bash -c 'until [ $(docker ps -f name=devproxy_argu_1 -f health=healthy -q | wc -l) -gt 0 ]; do sleep 1; done'
+  - docker ps -a
+  - docker images
+  - 'curl -H "Host: argu.localtest" -f http://apex-rs.svc.cluster.local:3030/link-lib/d/health || true'
+  - TEST_TIMEOUT=${TEST_TIMEOUT:-50m}
+  - echo test timeout $TEST_TIMEOUT
 
 ci_build:
   stage: ci_build
@@ -38,31 +71,21 @@ test:
   stage: test
   services:
     - docker:18.09-dind
+  before_script:
+    - echo $CI_PROJECT_DIR
+    - *before_script
+    - curl -L "https://github.com/docker/compose/releases/download/1.28.5/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+    - chmod +x /usr/local/bin/docker-compose
+    - npm i
   script:
-    - RAILS_ENV=$RAILS_ENV docker-compose pull
-    - docker-compose up -d postgres elastic devproxy
-    - docker-compose up -d rabbitmq mailcatcher redis
-    - RAILS_ENV=$RAILS_ENV docker-compose up -d argu argu_worker
-    - RAILS_ENV=$RAILS_ENV docker-compose up apex_rs_setup # Wait until finished
-    - RAILS_ENV=$RAILS_ENV docker-compose up -d token token_worker frontend email email_subscriber email_worker apex_rs apex_rs_worker
-    - docker-compose run testrunner bundle exec rake test:initialize_db
-    - docker restart devproxy_argu_1
-    - ./restart.sh devproxy || true
-    - docker-compose run argu bundle exec rake cache:warm
-    - docker-compose run testrunner bundle exec rake test:dump
-    - docker restart devproxy_argu_worker_1
-    - ./restart.sh devproxy || true
-    - timeout 5m bash -c 'until [ $(docker ps -f name=devproxy_argu_1 -f health=healthy -q | wc -l) -gt 0 ]; do sleep 1; done'
-    - docker ps -a
-    - docker images
-    - 'curl -H "Host: argu.localtest" -f http://apex-rs.svc.cluster.local:3030/link-lib/d/health || true'
-    - TEST_TIMEOUT=${TEST_TIMEOUT:-50m}
-    - echo test timeout $TEST_TIMEOUT
-    - timeout $TEST_TIMEOUT bash -c 'docker-compose run -e REDIS_URL --name testrunner testrunner'
+    - ls -lah
+    - *env_init
+    - curl --socks5 localhost:55556 --insecure https://demogemeente.localdev
+    - DEBUG=pw:api timeout $TEST_TIMEOUT bash -c 'DEBUG=pw:api ./node_modules/.bin/jest'
   after_script:
     - mkdir $CI_PROJECT_DIR/test-results || true
-    - docker cp testrunner:/tmp/test-results/rspec.xml $CI_PROJECT_DIR/test-results/rspec.xml || true
-    - docker cp testrunner:/usr/src/app/tmp/exceptions $CI_PROJECT_DIR/test-results/exceptions || true
+#    - docker cp testrunner:/tmp/test-results/rspec.xml $CI_PROJECT_DIR/test-results/rspec.xml || true
+#    - docker cp testrunner:/usr/src/app/tmp/exceptions $CI_PROJECT_DIR/test-results/exceptions || true
     - docker ps --no-trunc -a > $CI_PROJECT_DIR/test-results/docker-ps.txt || true
     - docker-compose logs > $CI_PROJECT_DIR/test-results/docker-compose-logs.txt || true
     - 'curl -H "Host: argu.localtest" -f http://localhost:3030/link-lib/d/health > apex_rs_health.txt || true'
@@ -71,8 +94,8 @@ test:
   artifacts:
     paths:
       - test-results/
-      - docker-compose.yml
-    expire_in: 1 week
+#      - docker-compose.yml
+    expire_in: 1 day
     when: on_failure
 
 stages:

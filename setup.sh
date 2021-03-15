@@ -67,7 +67,7 @@ if [ ! -f ./.env.test ]; then
 fi
 
 # Exit if script if host IP matches nginx config IP
-if [ $IP = $NGINXIP ]; then
+if [ "$IP" = "$NGINXIP" ]; then
   echo "Host IP matches the IP configured in nginx.conf, skipping certs creation."
   exit 0
 fi
@@ -78,11 +78,12 @@ if [ ! -f /usr/share/ca-certificates/devproxy.crt ]; then
        -config openssl.cfg \
        -newkey rsa:4096 \
        -subj "/C=NL/ST=Utrecht/L=Utrecht/O=Argu/OU=Argu Root/CN=argu.localdev" \
+       -addext "subjectAltName = DNS:demogemeente.localdev,DNS:veiligheidsinterventies.localdev,DNS:argu.localtest,DNS:demogemeente.localtest,DNS:veiligheidsinterventies.localtest" \
        -keyout devproxyCA/private/cakey.pem \
        -out devproxyCA/cacert.pem
   # Install in system
   sudo ln -s $PWD/devproxyCA/cacert.pem /usr/share/ca-certificates/devproxy.crt
-  sudo dpkg-reconfigure p critical ca-certificates
+  sudo dpkg-reconfigure -p critical ca-certificates
   echo "4"
   # Install in firefox
   for certDB in $(find  ~/.mozilla* -name "cert8.db")
@@ -111,6 +112,7 @@ sudo openssl req \
   -newkey rsa:2048 \
   -keyout ssl/nginx.key \
   -subj "/C=NL/ST=Utrecht/L=Utrecht/O=Argu/OU=Argu Development/CN=argu.localdev" \
+  -addext "subjectAltName = DNS:argu.localdev,DNS:demogemeente.localdev,DNS:veiligheidsinterventies.localdev,DNS:argu.localtest,DNS:demogemeente.localtest,DNS:veiligheidsinterventies.localtest" \
   -new -sha256 \
   -out ssl/argu.localdev.csr.pem
 
