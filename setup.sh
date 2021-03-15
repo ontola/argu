@@ -78,6 +78,7 @@ if [ ! -f /usr/share/ca-certificates/devproxy.crt ]; then
        -config openssl.cfg \
        -newkey rsa:4096 \
        -subj "/C=NL/ST=Utrecht/L=Utrecht/O=Argu/OU=Argu Root/CN=argu.localdev" \
+       -addext "subjectAltName = DNS:demogemeente.localdev,DNS:veiligheidsinterventies.localdev" \
        -keyout devproxyCA/private/cakey.pem \
        -out devproxyCA/cacert.pem
   # Install in system
