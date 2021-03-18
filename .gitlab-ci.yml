@@ -10,6 +10,7 @@ before_script: &before_script
   - sh -c "echo '127.0.0.1 demogemeente.localtest' >> /etc/hosts"
   - sh -c "echo '127.0.0.1 veiligheidsinterventies.localdev' >> /etc/hosts"
   - sh -c "echo '127.0.0.1 veiligheidsinterventies.localtest' >> /etc/hosts"
+  - sh -c "echo '127.0.0.1 apex-rs.svc.cluster.local' >> /etc/hosts"
   - apt-get -y install apt-transport-https ca-certificates curl gnupg lsb-release bash sudo openssh-server libnss3-tools jq
   - mkdir -p ~/.pki/nssdb
   - certutil -d sql:$HOME/.pki/nssdb -N --empty-password
@@ -30,9 +31,9 @@ before_script: &before_script
   - docker create -v /cfg --name certdata alpine:3.4 /bin/true
   - chown -R $(whoami):$(whoami) ./devproxyCA
   - docker cp ./devproxyCA/cacert.pem certdata:/cacert.pem
-  - mkdir ~/.ssh && cd ~/.ssh && ssh-keygen -b 2048 -t rsa -f ~/.ssh/id_rsa -q -N "" && cat id_rsa.pub >> authorized_keys && chmod 640 authorized_keys && cd $CI_PROJECT_DIR
-  - /etc/init.d/ssh start && /etc/init.d/ssh status
-  - ssh -o StrictHostKeyChecking=no -f -N -D 55556 localhost
+#  - mkdir ~/.ssh && cd ~/.ssh && ssh-keygen -b 2048 -t rsa -f ~/.ssh/id_rsa -q -N "" && cat id_rsa.pub >> authorized_keys && chmod 640 authorized_keys && cd $CI_PROJECT_DIR
+#  - /etc/init.d/ssh start && /etc/init.d/ssh status
+#  - ssh -o StrictHostKeyChecking=no -f -N -D 55556 localhost
 
 .env_init: &env_init
   - RAILS_ENV=$RAILS_ENV docker-compose pull -q
@@ -80,8 +81,10 @@ test:
   script:
     - ls -lah
     - *env_init
-    - curl --socks5 localhost:55556 --insecure https://demogemeente.localdev
-    - DEBUG=pw:api timeout $TEST_TIMEOUT bash -c 'DEBUG=pw:api ./node_modules/.bin/jest'
+#    - curl --socks5 localhost:55556 --insecure https://demogemeente.localdev
+#    - timeout $TEST_TIMEOUT bash -c './node_modules/.bin/jest'
+    - yarn jest --ci
+    - echo "echo last command in pipeline"
   after_script:
     - mkdir $CI_PROJECT_DIR/test-results || true
 #    - docker cp testrunner:/tmp/test-results/rspec.xml $CI_PROJECT_DIR/test-results/rspec.xml || true
@@ -95,8 +98,8 @@ test:
     paths:
       - test-results/
 #      - docker-compose.yml
-    expire_in: 1 day
-    when: on_failure
+    expire_in: 2 days
+    when: always
 
 stages:
   - ci_build

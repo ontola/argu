@@ -16,3 +16,4 @@ tmp
 docker-compose.yml
 local_ports.yml
 node_modules/
+test-results/
