@@ -1,7 +1,9 @@
 module.exports = {
-  preset: "jest-playwright-preset",
+  preset: 'jest-playwright-preset',
+  setupFilesAfterEnv: ["<rootDir>/setup.js"],
+  testTimeout: 30000,
   testEnvironmentOptions: {
-    "jest-playwright": {
+    'jest-playwright': {
       // browsers: ["chromium", "firefox", "webkit"],
       launchOptions: {
         args: [
@@ -16,5 +18,8 @@ module.exports = {
         }
       },
     },
+  },
+  transform: {
+    '^.+\\.ts$': 'ts-jest',
   },
 };
