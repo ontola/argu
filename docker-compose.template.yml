@@ -36,6 +36,8 @@ services:{testrunner}
     networks:
       default:
       external:
+    volumes:
+      - redisdata:/data
   elastic:
     image: elasticsearch:6.7.2
     env_file:
@@ -83,3 +85,4 @@ networks:
 volumes:
   certdata:
   pgdata:
+  redisdata:
