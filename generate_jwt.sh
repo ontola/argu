@@ -13,7 +13,7 @@ set -o pipefail
 # Static header fields.
 header='{
 	"typ": "JWT",
-	"alg": "HS256"
+	"alg": "HS512"
 }'
 
 if [ ${2} == 'false' ]
@@ -50,7 +50,7 @@ json() { jq -c . | LC_CTYPE=C tr -d '\n'; }
 sign() {
         local sig
         signed_content="$(json <<<"$header" | b64enc).$(json <<<"$payload" | b64enc)"
-        sig=$(printf %s "$signed_content" | openssl dgst -binary -sha256 -hmac "${secret}" | b64enc)
+        sig=$(printf %s "$signed_content" | openssl dgst -binary -sha512 -hmac "${secret}" | b64enc)
         printf '%s.%s\n' "${signed_content}" "${sig}"
 }
 

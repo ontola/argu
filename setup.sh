@@ -30,7 +30,6 @@ write_env() {
     sed -i "s/{argu_client_secret}/$ARGU_CLIENT_SECRET/g" ./.env.$1
     sed -i "s/{frontend_token}/$FRONTEND_TOKEN/g" ./.env.$1
     sed -i "s/{service_token}/$SERVICE_TOKEN/g" ./.env.$1
-    sed -i "s/{service_guest_token}/$SERVICE_GUEST_TOKEN/g" ./.env.$1
     sed -i "s/{database_suffix}/$DB_SUFFIX/g" ./.env.$1
     sed -i "s#{elastic_search}#$ELASTICSEARCH_URL#g" ./.env.$1
     sed -i "s/{secret}/$SECRET/g" ./.env.$1
@@ -48,8 +47,6 @@ if [ ! -f ./.env.dev ]; then
     read -s FRONTEND_TOKEN
     echo service_token:
     read -s SERVICE_TOKEN
-    echo service_guest_token:
-    read -s SERVICE_GUEST_TOKEN
     DB_SUFFIX=production
     write_env dev;
 fi
@@ -62,7 +59,6 @@ if [ ! -f ./.env.test ]; then
     DB_SUFFIX=test
     FRONTEND_TOKEN=$(./generate_jwt.sh $SECRET -2 1 service)
     SERVICE_TOKEN=$(./generate_jwt.sh $SECRET -2 0 service)
-    SERVICE_GUEST_TOKEN=$(./generate_jwt.sh $SECRET false 1 guest)
     write_env test;
 fi
 
