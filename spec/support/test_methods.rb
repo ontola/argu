@@ -178,6 +178,7 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
     css = "input.MuiInputBase-input[id='#{name}']"
     wait_for { page }.to have_css(css)
     input = find(css)
+    scroll_to(input)
     input.click
     select = lambda do
       input_field = input.native

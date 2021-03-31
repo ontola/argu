@@ -58,6 +58,7 @@ RSpec.describe 'Page settings', type: :feature do
 
       wait_until_loaded
       wait_for { page }.to have_content 'Components'
+      wait_until_loaded
       expect(components_row(1)).to have_content('New Forum')
       expect(components_row(2)).to have_content('Holland')
       expect(components_row(3)).to have_content('Freetown')
