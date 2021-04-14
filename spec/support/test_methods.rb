@@ -185,7 +185,7 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
       with.split('').each { |key| input_field.send_keys key } if with
       selector ||= /#{with}/
       without do
-        within '.MuiAutocomplete-popper' do
+        within '.MuiAutocomplete-listbox' do
           expect(page).to have_content(selector)
           find('.SelectItem', text: selector).click
         end

@@ -32,9 +32,9 @@ module Selectors
 
   def details_bar(parent: resource_selector(page.current_url, element: '.Card'))
     within(parent) do
-      wait_for { page }.to have_css('.DetailsBar')
+      wait_for { page }.to have_css(test_selector('DetailsBar'))
 
-      page.find('.DetailsBar')
+      page.find(test_selector('DetailsBar'))
     end
   end
 
@@ -61,5 +61,9 @@ module Selectors
 
     wait_for(found).to have_css child
     found.find(child)
+  end
+
+  def test_selector(selector)
+    "[data-test='#{selector}']"
   end
 end

@@ -160,7 +160,10 @@ RSpec.describe 'Discussions', type: :feature do
     end
     click_button 'Save'
     expect_updated_message('Idea')
-    resource_selector('https://argu.localtest/argu/m/38/attachments', child: '.AttachmentPreview').click
+    resource_selector(
+      'https://argu.localtest/argu/m/38/attachments',
+      child: test_selector('ImageAttachmentPreview')
+    ).click
     wait_for(page).to have_css('iframe[src="//www.youtube.com/embed/mxQZNodm8OI"]')
   end
 
@@ -188,7 +191,12 @@ RSpec.describe 'Discussions', type: :feature do
   def expect_content(path, creator: 'first_name_26 last_name_26', images: true)
     wait_for { page }.to have_content(title)
     expect(page).to have_content(content)
-    resource_selector("https://argu.localtest/argu/#{path}/attachments", child: '.AttachmentPreview') if images
+    if images
+      resource_selector(
+        "https://argu.localtest/argu/#{path}/attachments",
+        child: test_selector('ImageAttachmentPreview')
+      )
+    end
     expect(page).to have_css('.CoverImage__wrapper') if images
     expect(page).to have_current_path("/argu/#{path}")
     expect(details_bar).to have_content(creator)
