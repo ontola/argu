@@ -16,6 +16,8 @@ RSpec.describe 'Voting', type: :feature do
     expect_voted(side: @side)
   end
   let(:before_vote) {}
+  let(:vote_counts) { { yes: 0, no: 0 }.with_indifferent_access }
+  let(:vote_diff) { 0 }
 
   shared_examples_for 'voting' do
     example 'remember vote' do
@@ -35,8 +37,8 @@ RSpec.describe 'Voting', type: :feature do
     example 'confirm vote' do
       vote_in_favour
       confirm
-      expect_voted
       after_confirmation
+      expect_voted(count: vote_counts[@side] + 1)
     end
   end
 
@@ -104,6 +106,7 @@ RSpec.describe 'Voting', type: :feature do
           login('new_user@example.com', 'new password')
           go_to_user_page('Notifications')
           wait_for { page }.to have_content('Finish your profile to be more recognizable.')
+          visit location
         end
 
         it_behaves_like 'confirm vote'
@@ -111,12 +114,14 @@ RSpec.describe 'Voting', type: :feature do
     end
 
     context 'as user' do
+      let(:vote_diff) { 1 }
       let(:actor) { 'user1@example.com' }
 
       it_behaves_like 'voting'
     end
 
     context 'as invitee' do
+      let(:vote_diff) { 1 }
       let(:location) { '/argu/tokens/valid_email_token' }
       let(:motion_sequence) { 3 }
       let(:after_vote) do
@@ -137,12 +142,14 @@ RSpec.describe 'Voting', type: :feature do
   context 'on question#show' do
     let(:location) { '/argu/q/41' }
     let(:motion_sequence) { 10 }
+    let(:vote_counts) { { yes: 2, no: 0 }.with_indifferent_access }
 
     context 'as guest' do
       it_behaves_like 'voting'
     end
 
     context 'as user' do
+      let(:vote_diff) { 1 }
       let(:actor) { 'user1@example.com' }
 
       it_behaves_like 'voting'
@@ -191,7 +198,17 @@ RSpec.describe 'Voting', type: :feature do
     expect_voted(side: @side)
   end
 
-  def expect_voted(side: 'yes')
-    wait_for { page }.to have_css ".Button--variant-#{side}.Button--active"
+  def expect_voted(side: 'yes', count: nil)
+    button_css = ".Button--variant-#{side}.Button--active"
+    wait_for { page }.to have_css button_css
+    wait_until_loaded
+
+    expected_count = count || vote_counts[side] + vote_diff
+    if expected_count == 0
+      expect(page).to have_selector(button_css)
+      expect(page).not_to have_selector(button_css, text: /\(/)
+    else
+      expect(page).to have_selector(button_css, text: /\(#{expected_count}\)/)
+    end
   end
 end

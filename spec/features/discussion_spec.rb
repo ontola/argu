@@ -111,8 +111,8 @@ RSpec.describe 'Discussions', type: :feature do
     expect_content('m/71', creator: 'username last_name_26')
 
     within navbar do
-      expect(page).to have_link(href: '/argu/u/member/profile')
-      click_link(href: '/argu/u/member/profile')
+      expect(page).to have_link(href: '/argu/u/member')
+      click_link(href: '/argu/u/member')
     end
 
     within '.Page > .FullResource' do

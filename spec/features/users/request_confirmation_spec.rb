@@ -141,7 +141,7 @@ RSpec.describe 'User request confirmation', type: :feature do
     expand_form_group 'Email addresses'
 
     wait_for { page }.to have_content email
-    wait_for { page }.to have_content 'Already confirmed'
+    wait_for { page }.not_to have_content 'Send again'
   end
 
   def request_confirmation_link

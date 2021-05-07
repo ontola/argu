@@ -13,10 +13,10 @@ RSpec.describe 'Invites', type: :feature do
     fill_in field_name('https://ns.ontola.io/core#redirectUrl'), with: 'https://www.example.com'
     click_button 'Save'
     wait_for { page }.to have_snackbar 'Invite created successfully'
-    expect(token_row(1)).to have_content('invitee2@example.com')
-    expect(token_row(1)).to have_content('https://www.example.com')
-    expect(token_row(2)).to have_content('invitee1@example.com')
-    expect(token_row(2)).to have_content('https://www.example.com')
+    expect(token_row).to have_content('invitee2@example.com')
+    expect(token_row).to have_content('https://www.example.com')
+    expect(token_row).to have_content('invitee1@example.com')
+    expect(token_row).to have_content('https://www.example.com')
 
     expect_email :invite_email_1
     expect_email :invite_email_2
@@ -44,10 +44,10 @@ RSpec.describe 'Invites', type: :feature do
     fill_in_select field_name('https://argu.co/ns/core#groupId'), with: 'people'
     click_button 'Save'
     wait_for { page }.to have_snackbar 'Invite created successfully'
-    expect(token_row(1, 5)).to have_content('invitee2@example.com')
-    expect(token_row(1, 5)).to have_content('https://www.example.com')
-    expect(token_row(2, 5)).to have_content('invitee1@example.com')
-    expect(token_row(2, 5)).to have_content('https://www.example.com')
+    expect(token_row(5)).to have_content('invitee2@example.com')
+    expect(token_row(5)).to have_content('https://www.example.com')
+    expect(token_row(5)).to have_content('invitee1@example.com')
+    expect(token_row(5)).to have_content('https://www.example.com')
 
     expect_email :invite_email_1
     expect_email :invite_email_2
@@ -69,10 +69,10 @@ RSpec.describe 'Invites', type: :feature do
     )
   end
 
-  def token_row(row = 1, group_id = 4)
+  def token_row(group_id = 4)
     resource_selector(
       "https://argu.localtest/argu/tokens/email/g/#{group_id}?display=settingsTable",
-      child: "tbody tr:nth-child(#{row})",
+      child: "tbody",
       element: '.Card'
     )
   end

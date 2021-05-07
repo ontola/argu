@@ -92,7 +92,7 @@ RSpec.describe 'User settings', type: :feature do
       expect_email(:add_address_email)
       mailcatcher_clear
 
-      click_button 'Send confirmation link again'
+      click_button 'Send again'
       expect_email(:confirmation_email)
       expect(page).not_to have_content('Make primary email address')
 
@@ -130,8 +130,11 @@ RSpec.describe 'User settings', type: :feature do
   def expect_email_row(row, email, primary, confirmed)
     wait_for { page }.to have_content(email)
     expect(email_addresses_row(row)).to have_content(email)
-    expect(email_addresses_row(row)).send(primary ? :to : :not_to, have_content('Primary e-mail address'))
-    expect(email_addresses_row(row)).send(confirmed ? :to : :not_to, have_content('Already confirmed'))
+    expect(email_addresses_row(row)).send(
+      primary || !confirmed ? :not_to : :to,
+      have_content('Make primary email address')
+    )
+    expect(email_addresses_row(row)).send(confirmed ? :not_to : :to, have_content('Send again'))
   end
 
   def fill_in_form(submit: 'Save')
