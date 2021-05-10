@@ -15,7 +15,9 @@ services:{testrunner}
           - app.argu.localtest
           - argu.localtest
           - demogemeente.localdev
+          - denkmee.drechtstedenenergie.localdev
           - veiligheidsinterventies.localdev
+          - maatregelenwiki.localdev
           {devproxy_aliases}
       external:
   postgres:

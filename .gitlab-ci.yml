@@ -10,7 +10,6 @@ before_script:
   - sudo sh -c "echo '127.0.0.1 app.argu.localtest' >> /etc/hosts"
   - sudo sh -c "echo '127.0.0.1 argu.localtest' >> /etc/hosts"
   - sudo sh -c "echo '127.0.0.1 demogemeente.localdev' >> /etc/hosts"
-  - sudo sh -c "echo '127.0.0.1 veiligheidsinterventies.localdev' >> /etc/hosts"
   - echo "" > ./.env.dev
   - echo DEFAULT_LOCALE=en >> ./.env.template
   - sed -i "s/{bugsnag_key}/$BUGSNAG_KEY/g" ./.env.template
