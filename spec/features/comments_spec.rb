@@ -64,7 +64,7 @@ RSpec.describe 'Comments', type: :feature do
         expect_form('/argu/c/50/c')
         fill_in field_name('http://schema.org/text'), with: 'Nested comment'
         click_button('save')
-        wait_for { page }.to have_snackbar("Comment published successfully. It can take a few moments before it's visible on other pages.")
+        wait_for { page }.to have_snackbar('Comment published.')
       end
 
       wait_for { page }.to have_content('Show 1 additional replies...')
@@ -111,9 +111,7 @@ RSpec.describe 'Comments', type: :feature do
 
   def expect_comment_posted
     wait_for { page }.to(
-      have_snackbar(
-        "Comment published successfully. It can take a few moments before it's visible on other pages."
-      )
+      have_snackbar('Comment published.')
     )
     wait_until_loaded
     within resource_selector("#{page.current_url}/c", element: '.MuiContainer-root > div') do

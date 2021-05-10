@@ -116,7 +116,7 @@ RSpec.describe 'Arguments', type: :feature do
   def expect_argument_posted
     wait_for { page }.to(
       have_snackbar(
-        "#{@side.capitalize} published successfully. It can take a few moments before it's visible on other pages."
+        "#{@side.capitalize} published."
       )
     )
     wait_until_loaded

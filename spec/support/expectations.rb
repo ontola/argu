@@ -11,15 +11,15 @@ module Expectations
     end
   end
 
-  def expect_draft_message(type)
+  def expect_draft_message(_type)
     wait_for { page }.to(
-      have_snackbar("#{type} created successfully. It will only be visible for others after you publish it.")
+      have_snackbar('Draft created.')
     )
   end
 
   def expect_published_message(type)
     wait_for { page }.to(
-      have_snackbar("#{type} published successfully. It can take a few moments before it's visible on other pages.")
+      have_snackbar("#{type} published.")
     )
   end
 
