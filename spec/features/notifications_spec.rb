@@ -12,9 +12,9 @@ RSpec.describe 'Notifications', type: :feature do
 
     go_to_user_page('Notifications')
 
-    expect(page).to have_content 'first_name_32 last_name_32 posted a challenge in Freetown'
-    expect(page).to have_content 'first_name_30 last_name_30 posted a idea in Freetown'
-    expect(page).to have_content 'first_name_57 last_name_57 posted a thread in Freetown'
+    expect(page).to have_content 'user_name_37 posted a challenge in Freetown'
+    expect(page).to have_content 'user_name_35 posted a idea in Freetown'
+    expect(page).to have_content 'user_name_64 posted a thread in Freetown'
 
     wait_until_loaded
 

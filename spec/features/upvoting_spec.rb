@@ -47,6 +47,7 @@ RSpec.describe 'Upvoting', type: :feature do
     let(:motion_sequence) { 3 }
 
     example 'remember upvote' do
+      cancel_setup
       click_link "Fg motion title #{motion_sequence}end"
       upvote(success: false)
       accept_terms

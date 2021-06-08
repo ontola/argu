@@ -24,6 +24,7 @@ RSpec.describe 'Token email show', type: :feature do
 
       fill_in_registration_form 'invitee@example.com'
 
+      cancel_setup
       accept_token
     end
 

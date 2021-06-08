@@ -84,6 +84,7 @@ RSpec.describe 'Voting', type: :feature do
               'new_user@example.com'
             )
           )
+          finish_setup
           expect_voted
           within navbar do
             wait_for { count_bubble_count }.to have_content '1'
@@ -100,13 +101,9 @@ RSpec.describe 'Voting', type: :feature do
           fill_in field_name('https://ns.ontola.io/core#password'), with: 'new password'
           fill_in field_name('https://ns.ontola.io/core#passwordConfirmation'), with: 'new password'
           click_button 'Save'
-          wait_for { page }.to have_content('Set how you will be visible to others')
           wait_for { page }.to have_snackbar('Your password has been updated successfully.')
           logout
           login('new_user@example.com', 'new password')
-          go_to_user_page('Notifications')
-          wait_for { page }.to have_content('Finish your profile to be more recognizable.')
-          visit location
         end
 
         it_behaves_like 'confirm vote'
@@ -129,7 +126,10 @@ RSpec.describe 'Voting', type: :feature do
         wait_for { page }.to have_snackbar 'Thanks for your vote!'
         expect_voted(side: @side)
       end
-      let(:before_vote) { accept_token }
+      let(:before_vote) do
+        accept_token
+        cancel_setup
+      end
 
       example 'vote' do
         click_link "Fg motion title #{motion_sequence}end"

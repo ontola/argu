@@ -12,8 +12,6 @@ RSpec.describe 'User sign up', type: :feature do
 
     verify_logged_in
     set_new_password
-    wait_for { page }.to have_content('Welcome!')
-    click_button 'Save'
 
     verify_logged_in
     expect_homepage
@@ -72,6 +70,8 @@ RSpec.describe 'User sign up', type: :feature do
     page.click_link('Log in / sign up')
 
     fill_in_registration_form email
+
+    finish_setup
 
     expect_email(:set_password_email)
   end

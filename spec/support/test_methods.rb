@@ -174,6 +174,24 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
     click_button 'Confirm'
   end
 
+  def finish_setup
+    wait_for { page }.to have_content 'Welcome!'
+    within "[role='dialog']" do
+      wait_for { page }.to have_button 'Continue'
+      click_button 'Continue'
+    end
+    wait_for { page }.not_to have_content 'Welcome!'
+  end
+
+  def cancel_setup
+    wait_for { page }.to have_content 'Welcome!'
+    within "[role='dialog']" do
+      wait_for { page }.to have_link 'cancel'
+      click_link 'cancel'
+    end
+    wait_for { page }.not_to have_content 'Welcome!'
+  end
+
   def fill_in_select(name = nil, with: nil)
     css = "input.MuiInputBase-input[id='#{name}']"
     wait_for { page }.to have_css(css)

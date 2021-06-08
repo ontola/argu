@@ -31,6 +31,7 @@ RSpec.describe 'Comments', type: :feature do
       let(:after_post) do
         fill_in_registration_form
         verify_logged_in
+        finish_setup
         expect(page).to have_current_path("#{location}/c/new")
         wait_for { page }.to have_button 'Save'
         click_button 'Save'
@@ -56,7 +57,7 @@ RSpec.describe 'Comments', type: :feature do
     it_behaves_like 'post comment'
 
     example 'post nested comment' do
-      as actor, location: '/argu/pro/47'
+      as actor, location: '/argu/pros/47'
 
       within(resource_selector('https://argu.localtest/argu/c/50', element: '.Collection__Depth-1 > div')) do
         wait_for(page).to have_link('New comment')
@@ -78,6 +79,7 @@ RSpec.describe 'Comments', type: :feature do
     let(:location) { '/argu/tokens/valid_email_token' }
     let(:go_to_parent) do
       accept_token
+      cancel_setup
       wait(30).for(page).to have_content('Fg motion title 3end')
       click_link 'Fg motion title 3end'
     end

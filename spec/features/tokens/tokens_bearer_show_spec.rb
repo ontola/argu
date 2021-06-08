@@ -14,6 +14,7 @@ RSpec.describe 'Token bearer show', type: :feature do
       click_button 'Log in'
       fill_in_registration_form
 
+      cancel_setup
       accept_token
     end
 

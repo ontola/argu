@@ -8,7 +8,7 @@ RSpec.describe 'Direct messages', type: :feature do
   example 'Staff sends a direct message' do
     as 'staff@example.com', location: '/argu/m/38'
     go_to_menu_item('Contact poster')
-    wait_for { page }.to have_content 'Send an e-mail to first_name_30 last_name_30'
+    wait_for { page }.to have_content 'Send an e-mail to user_name_35'
     fill_in field_name('http://schema.org/name'), with: 'Example subject'
     fill_in field_name('http://schema.org/text'), with: 'Example body'
     click_button 'Send'
@@ -16,14 +16,14 @@ RSpec.describe 'Direct messages', type: :feature do
     expect_email :direct_message_email
     expect(direct_message_email.instance_variable_get(:@mail).reply_to.first).to eq('staff@example.com')
     expect(direct_message_email.body).to(
-      have_content('first_name_1 last_name_1 has sent you a message in response to Fg motion title 9end.')
+      have_content('user_name_1 has sent you a message in response to Fg motion title 9end.')
     )
   end
 
   example 'Staff sends a direct message with other email' do
     as 'staff@example.com', location: '/argu/m/38'
     go_to_menu_item('Contact poster')
-    wait_for { page }.to have_content('Send an e-mail to first_name_30 last_name_30')
+    wait_for { page }.to have_content('Send an e-mail to user_name_35')
     wait_for { page }.to have_button('New email address')
     click_button('New email address')
     wait_until_loaded
@@ -55,7 +55,7 @@ RSpec.describe 'Direct messages', type: :feature do
 
   def direct_message_email
     @direct_message_email ||= mailcatcher_email(
-      to: ['user27@example.com'],
+      to: ['user32@example.com'],
       subject: 'Example subject'
     )
   end

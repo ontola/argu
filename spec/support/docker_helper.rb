@@ -94,7 +94,7 @@ END_HEREDOC
     result = Timeout.timeout(120, Timeout::Error, "Execution of #{commands} expired for service #{service}") do
       container.exec(commands)
     end
-    return result if result[-1] == 0
+    return result.first.first if result[-1] == 0
 
     result[0].each { |message| puts message }
     result[1].each { |message| puts message }
@@ -114,16 +114,12 @@ END_HEREDOC
 
   def run_local(service, commands)
     path = File.expand_path("../#{SERVICES[service.to_sym][:path] || service}")
-    system(
-      "cd #{path}; "\
-      "BUNDLE_GEMFILE=#{path}/Gemfile #{commands.join(' ').gsub('bundle exec ', "bundle exec #{path}/bin/")}"
-    )
+
+    `cd #{path}; BUNDLE_GEMFILE=#{path}/Gemfile #{commands.join(' ').gsub('bundle exec ', "bundle exec #{path}/bin/")}`
   end
 
   def var_from_rails_console(command)
     rails_runner(:argu, "Apartment::Tenant.switch('argu') { puts #{command} }")
-      .first
-      .first
       .split("\n")
       .last
   end

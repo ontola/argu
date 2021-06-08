@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Drafts', type: :feature do
   example 'User shows drafts' do
-    as 'user48@example.com', location: '/argu/freetown/q/new'
+    as 'user55@example.com', location: '/argu/freetown/q/new'
     expect_form('/argu/freetown/q')
     fill_in field_name('http://schema.org/name'), with: 'Draft title'
     fill_in_markdown field_name('http://schema.org/text'), with: 'Draft content'
@@ -16,7 +16,7 @@ RSpec.describe 'Drafts', type: :feature do
     wait_for { page }.to have_css('.Heading', text: 'My drafts')
     wait_for { page }.to have_content 'Fg question title 10end'
     wait_for { page }.to have_content 'Draft title'
-    within(resource_selector('https://argu.localtest/argu/u/fg_shortname54end/profile#drafts')) do
+    within(resource_selector('https://argu.localtest/argu/u/fg_shortname61end/profile#drafts')) do
       expect(page).to have_css('.Card', count: 2)
     end
     click_link 'Fg question title 10end'
@@ -26,7 +26,7 @@ RSpec.describe 'Drafts', type: :feature do
   end
 
   example 'Publish draft through action' do
-    as 'user48@example.com', location: '/argu/q/62'
+    as 'user55@example.com', location: '/argu/q/62'
     expect_publish_action
     within 'div[resource="https://argu.localtest/argu/q/62/actions/publish#EntryPoint"]' do
       click_button 'Publish'

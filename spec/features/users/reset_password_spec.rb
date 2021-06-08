@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'User reset password', type: :feature do
   example 'guest resets password' do
-    as(:guest, location: '/argu/users/password/new')
+    as(:guest, location: '/argu/u/password/new')
     wait_for { page }.to have_content('Forgotten password?')
     fill_in placeholder: 'email@example.com', with: 'user1@example.com'
     click_button 'Send'
@@ -13,7 +13,7 @@ RSpec.describe 'User reset password', type: :feature do
       have_snackbar('You will receive an email shortly with instructions to reset your password.')
     )
     expect(page).to have_content('Sign in or register')
-    expect(page.current_url).to include('/argu/u/sign_in')
+    expect(page.current_url).to include('/argu/u/session/new')
     expect_email(:password_reset_email)
 
     visit password_reset_email.links.last
