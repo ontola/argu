@@ -12,14 +12,10 @@ RSpec.describe 'Redirect', type: :feature do
   end
 
   example 'cold redirect on app.' do
-    docker_exec('redis', [
-      'redis-cli',
-      '-u',
-      ENV['REDIS_URL'],
-      'SET',
+    redis_apex_client.set(
       'backend.redirects.https://app.argu.localtest/argu',
       'https://argu.localtest/argu'
-    ])
+    )
     visit 'https://app.argu.localtest/argu'
     wait_for(page.current_url).to include('https://argu.localtest/argu')
   end

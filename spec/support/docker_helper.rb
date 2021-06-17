@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'docker-api'
+require 'redis'
 require_relative '../../services'
 
 module DockerHelper
@@ -44,8 +45,20 @@ END_HEREDOC
     )
   end
 
+  def docker_dump_redis
+    docker_exec('redis', ['apt', 'update'])
+    docker_exec('redis', ['apt', 'install', '-y', 'python3-pip'])
+    docker_exec('redis', ['pip3', 'install', 'rdbtools', 'python-lzf'])
+    docker_exec('redis', ['redis-cli', 'SAVE'])
+    docker_exec('redis', ['rdb', '-c', 'protocol', '-f', '/data/dump.protocol', '/data/dump.rdb'])
+  end
+
   def docker_reset_redis
-    docker_exec('redis', ['redis-cli', 'FLUSHALL'])
+    redis_libro_client.flushdb
+    keys = redis_cache_client.keys('cache:*')
+    keys.each { |k| redis_cache_client.del(k) }
+
+    docker_exec('redis', ['sh', '-c', 'cat /data/dump.protocol | redis-cli --pipe'])
   end
 
   def docker_restore_dump(db, times = 0)
@@ -110,6 +123,18 @@ END_HEREDOC
   def rails_runner(service, command)
     raise 'command may not include double quotes' if command.include?('"')
     docker_exec(service, ['bin/rails', 'runner', docker_container(service) ? command : "\"#{command}\""])
+  end
+
+  def redis_apex_client
+    @redis_apex_client ||= Redis.new(url: ENV['REDIS_URL'], db: 0)
+  end
+
+  def redis_cache_client
+    @redis_cache_client ||= Redis.new(url: ENV['REDIS_URL'], db: 8)
+  end
+
+  def redis_libro_client
+    @redis_libro_client ||= Redis.new(url: ENV['REDIS_URL'], db: 0)
   end
 
   def run_local(service, commands)

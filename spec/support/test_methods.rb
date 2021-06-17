@@ -177,6 +177,7 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
   def finish_setup
     wait_for { page }.to have_content 'Welcome!'
     within "[role='dialog']" do
+      fill_in field_name('https://argu.co/ns/core#name'), with: 'New user'
       wait_for { page }.to have_button 'Continue'
       click_button 'Continue'
     end

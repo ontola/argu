@@ -104,6 +104,7 @@ RSpec.describe 'Voting', type: :feature do
           wait_for { page }.to have_snackbar('Your password has been updated successfully.')
           logout
           login('new_user@example.com', 'new password')
+          visit location
         end
 
         it_behaves_like 'confirm vote'

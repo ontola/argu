@@ -34,19 +34,11 @@ SERVICES = {
       command: ' bundle exec sidekiq -e staging'
     }
   },
-  apex_rs: {
-    image: 'registry.gitlab.com/ontola/apex-rs',
-    command: '/usr/local/bin/server',
-    env: {
-      RUST_LOG: 'apex=debug,actix_web=debug,diesel=debug',
-    },
+  cache: {
+    command: './cache',
+    image: 'registry.gitlab.com/ontola/cache/master',
+    manage_db: false,
     port: 3030,
-    health: 'curl -H "Host: argu.localtest" -f http://localhost:3030/link-lib/d/health',
-    setup: {
-      command: '/usr/local/bin/migrate --version setup',
-    },
-    worker: {
-      command: '/usr/local/bin/invalidator_redis',
-    }
+    health: 'curl -H "Host: argu.localtest" -f http://localhost:3030/link-lib/cache/status',
   }
 }.with_indifferent_access

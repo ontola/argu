@@ -42,12 +42,14 @@ RSpec.describe 'Upvoting', type: :feature do
   end
 
   context 'as invitee' do
-    let(:before_vote) { accept_token }
+    let(:before_vote) do
+      accept_token
+      cancel_setup
+    end
     let(:location) { '/argu/tokens/valid_email_token' }
     let(:motion_sequence) { 3 }
 
     example 'remember upvote' do
-      cancel_setup
       click_link "Fg motion title #{motion_sequence}end"
       upvote(success: false)
       accept_terms

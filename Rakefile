@@ -40,6 +40,7 @@ namespace :test do
         ['pg_dump', "#{db}_test", '--username=postgres', '-Fc', '--data-only', "--file=/var/lib/postgresql/data/dump_#{db}"]
       )
     end
+    docker_dump_redis
   end
 
   task :reset do

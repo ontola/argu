@@ -37,7 +37,7 @@ RSpec.describe 'Discussions', type: :feature do
     select_attachment
     click_button 'Save'
     expect_draft_message('Challenge')
-    expect_content('q/71', creator: 'User 70', images: false)
+    expect_content('q/71', creator: 'New user', images: false)
   end
 
   example 'Guest posts a question as existing user' do
@@ -104,12 +104,9 @@ RSpec.describe 'Discussions', type: :feature do
     end
     fill_in_form(actor: 'User 27')
     wait_for { page }.to have_content 'Welcome!'
-    within "[role='dialog']" do
-      fill_in field_name('http://schema.org/name'), with: 'username'
-      click_button 'Continue'
-    end
+    finish_setup
     expect_draft_message('Idea')
-    expect_content('m/71', creator: 'username')
+    expect_content('m/71', creator: 'New user')
 
     within navbar do
       expect(page).to have_link(href: '/argu/u/27')
@@ -117,7 +114,7 @@ RSpec.describe 'Discussions', type: :feature do
     end
 
     within '.Page > .FullResource' do
-      wait_for { page }.to have_content 'username'
+      wait_for { page }.to have_content 'New user'
     end
   end
 

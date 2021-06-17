@@ -6,13 +6,7 @@ RSpec.describe 'Page create', type: :feature do
   example 'user creates page' do
     as 'user1@example.com', location: '/argu/u/fg_shortname3end/o'
     wait_for { page }.to have_content 'First page'
-    wait_for { page }.to have_css('.ContainerHeader')
-    container_header = page.find('.ContainerHeader')
-    resource_selector(
-      'https://argu.localtest/argu/u/fg_shortname3end/o',
-      child: '.fa-plus',
-      parent: container_header
-    ).click
+    find('.ContainerFloat .fa-plus').click
 
     wait_until_loaded
 
