@@ -4,10 +4,10 @@ require 'spec_helper'
 
 RSpec.describe 'User profile', type: :feature do
   it 'shows the profile of a user' do
-    as(:guest, location: '/argu/u/fg_shortname40end')
-    wait_for { page }.to have_content('user_name_37')
+    as(:guest, location: '/argu/u/37')
+    wait_for { page }.to have_content('user_name_36')
     wait_for { page }.to have_content('Fg question title 7end')
-    visit '/other_page/u/fg_shortname40end'
+    visit '/other_page/u/37'
     wait_for { page }.to have_content('No items yet')
   end
 end

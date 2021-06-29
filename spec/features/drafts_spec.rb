@@ -16,7 +16,7 @@ RSpec.describe 'Drafts', type: :feature do
     wait_for { page }.to have_css('.Heading', text: 'My drafts')
     wait_for { page }.to have_content 'Fg question title 10end'
     wait_for { page }.to have_content 'Draft title'
-    within(resource_selector('https://argu.localtest/argu/u/fg_shortname61end/profile#drafts')) do
+    within(resource_selector('https://argu.localtest/argu/u/58/profile#drafts')) do
       expect(page).to have_css('.Card', count: 2)
     end
     click_link 'Fg question title 10end'

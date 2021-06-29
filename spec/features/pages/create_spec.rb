@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Page create', type: :feature do
   example 'user creates page' do
-    as 'user1@example.com', location: '/argu/u/fg_shortname3end/o'
+    as 'user1@example.com', location: '/argu/u/3/o'
     wait_for { page }.to have_content 'First page'
     find('.ContainerFloat .fa-plus').click
 
@@ -19,7 +19,7 @@ RSpec.describe 'Page create', type: :feature do
     wait_for { main_content }.to have_content 'My Website'
     expect(page).to have_title "My Website"
 
-    visit('https://argu.localtest/argu/u/fg_shortname3end/o')
+    visit('https://argu.localtest/argu/u/3/o')
     wait_for { main_content }.to have_content 'First page'
     wait_for { main_content }.to have_content 'My Website'
   end

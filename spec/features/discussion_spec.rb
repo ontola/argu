@@ -51,7 +51,7 @@ RSpec.describe 'Discussions', type: :feature do
     select_attachment
     click_button 'Save'
     expect_draft_message('Challenge')
-    expect_content('q/71', creator: 'user_name_3', images: false)
+    expect_content('q/71', creator: 'user_name_2', images: false)
   end
 
   example 'Member posts a question' do
@@ -91,7 +91,6 @@ RSpec.describe 'Discussions', type: :feature do
     rails_runner(
       :argu,
       'Apartment::Tenant.switch(\'argu\') do'\
-      '  Shortname.where(owner_type: \'User\').destroy_all;'\
       '  User.update_all(display_name: nil, finished_intro: false);'\
       '  Page.argu.update(requires_intro: true) '\
       'end'
@@ -99,9 +98,6 @@ RSpec.describe 'Discussions', type: :feature do
     as 'member@example.com', location: '/argu/holland/m/new'
     cancel_setup
     expect_form('/argu/holland/m')
-    within navbar do
-      expect(page).not_to have_link(href: '/argu/u/member')
-    end
     fill_in_form(actor: 'User 27')
     wait_for { page }.to have_content 'Welcome!'
     finish_setup
@@ -132,7 +128,7 @@ RSpec.describe 'Discussions', type: :feature do
     expect_form('/argu/q/41', advanced: true)
     fill_in_form(actor: false)
     expect_updated_message('Challenge')
-    expect_content('q/41', creator: 'user_name_37')
+    expect_content('q/41', creator: 'user_name_36')
   end
 
   example 'staff updates a motion' do
@@ -141,7 +137,7 @@ RSpec.describe 'Discussions', type: :feature do
     expect_form('/argu/m/38', advanced: true)
     fill_in_form(actor: false)
     expect_updated_message('Idea')
-    expect_content('m/38', creator: 'user_name_35')
+    expect_content('m/38', creator: 'user_name_34')
   end
 
   example 'staff updates a motion with movie attachment' do
@@ -169,7 +165,7 @@ RSpec.describe 'Discussions', type: :feature do
 
   private
 
-  def fill_in_form(actor: 'user_name_27', submit: 'Save')
+  def fill_in_form(actor: 'user_name_26', submit: 'Save')
     fill_in field_name('http://schema.org/name'), with: title, fill_options: {clear: :backspace}
     fill_in_markdown field_name('http://schema.org/text'), with: content
     click_button 'Cover photo'
@@ -186,7 +182,7 @@ RSpec.describe 'Discussions', type: :feature do
     click_button submit
   end
 
-  def expect_content(path, creator: 'user_name_27', images: true)
+  def expect_content(path, creator: 'user_name_26', images: true)
     wait_for { page }.to have_content(title)
     expect(page).to have_content(content)
     if images
