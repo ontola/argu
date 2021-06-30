@@ -4,7 +4,10 @@ require 'spec_helper'
 
 RSpec.describe 'Navbar', type: :feature do
   it 'show freetown on homepage' do
-    rails_runner(:argu, 'puts \'Run intializers again because redis is flushed after each test\'')
+    redis_libro_client.set(
+      'backend.redirects.https://argu.localtest',
+      'https://argu.localtest/argu'
+    )
     as :guest, location: '/'
 
     wait_for { page }.to have_content 'Freetown'

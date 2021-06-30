@@ -12,7 +12,7 @@ RSpec.describe 'Invites', type: :feature do
     fill_in_select field_name('https://argu.co/ns/core#groupId'), with: 'custom'
     fill_in field_name('https://ns.ontola.io/core#redirectUrl'), with: 'https://www.example.com'
     click_button 'Save'
-    wait_for { page }.to have_snackbar 'Invite created successfully'
+    wait_for { page }.to have_snackbar 'Email invite created successfully'
     expect(token_row).to have_content('invitee2@example.com')
     expect(token_row).to have_content('https://www.example.com')
     expect(token_row).to have_content('invitee1@example.com')
@@ -30,8 +30,8 @@ RSpec.describe 'Invites', type: :feature do
     fill_in field_name('https://argu.co/ns/core#message'), with: 'Example body'
     fill_in field_name('https://ns.ontola.io/core#redirectUrl'), with: 'https://www.example.com'
 
-    wait_for(page).to have_button('Add group')
-    click_button('Add group')
+    wait_for(page).to have_link('Add group')
+    click_link('Add group')
     wait_for(page).to have_content('Name singular')
     within "[role='dialog']" do
       fill_in field_name('http://schema.org/name'), with: 'people'
@@ -43,7 +43,7 @@ RSpec.describe 'Invites', type: :feature do
     wait_until_loaded
     fill_in_select field_name('https://argu.co/ns/core#groupId'), with: 'people'
     click_button 'Save'
-    wait_for { page }.to have_snackbar 'Invite created successfully'
+    wait_for { page }.to have_snackbar 'Email invite created successfully'
     expect(token_row(5)).to have_content('invitee2@example.com')
     expect(token_row(5)).to have_content('https://www.example.com')
     expect(token_row(5)).to have_content('invitee1@example.com')
@@ -71,7 +71,7 @@ RSpec.describe 'Invites', type: :feature do
 
   def token_row(group_id = 4)
     resource_selector(
-      "https://argu.localtest/argu/tokens/email/g/#{group_id}?display=settingsTable",
+      "https://argu.localtest/argu/tokens/g/#{group_id}/email?display=settingsTable",
       child: "tbody",
       element: '.Card'
     )

@@ -54,8 +54,8 @@ RSpec.describe 'User settings', type: :feature do
     example 'as user' do
       as 'user23@example.com'
       visit_settings
-      wait_for { page }.to have_button 'Remove account'
-      click_button 'Remove account'
+      wait_for { page }.to have_link 'Remove account'
+      click_link 'Remove account'
       fill_in_form(submit: 'Delete')
       # @todo What happens after remove?
     end

@@ -55,9 +55,7 @@ END_HEREDOC
 
   def docker_reset_redis
     redis_libro_client.flushdb
-    keys = redis_cache_client.keys('cache:*')
-    keys.each { |k| redis_cache_client.del(k) }
-
+    redis_cache_client.flushdb
     docker_exec('redis', ['sh', '-c', 'cat /data/dump.protocol | redis-cli --pipe'])
   end
 

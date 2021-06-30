@@ -12,7 +12,7 @@ RSpec.describe 'Page create', type: :feature do
 
     fill_in field_name('http://schema.org/name'), with: 'My Website'
     fill_in field_name('https://argu.co/ns/core#shortname'), with: 'my_website'
-    check 'I accept the terms of use'
+    wait_for_terms_notice
     click_button 'Save'
 
     wait(30).for(page).to have_current_path('/my_website')

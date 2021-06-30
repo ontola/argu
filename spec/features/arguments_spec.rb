@@ -107,9 +107,7 @@ RSpec.describe 'Arguments', type: :feature do
       wait_for { page }.to have_field field_name('http://schema.org/name')
       fill_in field_name('http://schema.org/name'), with: title
       fill_in field_name('http://schema.org/text'), with: content
-      within '.Form__footer--right' do
-        find('.Button--submit').click
-      end
+      find('button[type=submit]').click
     end
 
     after_post
