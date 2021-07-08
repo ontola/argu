@@ -16,13 +16,16 @@ local_ports =
     {}
   end
 
-def env_keys(file)
+def env_entries(file)
   File.read(File.expand_path(file, __dir__))
-    .split("\n")
-    .map { |l| l.index('#').nil? ? l : l[l.index('#')..-1] }
-    .map(&:strip)
-    .select(&:presence)
-    .map { |l| l.split("=").first }
+      .split("\n")
+      .map { |l| l.index('#').nil? ? l : l[l.index('#')..-1] }
+      .map(&:strip)
+      .select(&:presence)
+end
+
+def env_keys(file)
+  env_entries(file).map { |l| l.split("=").first }
 end
 
 # Create symlink to .env
@@ -37,16 +40,23 @@ unless all_keys_present
   puts "Warning! Missing environment variables present in template: #{template_keys - actual_keys}"
 end
 
+ENV['DEFAULT_SERVICE_PORT'] =
+  env_entries('.env')
+    .find { |entry| entry.start_with?('DEFAULT_SERVICE_PORT') }
+    .split('=')
+    .last
+
 # Create nginx.conf
 File.open(File.expand_path('nginx.template.conf')) do |source_file|
   contents = source_file.read
   contents.gsub!(/\{your_local_ip\}/, ENV['IP'])
+  contents.gsub!(/\{default_service_port\}/, ENV['DEFAULT_SERVICE_PORT'])
   SERVICES.each do |service, opts|
     location =
       if local_ports.key?(service.to_s)
         "#{ENV['IP']}:#{local_ports[service.to_s]}"
       else
-        "#{service.to_s.dasherize}.svc.cluster.local:#{opts[:port] || 2999}"
+        "#{service.to_s.dasherize}.svc.cluster.local:#{opts[:port] || ENV['DEFAULT_SERVICE_PORT']}"
       end
     contents.gsub!(/\{#{service}_host\}/, location)
   end
@@ -74,6 +84,7 @@ File.open(File.expand_path('docker-compose.template.yml')) do |source_file|
   contents.gsub!(/\{webservices\}/, webservices)
 
   contents.gsub!(/\{testrunner\}/, ComposeCreator.testrunner_entry)
+  contents.gsub!(/\{default_service_port\}/, ENV['DEFAULT_SERVICE_PORT'])
 
   # Write to docker-compose file
   File.open(File.expand_path('docker-compose.yml'), 'w+') { |f| f.write(contents) }

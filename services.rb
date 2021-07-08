@@ -13,7 +13,7 @@ SERVICES = {
   argu: {
     path: :argu,
     image: 'registry.gitlab.com/ontola/apex',
-    health: 'curl -H "Host: argu.localtest" -f http://localhost:2999/argu/d/health',
+    health: 'curl -H "Host: argu.localtest" -f http://localhost:{default_service_port}/argu/d/health',
     worker: {
       command: 'bundle exec sidekiq'
     }

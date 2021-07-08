@@ -8,7 +8,7 @@ services:{testrunner}
     ports:
       - 443:443
       - 80:80
-      - 2999:2999
+      - {default_service_port}:{default_service_port}
     networks:
       default:
         aliases:

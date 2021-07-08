@@ -114,7 +114,7 @@ END_HEREDOC
 
     def base_service_template(opts)
       {
-        'command' => opts[:command] || './bin/rails server -b 0.0.0.0 -p 2999',
+        'command' => opts[:command] || "./bin/rails server -b 0.0.0.0 -p #{ENV['DEFAULT_SERVICE_PORT']}",
         'depends_on' => %w[
           redis
           postgres
@@ -190,7 +190,7 @@ END_HEREDOC
     end
 
     def port(port)
-      [2999, 9200, port].compact
+      [ENV['DEFAULT_SERVICE_PORT'], 9200, port].compact
     end
   end
 end
