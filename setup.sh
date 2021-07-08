@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
-  IP=$(ifconfig | awk '/broadcast/' | awk '/inet /{print $2}')
+  IP=$(ifconfig | awk '/broadcast/' | awk '/inet /{print $2}' | head -n 1)
 # elif [[ "$OSTYPE" == "win32" ]]; then
   echo "Windows not yet implemented (so ticket+PR)"
   # TODO
