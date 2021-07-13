@@ -85,6 +85,7 @@ RSpec.describe 'Budgets', type: :feature do
   end
 
   def expect_cart_value(value, valid = true)
+    wait_until_loaded
     within cart do
       wait_for {page }.to have_content(value)
     end
