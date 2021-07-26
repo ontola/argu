@@ -197,6 +197,7 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
   def fill_in_select(name = nil, with: nil)
     css = "input.MuiInputBase-input[id='#{name}']"
     wait_for { page }.to have_css(css)
+    wait_until_loaded
     input = find(css)
     scroll_to(input)
     input.click

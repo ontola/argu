@@ -97,7 +97,7 @@ RSpec.describe 'Page settings', type: :feature do
     example 'as staff' do
       as 'staff@example.com'
       visit_settings
-      wait_for { page }.to have_content 'Shortnames'
+      wait_for { page }.to have_content 'Redirects'
       wait_for(shortnames_row(1)).to have_content('No items yet')
 
       resource_selector(
