@@ -37,7 +37,7 @@ RSpec.describe 'Discussions', type: :feature do
     select_attachment
     click_button 'Save'
     expect_draft_message('Challenge')
-    expect_content('q/76', creator: 'New user', images: false)
+    expect_content('q/80', creator: 'New user', images: false)
   end
 
   example 'Guest posts a question as existing user' do
@@ -51,7 +51,7 @@ RSpec.describe 'Discussions', type: :feature do
     select_attachment
     click_button 'Save'
     expect_draft_message('Challenge')
-    expect_content('q/76', creator: 'user_name_2', images: false)
+    expect_content('q/80', creator: 'user_name_2', images: false)
   end
 
   example 'Member posts a question' do
@@ -59,7 +59,7 @@ RSpec.describe 'Discussions', type: :feature do
     expect_form('/argu/holland/q')
     fill_in_form
     expect_draft_message('Challenge')
-    expect_content('q/76')
+    expect_content('q/80')
   end
 
   example 'Member posts a motion' do
@@ -67,7 +67,7 @@ RSpec.describe 'Discussions', type: :feature do
     expect_form('/argu/holland/m')
     fill_in_form
     expect_draft_message('Idea')
-    expect_content('m/76')
+    expect_content('m/80')
   end
 
   example 'Member posts a motion from omniform' do
@@ -102,7 +102,7 @@ RSpec.describe 'Discussions', type: :feature do
     wait_for { page }.to have_content 'Welcome!'
     finish_setup
     expect_draft_message('Idea')
-    expect_content('m/76', creator: 'New user')
+    expect_content('m/80', creator: 'New user')
 
     within navbar do
       expect(page).to have_link(href: '/argu/u/27')
@@ -119,7 +119,7 @@ RSpec.describe 'Discussions', type: :feature do
     expect_form('/argu/holland/q', advanced: true)
     fill_in_form(actor: 'Argu page')
     expect_draft_message('Challenge')
-    expect_content('q/76', creator: 'Argu page')
+    expect_content('q/80', creator: 'Argu page')
   end
 
   example 'staff updates a question' do

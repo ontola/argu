@@ -10,5 +10,6 @@ RSpec.describe 'Language', type: :feature do
     fill_in_select(field_name('http://schema.org/language'), with: 'Nederlands')
     click_button('Save')
     wait_for(page).to have_content('Taal instellen')
+    wait_for(page).to have_css('input[value="Nederlands"]')
   end
 end

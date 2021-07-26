@@ -10,6 +10,7 @@ RSpec.describe 'Budgets', type: :feature do
   example 'Create budget and add offers' do
     as 'staff@example.com', location: '/argu/freetown'
     wait_until_loaded
+    wait_for { page }.to have_css('.ContainerFloat .fa-plus')
     find('.ContainerFloat .fa-plus').click
     wait_until_loaded
     click_link('New budget')
@@ -19,7 +20,7 @@ RSpec.describe 'Budgets', type: :feature do
     expect_draft_message('Budget')
     expect_budget_content
     wait_until_loaded
-    within resource_selector('https://argu.localtest/argu/budgets/76/offers', element: '.ContainerFloat') do
+    within resource_selector('https://argu.localtest/argu/budgets/80/offers', element: '.ContainerFloat') do
       find('.fa-plus').click
     end
     wait_for { page }.to have_content('New option')
@@ -42,8 +43,8 @@ RSpec.describe 'Budgets', type: :feature do
     remove_order_detail(73)
     expect_cart_value(8)
     submit_cart
-    wait_for{ page }.to have_snackbar('Your budget is submitted!')
-    verify_order('community', 8)
+    wait_for { page }.to have_snackbar('Your budget is submitted!')
+    verify_order('guest', 8)
   end
 
   example 'Guest should not submit budget with wrong coupon' do
@@ -95,7 +96,7 @@ RSpec.describe 'Budgets', type: :feature do
   end
 
   def expect_budget_content
-    wait_for { page }.to have_current_path('/argu/budgets/76')
+    wait_for { page }.to have_current_path('/argu/budgets/80')
     wait_for { page }.to have_content(title)
     expect(page).to have_content(content)
   end
@@ -133,7 +134,7 @@ RSpec.describe 'Budgets', type: :feature do
   def verify_order(user, value)
     login('staff@example.com')
     go_to_menu_item('Orders')
-    row = resource_selector('https://argu.localtest/argu/orders/76', element: 'tr')
+    row = resource_selector('https://argu.localtest/argu/orders/80', element: 'tr')
     within row do
       expect(page).to have_content(user)
       expect(page).to have_content(value)
