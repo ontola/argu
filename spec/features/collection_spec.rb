@@ -10,7 +10,7 @@ RSpec.describe 'Collection', type: :feature do
     wait_for { resource_selector(page.current_url) }.to have_css('.Card', count: 10)
     click_button('Load more')
     wait_until_loaded
-    wait_for { resource_selector(page.current_url) }.to have_css('.Card', count: 19)
+    wait_for { resource_selector(page.current_url) }.to have_css('.Card', count: 20)
   end
 
   example 'Guest shows paginated activities feed' do
@@ -22,6 +22,6 @@ RSpec.describe 'Collection', type: :feature do
     expect(page).not_to have_content('Load more')
     click_button '2'
     wait_until_loaded
-    wait_for { resource_selector(collection_iri) }.to have_css('.Card', count: 9)
+    wait_for { resource_selector(collection_iri) }.to have_css('.Card', count: 10)
   end
 end
