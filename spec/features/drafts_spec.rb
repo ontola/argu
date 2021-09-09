@@ -16,7 +16,7 @@ RSpec.describe 'Drafts', type: :feature do
     wait_for { page }.to have_css('.Heading', text: 'My drafts')
     wait_for { page }.to have_content 'Fg question title 10end'
     wait_for { page }.to have_content 'Draft title'
-    within(resource_selector('https://argu.localtest/argu/u/58/profile#drafts')) do
+    within(resource_selector('https://argu.localtest/argu/u/58/settings#drafts')) do
       expect(page).to have_css('.Card', count: 2)
     end
     click_link 'Fg question title 10end'
@@ -28,7 +28,7 @@ RSpec.describe 'Drafts', type: :feature do
   example 'Publish draft through action' do
     as 'user55@example.com', location: '/argu/q/62'
     expect_publish_action
-    within 'div[resource="https://argu.localtest/argu/q/62/actions/publish#EntryPoint"]' do
+    within 'div[resource="https://argu.localtest/argu/q/62/publish#EntryPoint"]' do
       click_button 'Publish'
     end
     expect_published_message('Challenge')

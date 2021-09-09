@@ -23,7 +23,7 @@ module RequestsHelper
   def change_language(language)
     cookies, csrf = authentication_values
 
-    conn = Faraday.new(url: 'https://argu.localtest/argu/u/language') do |faraday|
+    conn = Faraday.new(url: 'https://argu.localtest/argu/user/language') do |faraday|
       faraday.request :multipart
       faraday.adapter :net_http
     end

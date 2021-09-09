@@ -92,9 +92,9 @@ RSpec.describe 'User settings', type: :feature do
       expect_email(:add_address_email)
       mailcatcher_clear
 
-      click_button 'Send again'
+      find('a .fa-send').click
       expect_email(:confirmation_email)
-      expect(page).not_to have_content('Make primary email address')
+      expect(page).to have_css('button:disabled .fa-circle-o')
 
       visit confirmation_email.links.last
       visit_settings
@@ -102,7 +102,7 @@ RSpec.describe 'User settings', type: :feature do
       expect_email_row(1, new_email, false, true)
       expect_email_row(2, 'user1@example.com', true, true)
 
-      click_button 'Make primary email address'
+      find('a .fa-circle-o').click
       wait_for { page }.to have_snackbar('Email address saved successfully')
       expect_email_row(1, new_email, true, true)
       expect_email_row(2, 'user1@example.com', false, true)
@@ -130,11 +130,15 @@ RSpec.describe 'User settings', type: :feature do
   def expect_email_row(row, email, primary, confirmed)
     wait_for { page }.to have_content(email)
     expect(email_addresses_row(row)).to have_content(email)
-    expect(email_addresses_row(row)).send(
-      primary || !confirmed ? :not_to : :to,
-      have_content('Make primary email address')
-    )
-    expect(email_addresses_row(row)).send(confirmed ? :not_to : :to, have_content('Send again'))
+    if primary
+      expect(email_addresses_row(row)).to have_css('button:disabled .fa-circle')
+    elsif confirmed
+      expect(email_addresses_row(row)).to have_css('a .fa-circle-o')
+    else
+      expect(email_addresses_row(row)).to have_css('button:disabled .fa-circle-o')
+    end
+
+    expect(email_addresses_row(row)).to have_css("#{confirmed ? 'button:disabled' : 'a'} .fa-send")
   end
 
   def fill_in_form(submit: 'Save')
