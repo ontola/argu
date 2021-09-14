@@ -40,7 +40,7 @@ RSpec.describe 'Follow', type: :feature do
     )
 
     expect_email(:notifications_email)
-    expect(notifications_email.body).to have_content 'New replies are posted in Freetown.'
+    expect(notifications_email.body).to have_content 'New replies are posted in Freetown'
 
     unsubscribe_link = notifications_email.links.detect { |link| link.include?('follows') }
     visit unsubscribe_link
@@ -70,7 +70,7 @@ RSpec.describe 'Follow', type: :feature do
     )
 
     expect_email(:notifications_email)
-    expect(notifications_email.body).to have_content 'New replies are posted in Freetown.'
+    expect(notifications_email.body).to have_content 'New replies are posted in Freetown'
 
     unsubscribe_link = notifications_email.links.detect { |link| link.include?('follows') }
     post_request = Faraday.new(unsubscribe_link, ssl: {verify: false}).post
