@@ -56,7 +56,7 @@ RSpec.describe 'User sign in', type: :feature do
 
     verify_logged_in
 
-    wait_for { page }.to have_content 'Fg motion title 9end'
+    wait_for { page }.to have_content 'Freetown_motion-title'
   end
 
   it 'denies a user with wrong password' do

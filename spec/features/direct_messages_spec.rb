@@ -6,7 +6,7 @@ RSpec.describe 'Direct messages', type: :feature do
   let(:new_email) { 'new_email@example.com'}
 
   example 'Staff sends a direct message' do
-    as 'staff@example.com', location: '/argu/m/38'
+    as 'staff@example.com', location: '/argu/m/freetown_motion'
     go_to_menu_item('Contact poster')
     wait_for { page }.to have_content 'Send an e-mail to user_name_34'
     fill_in field_name('http://schema.org/name'), with: 'Example subject'
@@ -18,13 +18,13 @@ RSpec.describe 'Direct messages', type: :feature do
     expect(direct_message_email.body).to(
       have_content(
         'argu_owner<a href="https://argu.localtest/argu/u/1">argu_owner</a> has sent you a message '\
-        'in response to <a href="https://argu.localtest/argu/m/38">Fg motion title 9end</a>.'
+        'in response to <a href="https://argu.localtest/argu/m/freetown_motion">Freetown_motion-title</a>.'
       )
     )
   end
 
   example 'Staff sends a direct message with other email' do
-    as 'staff@example.com', location: '/argu/m/38'
+    as 'staff@example.com', location: '/argu/m/freetown_motion'
     go_to_menu_item('Contact poster')
     wait_for { page }.to have_content('Send an e-mail to user_name_34')
     wait_for { page }.to have_link('New email address')
@@ -36,7 +36,7 @@ RSpec.describe 'Direct messages', type: :feature do
     end
     expect_email(:add_address_email)
     visit add_address_email.links.last
-    visit 'https://argu.localtest/argu/m/38/dm/new'
+    visit 'https://argu.localtest/argu/m/freetown_motion/dm/new'
     fill_in_select(field_name('http://schema.org/email'), with: new_email)
     fill_in field_name('http://schema.org/name'), with: 'Example subject'
     fill_in field_name('http://schema.org/text'), with: 'Example body'
@@ -48,7 +48,7 @@ RSpec.describe 'Direct messages', type: :feature do
     expect(direct_message_email.body).to(
       have_content(
         'Argu page<a href="https://argu.localtest/argu">Argu page</a> has sent you a message '\
-        'in response to <a href="https://argu.localtest/argu/m/38">Fg motion title 9end</a>.'
+        'in response to <a href="https://argu.localtest/argu/m/freetown_motion">Freetown_motion-title</a>.'
       )
     )
   end

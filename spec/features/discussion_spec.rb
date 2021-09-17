@@ -37,7 +37,7 @@ RSpec.describe 'Discussions', type: :feature do
     select_attachment
     click_button 'Save'
     expect_draft_message('Challenge')
-    expect_content('q/80', creator: 'New user', images: false)
+    expect_content("q/#{next_id}", creator: 'New user', images: false)
   end
 
   example 'Guest posts a question as existing user' do
@@ -51,7 +51,7 @@ RSpec.describe 'Discussions', type: :feature do
     select_attachment
     click_button 'Save'
     expect_draft_message('Challenge')
-    expect_content('q/80', creator: 'user_name_2', images: false)
+    expect_content("q/#{next_id}", creator: 'user_name_2', images: false)
   end
 
   example 'Member posts a question' do
@@ -59,7 +59,7 @@ RSpec.describe 'Discussions', type: :feature do
     expect_form('/argu/holland/q')
     fill_in_form
     expect_draft_message('Challenge')
-    expect_content('q/80')
+    expect_content("q/#{next_id}")
   end
 
   example 'Member posts a motion' do
@@ -67,18 +67,18 @@ RSpec.describe 'Discussions', type: :feature do
     expect_form('/argu/holland/m')
     fill_in_form
     expect_draft_message('Idea')
-    expect_content('m/80')
+    expect_content("m/#{next_id}")
   end
 
   example 'Member posts a motion from omniform' do
-    as 'member@example.com', location: '/argu/q/41'
+    as 'member@example.com', location: '/argu/q/freetown_question'
     scope = resource_selector(page.current_url, element: '.FullResource div:nth-child(1) div.Card')
 
     within scope do
       wait_for { page }.to have_content('Share a response...')
       click_button 'Share a response...'
 
-      expect_form('/argu/q/41/m')
+      expect_form('/argu/q/freetown_question/m')
       wait_until_loaded
       fill_in_form(submit: 'save')
     end
@@ -102,7 +102,7 @@ RSpec.describe 'Discussions', type: :feature do
     wait_for { page }.to have_content 'Welcome!'
     finish_setup
     expect_draft_message('Idea')
-    expect_content('m/80', creator: 'New user')
+    expect_content("m/#{next_id}", creator: 'New user')
 
     within navbar do
       expect(page).to have_link(href: '/argu/u/27')
@@ -119,31 +119,31 @@ RSpec.describe 'Discussions', type: :feature do
     expect_form('/argu/holland/q', advanced: true)
     fill_in_form(actor: 'Argu page')
     expect_draft_message('Challenge')
-    expect_content('q/80', creator: 'Argu page')
+    expect_content("q/#{next_id}", creator: 'Argu page')
   end
 
   example 'staff updates a question' do
-    as 'staff@example.com', location: '/argu/q/41'
+    as 'staff@example.com', location: '/argu/q/freetown_question'
     go_to_menu_item('Edit')
-    expect_form('/argu/q/41', advanced: true)
+    expect_form('/argu/q/freetown_question', advanced: true)
     fill_in_form(actor: false)
     expect_updated_message('Challenge')
-    expect_content('q/41', creator: 'user_name_36')
+    expect_content('q/freetown_question', creator: 'user_name_36')
   end
 
   example 'staff updates a motion' do
-    as 'staff@example.com', location: '/argu/m/38'
+    as 'staff@example.com', location: '/argu/m/freetown_motion'
     go_to_menu_item('Edit')
-    expect_form('/argu/m/38', advanced: true)
+    expect_form('/argu/m/freetown_motion', advanced: true)
     fill_in_form(actor: false)
     expect_updated_message('Idea')
-    expect_content('m/38', creator: 'user_name_34')
+    expect_content('m/freetown_motion', creator: 'user_name_34')
   end
 
   example 'staff updates a motion with movie attachment' do
-    as 'staff@example.com', location: '/argu/m/38'
+    as 'staff@example.com', location: '/argu/m/freetown_motion'
     go_to_menu_item('Edit')
-    expect_form('/argu/m/38', advanced: true)
+    expect_form('/argu/m/freetown_motion', advanced: true)
     click_button 'Attachments'
     within 'fieldset[property="https://argu.co/ns/core#attachments"]' do
       click_button 'On the internet'
@@ -155,7 +155,7 @@ RSpec.describe 'Discussions', type: :feature do
     click_button 'Save'
     expect_updated_message('Idea')
     resource_selector(
-      'https://argu.localtest/argu/m/38/attachments',
+      'https://argu.localtest/argu/m/freetown_motion/attachments',
       child: test_selector('ImageAttachmentPreview')
     ).click
     wait_for(page).to have_css('iframe[src="//www.youtube.com/embed/mxQZNodm8OI"]')

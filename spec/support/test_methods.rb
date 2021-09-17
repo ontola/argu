@@ -225,6 +225,10 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
     find('.MuiListItem-button', text: text, match: :prefer_exact).click
   end
 
+  def next_id
+    117
+  end
+
   def go_to_user_page(tab = nil)
     wait_until_loaded
 
