@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Invites', type: :feature do
   example 'Administrator invites user for existing group' do
-    as 'staff@example.com', location: '/argu/m/38'
+    as 'staff@example.com', location: '/argu/m/freetown_motion'
     go_to_menu_item('Invite', menu: :share)
     wait_for { page }.to have_content 'Invite people'
     fill_in field_name('https://argu.co/ns/core#emailAddresses'), with: 'invitee1@example.com invitee2@example.com '
@@ -23,7 +23,7 @@ RSpec.describe 'Invites', type: :feature do
   end
 
   example 'Administrator invites user for new group' do
-    as 'staff@example.com', location: '/argu/m/38'
+    as 'staff@example.com', location: '/argu/m/freetown_motion'
     go_to_menu_item('Invite', menu: :share)
     wait_for { page }.to have_content 'Invite people'
     fill_in field_name('https://argu.co/ns/core#emailAddresses'), with: 'invitee1@example.com invitee2@example.com '

@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Comments', type: :feature do
   let(:actor) { :guest }
-  let(:location) { '/argu/m/38' }
+  let(:location) { '/argu/m/freetown_motion' }
   let(:content) { 'Content of comment' }
   let(:go_to_parent) {}
   let(:after_post) do
@@ -57,12 +57,16 @@ RSpec.describe 'Comments', type: :feature do
     it_behaves_like 'post comment'
 
     example 'post nested comment' do
-      as actor, location: '/argu/pros/47'
+      as actor, location: '/argu/pros/motion_argument'
 
-      within(resource_selector('https://argu.localtest/argu/c/50', element: '.Collection__Depth-1 > div')) do
+      selector = resource_selector(
+        'https://argu.localtest/argu/c/nested_argument_comment',
+        element: '.Collection__Depth-1 > div'
+      )
+      within(selector) do
         wait_for(page).to have_link('New comment')
         click_link('New comment')
-        expect_form('/argu/c/50/c')
+        expect_form('/argu/c/nested_argument_comment/c')
         fill_in field_name('http://schema.org/text'), with: 'Nested comment'
         click_button('save')
         wait_for { page }.to have_snackbar('Comment published.')

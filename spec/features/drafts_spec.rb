@@ -14,25 +14,25 @@ RSpec.describe 'Drafts', type: :feature do
     go_to_user_page('My drafts')
 
     wait_for { page }.to have_css('.Heading', text: 'My drafts')
-    wait_for { page }.to have_content 'Fg question title 10end'
+    wait_for { page }.to have_content 'Unpublished_question-title'
     wait_for { page }.to have_content 'Draft title'
     within(resource_selector('https://argu.localtest/argu/u/58/settings#drafts')) do
       expect(page).to have_css('.Card', count: 2)
     end
-    click_link 'Fg question title 10end'
-    wait_for { page }.to have_content 'Fg motion title 13end'
-    wait_for { page }.to have_content 'Fg argument title 8end'
+    click_link 'Unpublished_question-title'
+    wait_for { page }.to have_content 'Unpublished_motion-title'
+    wait_for { page }.to have_content 'Fg argument title 7end'
     expect_publish_action
   end
 
   example 'Publish draft through action' do
-    as 'user55@example.com', location: '/argu/q/62'
+    as 'user55@example.com', location: '/argu/q/unpublished_question'
     expect_publish_action
-    within 'div[resource="https://argu.localtest/argu/q/62/publish#EntryPoint"]' do
+    within 'div[resource="https://argu.localtest/argu/q/unpublished_question/publish#EntryPoint"]' do
       click_button 'Publish'
     end
     expect_published_message('Challenge')
-    wait_for { page }.to have_content 'Fg question title 10end'
+    wait_for { page }.to have_content 'Unpublished_question-title'
     expect_no_publish_action
   end
 

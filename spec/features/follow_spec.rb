@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Follow', type: :feature do
   example 'Follow motion' do
-    as 'user1@example.com', location: '/argu/m/38'
+    as 'user1@example.com', location: '/argu/m/freetown_motion'
 
     go_to_menu_item('Important items', menu: :follow) do
       expect_following 2
@@ -12,7 +12,7 @@ RSpec.describe 'Follow', type: :feature do
     wait_for { page }.to have_snackbar 'Your notification settings are updated'
     expect_following 0
 
-    visit '/argu/m/38'
+    visit '/argu/m/freetown_motion'
     go_to_menu_item('Never receive notifications', menu: :follow) do
       expect_following 0
     end

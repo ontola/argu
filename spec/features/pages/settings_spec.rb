@@ -107,12 +107,12 @@ RSpec.describe 'Page settings', type: :feature do
       ).click
       wait_for(page).to have_content('New redirect')
       fill_in field_name('https://argu.co/ns/core#shortname'), with: 'question66'
-      fill_in field_name('https://argu.co/ns/core#destination'), with: 'https://argu.localtest/argu/q/66'
+      fill_in field_name('https://argu.co/ns/core#destination'), with: 'https://argu.localtest/argu/q/expired_question'
       click_button('Save')
-      wait_for(page).to have_content('Fg question title 11end')
+      wait_for(page).to have_content('Expired_question-title')
       visit 'https://argu.localtest/argu/question66'
-      wait_for(page).to have_current_path('/argu/q/66')
-      wait_for(page).to have_content('Fg question title 11end')
+      wait_for(page).to have_current_path('/argu/q/expired_question')
+      wait_for(page).to have_content('Expired_question-title')
     end
   end
 

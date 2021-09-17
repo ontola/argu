@@ -23,7 +23,7 @@ RSpec.describe 'Disabled actions', type: :feature do
   end
 
   context 'trashed question' do
-    let(:location) { '/argu/q/58' }
+    let(:location) { '/argu/q/trashed_question' }
     let(:state_expectation) { expect(page).to have_content('This resource has been deleted on') }
     let(:vote_buttons_expectation) { expect(page).not_to have_css('.Button') }
 
@@ -31,7 +31,7 @@ RSpec.describe 'Disabled actions', type: :feature do
   end
 
   context 'expired question' do
-    let(:location) { '/argu/q/66' }
+    let(:location) { '/argu/q/expired_question' }
     let(:state_expectation) { expect(page).to have_css('.fa-lock') }
     let(:vote_buttons_expectation) do
       wait_for(page).to have_css('.Button[disabled][title="Voting no longer possible"]', count: 3)
@@ -41,14 +41,14 @@ RSpec.describe 'Disabled actions', type: :feature do
   end
 
   context 'motion of trashed question' do
-    let(:location) { '/argu/m/59' }
+    let(:location) { '/argu/m/trashed_question' }
     let(:vote_buttons_expectation) { expect(page).not_to have_css('.Button') }
 
     it_behaves_like 'cannot perform actions'
   end
 
   context 'motion of expired question' do
-    let(:location) { '/argu/m/67' }
+    let(:location) { '/argu/m/expired_motion' }
     let(:vote_buttons_expectation) do
       wait_for(page).to have_css('.Button[disabled][title="Voting no longer possible"]', count: 4)
     end

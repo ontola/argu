@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Redirect', type: :feature do
-  let(:location) { '/argu/q/38' }
-  let(:redirect_location) { '/argu/m/38' }
+  let(:location) { '/argu/q/freetown_motion' }
+  let(:redirect_location) { '/argu/m/freetown_motion' }
 
   example 'cold redirect of wrong type' do
     as :guest, location: location

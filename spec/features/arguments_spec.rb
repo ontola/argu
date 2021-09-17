@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Arguments', type: :feature do
   let(:actor) { :guest }
   let(:go_to_parent) {}
-  let(:location) { '/argu/m/38' }
+  let(:location) { '/argu/m/freetown_motion' }
   let(:title) { 'Title of argument' }
   let(:content) { 'Content of argument' }
   let(:after_post) do
@@ -60,9 +60,9 @@ RSpec.describe 'Arguments', type: :feature do
     it_behaves_like 'post argument'
 
     context 'question#show' do
-      let(:location) { '/argu/q/41' }
+      let(:location) { '/argu/q/freetown_question' }
       let(:result_element) { '.Column .CardList' }
-      let(:parent_resource) { 'https://argu.localtest/argu/m/42' }
+      let(:parent_resource) { 'https://argu.localtest/argu/m/question_motion' }
       let(:expect_argument_content) { false }
 
       example 'pro from motion preview' do

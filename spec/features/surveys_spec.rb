@@ -6,7 +6,7 @@ RSpec.describe 'Surveys', type: :feature do
   let(:reward) { false }
 
   context 'open survey' do
-    let(:survey_path) { '/argu/surveys/76' }
+    let(:survey_path) { '/argu/surveys/typeform_survey' }
 
     example 'Guest submits open survey' do
       as :guest, location: survey_path
@@ -25,7 +25,7 @@ RSpec.describe 'Surveys', type: :feature do
 
   context 'reward survey' do
     let(:reward) { true }
-    let(:survey_path) { '/argu/surveys/78' }
+    let(:survey_path) { '/argu/surveys/reward_survey' }
 
     example 'Guest submits reward survey' do
       as :guest, location: survey_path

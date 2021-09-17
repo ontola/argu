@@ -6,14 +6,14 @@ RSpec.describe 'Upvoting', type: :feature do
   before do
     as actor, location: location
     before_vote
-    wait_for { page }.to have_content "fg motion content #{motion_sequence}end"
+    wait_for { page }.to have_content motion_content
   end
 
   let(:actor) { :guest }
   let(:before_vote) {}
   let(:expected_count) { 1 }
-  let(:location) { '/argu/m/38' }
-  let(:motion_sequence) { 9 }
+  let(:location) { '/argu/m/freetown_motion' }
+  let(:motion_content) { 'freetown_motion-text' }
 
   shared_examples_for 'upvoting' do
     example 'remember upvote' do
@@ -47,10 +47,10 @@ RSpec.describe 'Upvoting', type: :feature do
       cancel_setup
     end
     let(:location) { '/argu/tokens/valid_email_token' }
-    let(:motion_sequence) { 3 }
+    let(:motion_content) { 'fg motion content 3end' }
 
     example 'remember upvote' do
-      click_link "Fg motion title #{motion_sequence}end"
+      click_link 'Fg motion title 3end'
       upvote(success: false)
       accept_terms
       expect_voted

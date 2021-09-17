@@ -7,7 +7,7 @@ RSpec.describe 'Trash', type: :feature do
   let(:content) { 'Content of discussion' }
 
   example 'trashed motion with explanation' do
-    as 'staff@example.com', location: '/argu/m/38'
+    as 'staff@example.com', location: '/argu/m/freetown_motion'
 
     go_to_menu_item('Delete')
 
@@ -19,13 +19,13 @@ RSpec.describe 'Trash', type: :feature do
     click_button 'Trash'
 
     wait_for(page).to have_snackbar "Idea trashed successfully"
-    expect(page).to have_current_path('/argu/m/38')
+    expect(page).to have_current_path('/argu/m/freetown_motion')
     wait_for(page).to have_content 'This resource has been deleted'
     wait_for(page).to have_content 'Trash reason'
   end
 
   example 'trashed motion without explanation' do
-    as 'staff@example.com', location: '/argu/m/38'
+    as 'staff@example.com', location: '/argu/m/freetown_motion'
 
     go_to_menu_item('Delete')
 
@@ -35,7 +35,7 @@ RSpec.describe 'Trash', type: :feature do
     click_button 'Trash'
 
     wait_for(page).to have_snackbar "Idea trashed successfully"
-    expect(page).to have_current_path('/argu/m/38')
+    expect(page).to have_current_path('/argu/m/freetown_motion')
     wait_for(page).to have_content 'This resource has been deleted'
   end
 end

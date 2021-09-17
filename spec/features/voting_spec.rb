@@ -6,7 +6,7 @@ RSpec.describe 'Voting', type: :feature do
   before do
     as actor, location: location
     before_vote
-    wait(30).for(page).to have_content "fg motion content #{motion_sequence}end"
+    wait(30).for(page).to have_content motion_content
   end
 
   let(:actor) { :guest }
@@ -43,8 +43,8 @@ RSpec.describe 'Voting', type: :feature do
   end
 
   context 'on motion#show' do
-    let(:location) { '/argu/m/38' }
-    let(:motion_sequence) { 9 }
+    let(:location) { '/argu/m/freetown_motion' }
+    let(:motion_content) { 'freetown_motion-text' }
 
     context 'as guest' do
       it_behaves_like 'voting'
@@ -94,7 +94,7 @@ RSpec.describe 'Voting', type: :feature do
             have_content("Please confirm your vote by clicking the link we've sent to new_user@example.com")
           )
           expect_email(:confirm_vote_email)
-          expect(confirm_vote_email.body).to have_content('In favour of Fg motion title 9end')
+          expect(confirm_vote_email.body).to have_content('In favour of Freetown_motion-title')
           visit confirm_vote_email.links.last
           wait_for { page }.to have_snackbar('Your account has been confirmed.')
           wait_for { page }.to have_content('Set your password')
@@ -121,7 +121,7 @@ RSpec.describe 'Voting', type: :feature do
     context 'as invitee' do
       let(:vote_diff) { 1 }
       let(:location) { '/argu/tokens/valid_email_token' }
-      let(:motion_sequence) { 3 }
+      let(:motion_content) { 'fg motion content 3end' }
       let(:after_vote) do
         accept_terms
         wait_for { page }.to have_snackbar 'Thanks for your vote!'
@@ -133,7 +133,7 @@ RSpec.describe 'Voting', type: :feature do
       end
 
       example 'vote' do
-        click_link "Fg motion title #{motion_sequence}end"
+        click_link 'Fg motion title 3end'
         vote_in_favour
         after_vote
       end
@@ -141,8 +141,8 @@ RSpec.describe 'Voting', type: :feature do
   end
 
   context 'on question#show' do
-    let(:location) { '/argu/q/41' }
-    let(:motion_sequence) { 10 }
+    let(:location) { '/argu/q/freetown_question' }
+    let(:motion_content) { 'question_motion-text' }
     let(:vote_counts) { { yes: 2, no: 0 }.with_indifferent_access }
 
     context 'as guest' do

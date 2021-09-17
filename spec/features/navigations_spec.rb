@@ -6,18 +6,20 @@ RSpec.describe 'Navigations', type: :feature do
   example 'walk from page to argument' do
     as :guest, location: '/argu'
 
-    go_to_child 'Fg question title 7end'
-    go_to_child 'Fg motion title 10end'
-    go_to_child 'Fg argument title 6end'
-    wait_for { page }.to have_content 'fg comment body 2end'
+    go_to_child 'Freetown_question-title'
+    go_to_child 'Question_motion-title'
+    go_to_child 'Motion_argument-title'
+    wait_for { page }.to have_content 'argument_comment-text'
+    wait_for { page }.to have_content 'nested_argument_comment-text'
   end
 
   example 'walk from argument to forum' do
-    as :guest, location: '/argu/pros/47'
+    as :guest, location: '/argu/pros/motion_argument'
 
-    wait_for { page }.to have_content 'fg comment body 2end'
-    go_to_parent 'Fg motion title 10end'
-    go_to_parent 'Fg question title 7end'
+    wait_for { page }.to have_content 'argument_comment-text'
+    wait_for { page }.to have_content 'nested_argument_comment-text'
+    go_to_parent 'Question_motion-title'
+    go_to_parent 'Freetown_question-title'
     go_to_parent 'Freetown'
     wait_for { page }.to have_content 'Do you have a good idea?'
   end
