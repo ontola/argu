@@ -102,7 +102,7 @@ END_HEREDOC
     container = docker_container(service)
     return run_local(service, commands) if container.nil?
 
-    result = Timeout.timeout(120, Timeout::Error, "Execution of #{commands} expired for service #{service}") do
+    result = Timeout.timeout(180, Timeout::Error, "Execution of #{commands} expired for service #{service}") do
       container.exec(commands)
     end
     return result.first.first if result[-1] == 0
