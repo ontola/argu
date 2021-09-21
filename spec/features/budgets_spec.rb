@@ -33,13 +33,13 @@ RSpec.describe 'Budgets', type: :feature do
   example 'Guest submits budget' do
     as :guest, location: '/argu/freetown'
     go_to_budget
-    add_order_detail(115)
+    add_order_detail(124)
     expect_cart_value(6)
-    add_order_detail(116)
+    add_order_detail(125)
     expect_cart_value(9)
-    add_order_detail(117)
+    add_order_detail(126)
     expect_cart_value(11, false)
-    remove_order_detail(116)
+    remove_order_detail(125)
     expect_cart_value(8)
     submit_cart
     wait_for{ page }.to have_snackbar('Your budget is submitted!')
@@ -49,9 +49,9 @@ RSpec.describe 'Budgets', type: :feature do
   example 'Guest should not submit budget with wrong coupon' do
     as :guest, location: '/argu/freetown'
     go_to_budget
-    add_order_detail(115)
+    add_order_detail(124)
     expect_cart_value(6)
-    add_order_detail(117)
+    add_order_detail(126)
     expect_cart_value(8)
     submit_cart('WRONG')
     wait_for{ page }.to have_content('Coupon is not valid')
@@ -60,11 +60,11 @@ RSpec.describe 'Budgets', type: :feature do
   example 'User submits budget' do
     as :guest, location: '/argu/freetown'
     go_to_budget
-    add_order_detail(115)
+    add_order_detail(124)
     expect_cart_value(6)
     login('user1@example.com')
     expect_cart_value(6)
-    add_order_detail(117)
+    add_order_detail(126)
     expect_cart_value(8)
     submit_cart
     wait_for{ page }.to have_snackbar('Your budget is submitted!')
@@ -74,7 +74,7 @@ RSpec.describe 'Budgets', type: :feature do
 
   private
 
-  def add_order_detail(id = 115)
+  def add_order_detail(id = 124)
     within resource_selector("https://argu.localtest/argu/offers/#{id}", element: '.Card') do
       click_button 'Add'
     end
@@ -112,7 +112,7 @@ RSpec.describe 'Budgets', type: :feature do
     wait_until_loaded
   end
 
-  def remove_order_detail(id = 115)
+  def remove_order_detail(id = 124)
     within resource_selector("https://argu.localtest/argu/offers/#{id}", element: '.Card') do
       click_button 'Remove'
     end

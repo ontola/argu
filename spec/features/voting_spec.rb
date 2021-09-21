@@ -13,10 +13,10 @@ RSpec.describe 'Voting', type: :feature do
   let(:after_confirmation) { nil }
   let(:after_vote) do
     wait_for { page }.to have_snackbar 'Thanks for your vote!'
-    expect_voted(side: @side)
+    expect_voted(button: @button)
   end
   let(:before_vote) {}
-  let(:vote_counts) { { yes: 0, no: 0 }.with_indifferent_access }
+  let(:vote_counts) { { Agree: 0, Disagree: 0 }.with_indifferent_access }
   let(:vote_diff) { 0 }
 
   shared_examples_for 'voting' do
@@ -38,7 +38,7 @@ RSpec.describe 'Voting', type: :feature do
       vote_in_favour
       confirm
       after_confirmation
-      expect_voted(count: vote_counts[@side] + 1)
+      expect_voted(count: vote_counts[@button] + 1)
     end
   end
 
@@ -94,7 +94,7 @@ RSpec.describe 'Voting', type: :feature do
             have_content("Please confirm your vote by clicking the link we've sent to new_user@example.com")
           )
           expect_email(:confirm_vote_email)
-          expect(confirm_vote_email.body).to have_content('In favour of Freetown_motion-title')
+          expect(confirm_vote_email.body).to have_content('Freetown_motion-title: Agree')
           visit confirm_vote_email.links.last
           wait_for { page }.to have_snackbar('Your account has been confirmed.')
           wait_for { page }.to have_content('Set your password')
@@ -125,7 +125,7 @@ RSpec.describe 'Voting', type: :feature do
       let(:after_vote) do
         accept_terms
         wait_for { page }.to have_snackbar 'Thanks for your vote!'
-        expect_voted(side: @side)
+        expect_voted(button: @button)
       end
       let(:before_vote) do
         accept_token
@@ -143,7 +143,7 @@ RSpec.describe 'Voting', type: :feature do
   context 'on question#show' do
     let(:location) { '/argu/q/freetown_question' }
     let(:motion_content) { 'question_motion-text' }
-    let(:vote_counts) { { yes: 2, no: 0 }.with_indifferent_access }
+    let(:vote_counts) { { Agree: 2, Disagree: 0 }.with_indifferent_access }
 
     context 'as guest' do
       it_behaves_like 'voting'
@@ -181,30 +181,33 @@ RSpec.describe 'Voting', type: :feature do
 
   def vote_in_favour
     wait_until_loaded
-    @side = 'yes'
-    wait_for { page }.to have_content 'Agree'
+    @button = 'Agree'
+    wait_for { page }.to have_content @button
     link_race_condition_patch
-    click_button 'Agree'
+    click_button @button
     after_vote
   end
 
   def vote_against
     wait_until_loaded
-    @side = 'no'
-    wait_for { page }.to have_content 'Disagree'
+    @button = 'Disagree'
+    wait_for { page }.to have_content @button
     link_race_condition_patch
-    click_button 'Disagree'
+    click_button @button
     after_vote
     wait_for { page }.to have_snackbar 'Thanks for your vote!'
-    expect_voted(side: @side)
+    expect_voted(button: @button)
   end
 
-  def expect_voted(side: 'yes', count: nil)
-    button_css = ".Button--variant-#{side}.Button--active"
+  def expect_voted(button: 'Agree', count: nil)
+    button_css = '.Button--active'
     wait_for { page }.to have_css button_css
     wait_until_loaded
+    within button_css do
+      wait_for{ page }.to have_content(button)
+    end
 
-    expected_count = count || vote_counts[side] + vote_diff
+    expected_count = count || vote_counts[button] + vote_diff
     if expected_count == 0
       expect(page).to have_selector(button_css)
       expect(page).not_to have_selector(button_css, text: /\(/)

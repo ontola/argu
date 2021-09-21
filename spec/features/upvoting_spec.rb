@@ -82,12 +82,14 @@ RSpec.describe 'Upvoting', type: :feature do
   end
 
   def expect_voted
-    wait_for { page }.to have_css '.Button--variant-yes.Button--active'
-    expect(page).to have_content "Upvote#{expected_count > 0 ? " (#{expected_count})" : ''}"
+    wait_for { page }.to have_css '.Button--active'
+    within '.Button--active' do
+      expect(page).to have_content "Upvote#{expected_count > 0 ? " (#{expected_count})" : ''}"
+    end
   end
 
   def expect_not_voted
-    wait_for { page }.not_to have_css '.Button--variant-yes.Button--active'
+    wait_for { page }.not_to have_css '.Button--active'
     expect(page).to have_content 'Upvote'
     expect(page).not_to have_content 'Upvote (1)'
   end
