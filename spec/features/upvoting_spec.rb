@@ -11,7 +11,7 @@ RSpec.describe 'Upvoting', type: :feature do
 
   let(:actor) { :guest }
   let(:before_vote) {}
-  let(:expected_count) { 1 }
+  let(:expected_count) { 2 }
   let(:location) { '/argu/m/freetown_motion' }
   let(:motion_content) { 'freetown_motion-text' }
 
@@ -30,7 +30,7 @@ RSpec.describe 'Upvoting', type: :feature do
   end
 
   context 'as guest' do
-    let(:expected_count) { 0 }
+    let(:expected_count) { 1 }
 
     it_behaves_like 'upvoting'
   end
@@ -88,7 +88,7 @@ RSpec.describe 'Upvoting', type: :feature do
 
   def expect_not_voted
     wait_for { page }.not_to have_css '.Button--variant-yes.Button--active'
-    expect(page).to have_content 'Upvote'
-    expect(page).not_to have_content 'Upvote (1)'
+    expect(page).to have_content 'Upvote (1)'
+    expect(page).not_to have_content 'Upvote (2)'
   end
 end
