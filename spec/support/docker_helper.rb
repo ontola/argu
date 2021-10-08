@@ -50,6 +50,7 @@ END_HEREDOC
     docker_exec('redis', ['apt', 'install', '-y', 'python3-pip'])
     docker_exec('redis', ['pip3', 'install', 'rdbtools', 'python-lzf'])
     docker_exec('redis', ['redis-cli', 'SAVE'])
+    docker_exec('redis', ['rm', '-f', '/data/dump.protocol'])
     docker_exec('redis', ['rdb', '-c', 'protocol', '-f', '/data/dump.protocol', '/data/dump.rdb'])
   end
 
