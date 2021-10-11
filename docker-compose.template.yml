@@ -76,6 +76,8 @@ services:{testrunner}
     networks:
       default:
       external:
+    volumes:
+      - rabbitdata:/var/lib/rabbitmq
 {webservices}
 networks:
   default:
@@ -87,4 +89,5 @@ networks:
 volumes:
   certdata:
   pgdata:
+  rabbitdata:
   redisdata:
