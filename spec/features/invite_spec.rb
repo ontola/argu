@@ -73,7 +73,7 @@ RSpec.describe 'Invites', type: :feature do
     resource_selector(
       "https://argu.localtest/argu/tokens/g/#{group_id}/email?display=settingsTable",
       child: "tbody",
-      element: '.Card'
+      element: '.CID-Card'
     )
   end
 end

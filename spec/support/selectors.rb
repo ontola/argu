@@ -30,7 +30,7 @@ module Selectors
     found.find(element)
   end
 
-  def details_bar(parent: resource_selector(page.current_url, element: '.Card'))
+  def details_bar(parent: resource_selector(page.current_url, element: '.CID-Card'))
     within(parent) do
       wait_for { page }.to have_css(test_selector('DetailsBar'))
 

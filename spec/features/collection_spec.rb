@@ -7,10 +7,10 @@ RSpec.describe 'Collection', type: :feature do
     as :guest, location: '/argu/feed'
     wait_for(page).to have_content('Activities')
     wait_until_loaded
-    wait_for { resource_selector(page.current_url) }.to have_css('.Card', count: 10)
+    wait_for { resource_selector(page.current_url) }.to have_css('.CID-Card', count: 10)
     click_button('Load more')
     wait_until_loaded
-    wait_for { resource_selector(page.current_url) }.to have_css('.Card', count: 20)
+    wait_for { resource_selector(page.current_url) }.to have_css('.CID-Card', count: 20)
   end
 
   example 'Guest shows paginated activities feed' do
@@ -18,10 +18,10 @@ RSpec.describe 'Collection', type: :feature do
     wait_for(page).to have_content('Activities')
     wait_until_loaded
     collection_iri = page.current_url
-    wait_for { resource_selector(collection_iri) }.to have_css('.Card', count: 10)
+    wait_for { resource_selector(collection_iri) }.to have_css('.CID-Card', count: 10)
     expect(page).not_to have_content('Load more')
     click_button '2'
     wait_until_loaded
-    wait_for { resource_selector(collection_iri) }.to have_css('.Card', count: 10)
+    wait_for { resource_selector(collection_iri) }.to have_css('.CID-Card', count: 10)
   end
 end

@@ -17,7 +17,7 @@ RSpec.describe 'Drafts', type: :feature do
     wait_for { page }.to have_content 'Unpublished_question-title'
     wait_for { page }.to have_content 'Draft title'
     within(resource_selector('https://argu.localtest/argu/u/58/settings#drafts')) do
-      expect(page).to have_css('.Card', count: 2)
+      expect(page).to have_css('.CID-Card', count: 2)
     end
     click_link 'Unpublished_question-title'
     wait_for { page }.to have_content 'Unpublished_motion-title'

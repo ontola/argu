@@ -17,7 +17,7 @@ RSpec.describe 'Comments', type: :feature do
     end
 
     example 'from card section' do
-      parent = '.FullResource div:nth-child(1) div.Card'
+      parent = '.FullResource div:nth-child(1) div.CID-Card'
       go_to_parent
       fill_in_omniform(parent, click_to_open: true)
       after_post

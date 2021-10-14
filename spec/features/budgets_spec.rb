@@ -76,7 +76,7 @@ RSpec.describe 'Budgets', type: :feature do
   private
 
   def add_order_detail(id = :offer_600)
-    within resource_selector("https://argu.localtest/argu/offers/#{id}", element: '.Card') do
+    within resource_selector("https://argu.localtest/argu/offers/#{id}", element: '.CID-Card') do
       click_button 'Add'
     end
   end
@@ -114,7 +114,7 @@ RSpec.describe 'Budgets', type: :feature do
   end
 
   def remove_order_detail(id = :offer_600)
-    within resource_selector("https://argu.localtest/argu/offers/#{id}", element: '.Card') do
+    within resource_selector("https://argu.localtest/argu/offers/#{id}", element: '.CID-Card') do
       click_button 'Remove'
     end
   end

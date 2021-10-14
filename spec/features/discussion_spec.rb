@@ -72,7 +72,7 @@ RSpec.describe 'Discussions', type: :feature do
 
   example 'Member posts a motion from omniform' do
     as 'member@example.com', location: '/argu/q/freetown_question'
-    scope = resource_selector(page.current_url, element: '.FullResource div:nth-child(1) div.Card')
+    scope = resource_selector(page.current_url, element: '.FullResource div:nth-child(1) div.CID-Card')
 
     within scope do
       wait_for { page }.to have_content('Share a response...')

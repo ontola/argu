@@ -21,7 +21,7 @@ RSpec.describe 'Arguments', type: :feature do
 
   shared_examples_for 'post argument' do
     example 'pro from card section' do
-      parent = '.FullResource div:nth-child(1) div.Card'
+      parent = '.FullResource div:nth-child(1) div.CID-Card'
       go_to_parent
       fill_in_omniform(parent, click_to_open: true)
     end
@@ -66,7 +66,7 @@ RSpec.describe 'Arguments', type: :feature do
       let(:expect_argument_content) { false }
 
       example 'pro from motion preview' do
-        parent = ".Card[resource=\"#{parent_resource}\"]"
+        parent = ".CID-Card[resource=\"#{parent_resource}\"]"
 
         fill_in_omniform(parent, click_to_open: true)
       end

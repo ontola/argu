@@ -44,7 +44,7 @@ RSpec.describe 'Token bearer management', type: :feature do
     resource_selector(
       'https://argu.localtest/argu/tokens/g/111/bearer?display=settingsTable',
       child: "tbody tr:nth-child(#{row})",
-      element: '.Card'
+      element: '.CID-Card'
     )
   end
 end

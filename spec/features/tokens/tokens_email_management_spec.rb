@@ -59,7 +59,7 @@ RSpec.describe 'Token email management', type: :feature do
     resource_selector(
       'https://argu.localtest/argu/tokens/g/111/email?display=settingsTable',
       child: "tbody tr:nth-child(#{row})",
-      element: '.Card'
+      element: '.CID-Card'
     )
   end
 end

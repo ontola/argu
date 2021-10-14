@@ -123,7 +123,7 @@ RSpec.describe 'User settings', type: :feature do
     resource_selector(
       'https://argu.localtest/argu/email_addresses?display=settingsTable',
       child: "tbody tr:nth-child(#{row})",
-      element: '.Card'
+      element: '.CID-Card'
     )
   end
 

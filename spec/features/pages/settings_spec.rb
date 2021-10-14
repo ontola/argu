@@ -122,7 +122,7 @@ RSpec.describe 'Page settings', type: :feature do
     resource_selector(
       'https://argu.localtest/argu/container_nodes?display=settingsTable',
       child: "tbody tr:nth-child(#{row})",
-      element: '.Card'
+      element: '.CID-Card'
     )
   end
 
@@ -135,7 +135,7 @@ RSpec.describe 'Page settings', type: :feature do
     resource_selector(
       'https://argu.localtest/argu/shortnames?display=settingsTable',
       child: "tbody tr:nth-child(#{row})",
-      element: '.Card'
+      element: '.CID-Card'
     )
   end
 
