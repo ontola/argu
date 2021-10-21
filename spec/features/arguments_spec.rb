@@ -61,7 +61,7 @@ RSpec.describe 'Arguments', type: :feature do
 
     context 'question#show' do
       let(:location) { '/argu/q/freetown_question' }
-      let(:result_element) { '.Column .CardList' }
+      let(:result_element) { '.Column div' }
       let(:parent_resource) { 'https://argu.localtest/argu/m/question_motion' }
       let(:expect_argument_content) { false }
 
