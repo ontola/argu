@@ -36,8 +36,8 @@ RSpec.describe 'Arguments', type: :feature do
         verify_logged_in
         finish_setup
         expect(page).to have_current_path("#{location}/pros/new")
-        wait_for { page }.to have_button 'Save'
-        click_button 'Save'
+        wait_for { page }.to have_button 'Publish'
+        click_button 'Publish'
         expect_argument_posted
       end
       it_behaves_like 'post argument'
@@ -47,8 +47,8 @@ RSpec.describe 'Arguments', type: :feature do
       let(:after_post) do
         login('user1@example.com', open_modal: false)
         expect(page).to have_current_path("#{location}/pros/new")
-        wait_for { page }.to have_button 'Save'
-        click_button 'Save'
+        wait_for { page }.to have_button 'Publish'
+        click_button 'Publish'
         expect_argument_posted
       end
       it_behaves_like 'post argument'
@@ -61,7 +61,7 @@ RSpec.describe 'Arguments', type: :feature do
 
     context 'question#show' do
       let(:location) { '/argu/q/freetown_question' }
-      let(:result_element) { '.Column div' }
+      let(:result_element) { '.Column .Collection' }
       let(:parent_resource) { 'https://argu.localtest/argu/m/question_motion' }
       let(:expect_argument_content) { false }
 

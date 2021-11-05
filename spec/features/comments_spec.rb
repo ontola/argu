@@ -33,8 +33,8 @@ RSpec.describe 'Comments', type: :feature do
         verify_logged_in
         finish_setup
         expect(page).to have_current_path("#{location}/c/new")
-        wait_for { page }.to have_button 'Save'
-        click_button 'Save'
+        wait_for { page }.to have_button 'Publish'
+        click_button 'Publish'
         expect_comment_posted
       end
       it_behaves_like 'post comment'
@@ -44,8 +44,8 @@ RSpec.describe 'Comments', type: :feature do
       let(:after_post) do
         login('user1@example.com', open_modal: false)
         expect(page).to have_current_path("#{location}/c/new")
-        wait_for { page }.to have_button 'Save'
-        click_button 'Save'
+        wait_for { page }.to have_button 'Publish'
+        click_button 'Publish'
         expect_comment_posted
       end
       it_behaves_like 'post comment'
