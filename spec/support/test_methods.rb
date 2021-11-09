@@ -177,7 +177,7 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
   def finish_setup
     wait_for { page }.to have_content 'Welcome!'
     wait_until_loaded
-    within "[role='dialog']" do
+    within_dialog do
       fill_in field_name('https://argu.co/ns/core#name'), with: 'New user'
       wait_for { page }.to have_button 'Continue'
       click_button 'Continue'
@@ -187,7 +187,7 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
 
   def cancel_setup
     wait_for { page }.to have_content 'Welcome!'
-    within "[role='dialog']" do
+    within_dialog do
       wait_for { page }.to have_link 'cancel'
       click_link 'cancel'
     end
@@ -284,6 +284,16 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
     yield
   ensure
     page.send(:scopes).push(current_scope)
+  end
+
+  def within_dialog
+    within "[role='dialog']" do
+      yield
+    end
+  end
+
+  def expect_no_dialog
+    wait_for { page }.not_to have_css("[role='dialog']")
   end
 
   def expect_email(email_name)

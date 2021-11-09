@@ -33,7 +33,7 @@ RSpec.describe 'Invites', type: :feature do
     wait_for(page).to have_link('Add group')
     click_link('Add group')
     wait_for(page).to have_content('Name singular')
-    within "[role='dialog']" do
+    within_dialog do
       fill_in field_name('http://schema.org/name'), with: 'people'
       fill_in field_name('https://argu.co/ns/core#nameSingular'), with: 'person'
       click_button 'Save'

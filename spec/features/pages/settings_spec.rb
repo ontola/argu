@@ -33,28 +33,28 @@ RSpec.describe 'Page settings', type: :feature do
       wait_for { page }.to have_content('New forum')
       click_link 'New forum'
 
-      wait_for { page }.to have_css('.Page form')
-      fill_in field_name('http://schema.org/name'), with: 'New Forum'
-      fill_in field_name('https://argu.co/ns/core#shortname'), with: 'new_forum'
-      wait_until_loaded
-      click_button 'Grants'
-      wait_until_loaded
-      fill_in_select(
-        field_name('https://argu.co/ns/core#grants', 0, 'https://argu.co/ns/core#group'),
-        with: 'Public'
-      )
-      fill_in_select(
-        field_name('https://argu.co/ns/core#grants', 0, 'https://argu.co/ns/core#grantSet'),
-        with: 'Participate'
-      )
-      click_button 'Save'
+      within_dialog do
+        wait_for { page }.to have_css('form')
+        fill_in field_name('http://schema.org/name'), with: 'New Forum'
+        fill_in field_name('https://argu.co/ns/core#shortname'), with: 'new_forum'
+        wait_until_loaded
+        click_button 'Grants'
+        wait_until_loaded
+        fill_in_select(
+          field_name('https://argu.co/ns/core#grants', 0, 'https://argu.co/ns/core#group'),
+          with: 'Public'
+        )
+        fill_in_select(
+          field_name('https://argu.co/ns/core#grants', 0, 'https://argu.co/ns/core#grantSet'),
+          with: 'Participate'
+        )
+        click_button 'Save'
+      end
 
       wait_for { page }.to have_snackbar 'Forum created successfully'
-      # @todo expect new forum in topbar navigation
-
-      # @todo fetch /container_nodes instead of /forums after posting a forum, so the reload can be removed
-      visit '/argu/settings#container_nodes'
-      # visit_settings
+      within navbar do
+        wait_for { page }.to have_content 'New Forum'
+      end
 
       wait_until_loaded
       wait_for { page }.to have_content 'Components'
@@ -66,18 +66,20 @@ RSpec.describe 'Page settings', type: :feature do
         wait(30).for(page).to have_css('.fa-close')
         find('td:last-child a').click
       end
-      expect(page).to(
-        have_content('This object and all related data will be permanently removed. This cannot be undone.')
-      )
-      fill_in field_name('https://argu.co/ns/core#confirmationString'), with: 'remove'
-      click_button 'Delete'
-      wait_for { page }.to have_snackbar 'Forum deleted successfully'
-      # @todo expect redirected to page settings
-      # @todo expect new forum removed from sidebar navigation
+      within_dialog do
+        expect(page).to(
+          have_content('This object and all related data will be permanently removed. This cannot be undone.')
+        )
+        fill_in field_name('https://argu.co/ns/core#confirmationString'), with: 'remove'
+        click_button 'Delete'
+      end
+      expect_no_dialog
+      # @todo fix stale element error for window.logging
+      # wait_for { page }.to have_snackbar 'Forum deleted successfully'
 
-      visit_settings
-      # @todo expect(components_row(1)).to have_content('Holland')
-      # @todo expect(components_row(2)).to have_content('Freetown')
+      wait_for {page}.not_to have_content('New Forum')
+      expect(components_row(1)).to have_content('Holland')
+      expect(components_row(2)).to have_content('Freetown')
     end
   end
 

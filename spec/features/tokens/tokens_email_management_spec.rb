@@ -31,10 +31,12 @@ RSpec.describe 'Token email management', type: :feature do
       find('td:last-child a').click
     end
 
-    wait_for { page }.to(
-      have_content('This object and all related data will be permanently removed. This cannot be undone.')
-    )
-    click_button 'Delete'
+    within_dialog do
+      wait_for { page }.to(
+        have_content('This object and all related data will be permanently removed. This cannot be undone.')
+      )
+      click_button 'Delete'
+    end
 
     wait_for { page }.to have_snackbar 'Email invite deleted successfully'
     expect(page).not_to have_content('https://www.example.com')
