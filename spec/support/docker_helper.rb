@@ -20,6 +20,12 @@ END
 $func$;
 END_HEREDOC
 
+  def cleanup_before_test
+    docker_reset_databases
+    docker_reset_redis
+    mailcatcher_clear
+  end
+
   def docker_reset_databases
     db_managed_services.each do |db|
       docker_clean_database(db)

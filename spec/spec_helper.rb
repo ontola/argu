@@ -7,6 +7,7 @@ require 'selenium/webdriver'
 require 'webdrivers'
 require 'rspec/wait'
 require 'rspec/instafail'
+require 'rspec/retry'
 require 'support/exception_helper'
 require 'support/expectations'
 require 'support/mailcatcher_helper'
@@ -46,6 +47,13 @@ RSpec.configure do |config|
 
   config.wait_timeout = ENV['RSPEC_WAIT']&.to_i || 15
 
+  config.verbose_retry = true
+  config.around(:each) do |ex|
+    ex.run_with_retry retry: 1
+  end
+  config.retry_callback = ->  { cleanup_before_test }
+  config.exceptions_to_retry = [Selenium::WebDriver::Error::StaleElementReferenceError]
+
   config.before(:suite) do
     db_managed_services.each do |service|
       puts "Checking #{service}"
@@ -62,9 +70,7 @@ RSpec.configure do |config|
   end
 
   config.before do
-    docker_reset_databases
-    docker_reset_redis
-    mailcatcher_clear
+    cleanup_before_test
   end
 
   config.after do |example|
