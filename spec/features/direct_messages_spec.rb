@@ -16,10 +16,7 @@ RSpec.describe 'Direct messages', type: :feature do
     expect_email :direct_message_email
     expect(direct_message_email.instance_variable_get(:@mail).reply_to.first).to eq('staff@example.com')
     expect(direct_message_email.body).to(
-      have_content(
-        'argu_owner<a href="https://argu.localtest/argu/u/1">argu_owner</a> has sent you a message '\
-        'in response to <a href="https://argu.localtest/argu/m/freetown_motion">Freetown_motion-title</a>.'
-      )
+      have_content('argu_owner has sent you a message in response to Freetown_motion-title.')
     )
   end
 
@@ -46,10 +43,7 @@ RSpec.describe 'Direct messages', type: :feature do
     expect_email :direct_message_email
     expect(direct_message_email.instance_variable_get(:@mail).reply_to.first).to eq(new_email)
     expect(direct_message_email.body).to(
-      have_content(
-        'Argu page<a href="https://argu.localtest/argu">Argu page</a> has sent you a message '\
-        'in response to <a href="https://argu.localtest/argu/m/freetown_motion">Freetown_motion-title</a>.'
-      )
+      have_content('Argu page has sent you a message in response to Freetown_motion-title.')
     )
   end
 
