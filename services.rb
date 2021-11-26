@@ -6,8 +6,9 @@ SERVICES = {
   frontend: {
     manage_db: false,
     image: 'registry.gitlab.com/ontola/libro',
-    command: 'node --use-openssl-ca ./dist/private/server.js',
-    port: 8080,
+    command: './bin/cache',
+    health: 'curl -H "Host: argu.localtest" -f http://localhost:3080/link-lib/cache/status',
+    port: 3080,
     restart: 'unless-stopped',
   },
   argu: {
@@ -33,12 +34,5 @@ SERVICES = {
     worker: {
       command: ' bundle exec sidekiq -e staging'
     }
-  },
-  cache: {
-    command: './cache',
-    image: 'registry.gitlab.com/ontola/cache/master',
-    manage_db: false,
-    port: 3030,
-    health: 'curl -H "Host: argu.localtest" -f http://localhost:3030/link-lib/cache/status',
   }
 }.with_indifferent_access

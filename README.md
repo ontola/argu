@@ -50,7 +50,7 @@ Core needs a lot of `/etc/hosts`:
 127.0.0.1 token.svc.cluster.local
 127.0.0.1 email.svc.cluster.local
 127.0.0.1 argu.svc.cluster.local
-127.0.0.1 cache.svc.cluster.local
+127.0.0.1 frontend.svc.cluster.local
 127.0.0.1 dextransfer.localdev
 ```
 

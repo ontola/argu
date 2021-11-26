@@ -119,7 +119,7 @@ install_hosts() {
   ensure_hosts '127.0.0.1' 'token.svc.cluster.local'
   ensure_hosts '127.0.0.1' 'email.svc.cluster.local'
   ensure_hosts '127.0.0.1' 'argu.svc.cluster.local'
-  ensure_hosts '127.0.0.1' 'cache.svc.cluster.local'
+  ensure_hosts '127.0.0.1' 'frontend.svc.cluster.local'
 }
 
 setup_path() {

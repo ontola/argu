@@ -11,7 +11,7 @@ before_script:
   - sudo sh -c "echo '127.0.0.1 app.argu.localtest' >> /etc/hosts"
   - sudo sh -c "echo '127.0.0.1 argu.localtest' >> /etc/hosts"
   - sudo sh -c "echo '127.0.0.1 demogemeente.localdev' >> /etc/hosts"
-  - sudo sh -c "echo '127.0.0.1 cache.svc.cluster.local' >> /etc/hosts"
+  - sudo sh -c "echo '127.0.0.1 frontend.svc.cluster.local' >> /etc/hosts"
   - echo "" > ./.env.dev
   - echo DEFAULT_LOCALE=en >> ./.env.template
   - sed -i "s/{bugsnag_key}/$BUGSNAG_KEY/g" ./.env.template
@@ -44,7 +44,7 @@ test:
     - docker-compose up -d postgres elastic devproxy
     - docker-compose up -d rabbitmq mailcatcher redis
     - RAILS_ENV=$RAILS_ENV docker-compose up -d argu argu_worker
-    - RAILS_ENV=$RAILS_ENV docker-compose up -d token token_worker frontend email email_subscriber email_worker cache
+    - RAILS_ENV=$RAILS_ENV docker-compose up -d token token_worker frontend email email_subscriber email_worker
     - docker-compose run --rm testrunner bundle exec rake test:initialize_db
     - docker restart devproxy_argu_1
     - ./restart.sh devproxy || true
@@ -64,8 +64,8 @@ test:
     - docker cp testrunner:/usr/src/app/tmp/exceptions $CI_PROJECT_DIR/test-results/exceptions || true
     - docker ps --no-trunc -a > $CI_PROJECT_DIR/test-results/docker-ps.txt || true
     - docker-compose logs > $CI_PROJECT_DIR/test-results/docker-compose-logs.txt || true
-    - 'curl -H "Host: argu.localtest" -f http://localhost:3030/link-lib/cache/status > cache_health.txt || true'
-    - 'curl -H "Host: argu.localtest" -f http://localhost:3030/d/health > libro_health.txt || true'
+    - 'curl -H "Host: argu.localtest" -f http://localhost:3080/link-lib/cache/status > cache_health.txt || true'
+    - 'curl -H "Host: argu.localtest" -f http://localhost:3080/d/health > libro_health.txt || true'
     - ls -la $CI_PROJECT_DIR/test-results
   artifacts:
     paths:

@@ -2,5 +2,4 @@
 # uncomment them here and make sure the ports match
 
 # argu: 3000
-# frontend: 3001
-# cache: 3030
+# frontend: 3080
