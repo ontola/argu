@@ -157,6 +157,7 @@ install_compose
 if [ ! -f ./setup.sh ]; then
   cd $DEV_HOME/bitbucket.org/arguweb/devproxy
 fi
+./setup_certificate.sh
 ./dev.sh
 # done?
 echo "done?"

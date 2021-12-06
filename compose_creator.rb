@@ -77,7 +77,7 @@ END_HEREDOC
         'ports' => opts[:ports],
         'expose' => opts[:port],
         'extra_hosts' => [
-          "elastic:#{ENV['HOST_IP'] || ENV['IP']}"
+          "elastic:${HOST_IP:-host-gateway}"
         ],
         'restart' => opts[:restart]
       }.compact

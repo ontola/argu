@@ -1,21 +1,6 @@
 #!/bin/bash
 
-if [[ "$OSTYPE" == "darwin"* ]]; then
-  IP=$(ifconfig | awk '/broadcast/' | awk '/inet /{print $2}' | head -n 1)
-# elif [[ "$OSTYPE" == "win32" ]]; then
-  echo "Windows not yet implemented (so ticket+PR)"
-  # TODO
-else
-  IP=$(hostname -I | awk -F" " '{print $1}')
-fi
-
-NGINXIP=$(head -1 ./nginx.conf 2>/dev/null | tr -d '# ')
-
-echo "IP: $IP"
-echo "NGINX IP: $NGINXIP"
 ELASTICSEARCH_URL=${ELASTICSEARCH_URL:-http://elastic:9200}
-
-IP=$IP ENV=$ENV ./setup_environment.rb
 
 # Set postgres vars once
 PG_USERNAME=$(openssl rand -hex 32)
@@ -62,10 +47,4 @@ if [ ! -f ./.env.test ]; then
     write_env test;
 fi
 
-# Exit if script if host IP matches nginx config IP
-if [ $IP = $NGINXIP ]; then
-  echo "Host IP matches the IP configured in nginx.conf, skipping certs creation."
-  exit 0
-fi
-
-./setup_certificate.sh
+ENV=$ENV ./setup_environment.rb

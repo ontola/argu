@@ -40,11 +40,10 @@ end
 # Create nginx.conf
 File.open(File.expand_path('nginx.template.conf')) do |source_file|
   contents = source_file.read
-  contents.gsub!(/\{your_local_ip\}/, ENV['IP'])
   SERVICES.each do |service, opts|
     location =
       if local_ports.key?(service.to_s)
-        "#{ENV['IP']}:#{local_ports[service.to_s]}"
+        "host.docker.internal:#{local_ports[service.to_s]}"
       else
         "#{service.to_s.dasherize}.svc.cluster.local:#{opts[:port] || 2999}"
       end

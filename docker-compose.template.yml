@@ -9,6 +9,8 @@ services:{testrunner}
       - 443:443
       - 80:80
       - 2999:2999
+    extra_hosts:
+      - host.docker.internal:${HOST_IP:-host-gateway}
     networks:
       default:
         aliases:

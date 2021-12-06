@@ -2,6 +2,7 @@ image: circleci/buildpack-deps:bionic-curl-dind
 
 variables:
   DOCKER_DRIVER: overlay2
+  HOST_IP: 172.99.0.1
 
 before_script:
   - sudo apt-get update && sudo apt-get -y install ruby postgresql-client
@@ -14,8 +15,8 @@ before_script:
   - echo "" > ./.env.dev
   - echo DEFAULT_LOCALE=en >> ./.env.template
   - sed -i "s/{bugsnag_key}/$BUGSNAG_KEY/g" ./.env.template
-  - BACKEND_HOST=argu:3000 ./setup.sh
-  - TESTRUNNER=true IP=127.0.0.1 HOST_IP=172.99.0.1 ENV=test ./setup_environment.rb
+  - ./setup_certificate.sh
+  - BACKEND_HOST=argu:3000 TESTRUNNER=true ENV=test ./setup.sh
   - sudo chown -R $(whoami):$(whoami) ./ssl
   - "[[ $CI_COMMIT_BRANCH = master ]] && RAILS_ENV=production || RAILS_ENV=staging"
   - docker create -v /cfg --name certdata alpine:3.4 /bin/true
