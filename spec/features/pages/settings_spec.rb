@@ -38,7 +38,7 @@ RSpec.describe 'Page settings', type: :feature do
         fill_in field_name('http://schema.org/name'), with: 'New Forum'
         fill_in field_name('https://argu.co/ns/core#shortname'), with: 'new_forum'
         wait_until_loaded
-        click_button 'Grants'
+        add_child_to_form('https://argu.co/ns/core#grants')
         wait_until_loaded
         fill_in_select(
           field_name('https://argu.co/ns/core#grants', 0, 'https://argu.co/ns/core#group'),

@@ -1,6 +1,12 @@
 # frozen_string_literal: true
 
 module Selectors
+  def add_child_to_form(field)
+    within resource_selector(field) do
+      click_button 'Add'
+    end
+  end
+
   def application_menu
     wait_for { page }.to have_css('.AppMenu')
     page.find('.AppMenu')

@@ -80,7 +80,7 @@ RSpec.describe 'Discussions', type: :feature do
 
       expect_form('/argu/q/freetown_question/m')
       wait_until_loaded
-      fill_in_form(submit: 'save')
+      fill_in_form(submit: 'save', omniform: true)
     end
     expect_published_message('Idea')
     wait_for { page }.to have_content(title)
@@ -144,7 +144,7 @@ RSpec.describe 'Discussions', type: :feature do
     as 'staff@example.com', location: '/argu/m/freetown_motion'
     go_to_menu_item('Edit')
     expect_form('/argu/m/freetown_motion', advanced: true)
-    click_button 'Attachments'
+    add_child_to_form('https://argu.co/ns/core#attachments')
     within 'fieldset[property="https://argu.co/ns/core#attachments"]' do
       click_button 'On the internet'
       fill_in(
@@ -165,12 +165,20 @@ RSpec.describe 'Discussions', type: :feature do
 
   private
 
-  def fill_in_form(actor: 'user_name_26', submit: 'Save')
+  def fill_in_form(actor: 'user_name_26', submit: 'Save', omniform: false)
     fill_in field_name('http://schema.org/name'), with: title, fill_options: {clear: :backspace}
     fill_in_markdown field_name('http://schema.org/text'), with: content
-    click_button 'Cover photo'
+    if omniform
+      click_button 'Cover photo'
+    else
+      add_child_to_form('https://ns.ontola.io/core#coverPhoto')
+    end
     select_cover_photo
-    click_button 'Attachments'
+    if omniform
+      click_button 'Attachments'
+    else
+      add_child_to_form('https://argu.co/ns/core#attachments')
+    end
     select_attachment
     wait_until_loaded
 
