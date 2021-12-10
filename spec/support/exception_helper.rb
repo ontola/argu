@@ -68,7 +68,7 @@ module ExceptionHelper
   def upload_exception_file(content, example, suffix)
     filename = [exception_file_dir, example_filename(example, suffix)].join('/')
     FileUtils.mkdir_p(filename.split('/')[0...-1].join('/'))
-    File.open(filename, 'w') { |f| f.write(content) }
+    File.open(filename, 'w', encoding: 'ascii-8bit') { |f| f.write(content) }
   end
 
   def exception_file_dir
