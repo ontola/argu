@@ -200,7 +200,7 @@ RSpec.describe 'Voting', type: :feature do
   end
 
   def expect_voted(side: 'yes', count: nil)
-    button_css = ".Button--variant-#{side}.Button--active"
+    button_css = "[title=\"#{button_label(side)}\"][aria-pressed=true]"
     wait_for { page }.to have_css button_css
     wait_until_loaded
 
@@ -210,6 +210,15 @@ RSpec.describe 'Voting', type: :feature do
       expect(page).not_to have_selector(button_css, text: /\(/)
     else
       expect(page).to have_selector(button_css, text: /\(#{expected_count}\)/)
+    end
+  end
+
+  def button_label(side)
+    case side
+    when 'yes'
+      'Click to vote for this idea'
+    when 'no'
+      'Click to vote against this idea'
     end
   end
 end

@@ -2,9 +2,7 @@
 
 module Selectors
   def add_child_to_form(field)
-    within resource_selector(field) do
-      click_button 'Add'
-    end
+    click_button field
   end
 
   def application_menu
@@ -36,12 +34,10 @@ module Selectors
     found.find(element)
   end
 
-  def details_bar(parent: resource_selector(page.current_url, element: '.CID-Card'))
-    within(parent) do
-      wait_for { page }.to have_css(test_selector('DetailsBar'))
+  def details_bar
+    wait_for { page }.to have_css(test_selector('DetailsBar'))
 
-      page.find(test_selector('DetailsBar'))
-    end
+    page.find(test_selector('DetailsBar'))
   end
 
   def navbar_tabs(element = nil)
@@ -71,5 +67,9 @@ module Selectors
 
   def test_selector(selector)
     "[data-test='#{selector}']"
+  end
+
+  def test_id_selector(selector)
+    "[data-testid='#{selector}']"
   end
 end

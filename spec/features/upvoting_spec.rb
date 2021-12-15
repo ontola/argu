@@ -62,8 +62,8 @@ RSpec.describe 'Upvoting', type: :feature do
   private
 
   def upvote(success: true)
-    wait_for { page }.to have_content 'Upvote'
-    click_button 'Upvote'
+    wait_for { page }.to have_css 'button[title=Upvote]'
+    find('button[title=Upvote]').click
     return unless success
 
     wait_for { page }.to have_snackbar 'Thanks for your vote!'
@@ -72,8 +72,8 @@ RSpec.describe 'Upvoting', type: :feature do
   end
 
   def downvote(success: true)
-    wait_for { page }.to have_content 'Upvote'
-    click_button 'Upvote'
+    wait_for { page }.to have_css 'button[title=Upvote]'
+    find('button[title=Upvote]').click
     return unless success
 
     wait_for { page }.to have_snackbar 'Vote deleted successfully'
@@ -82,13 +82,21 @@ RSpec.describe 'Upvoting', type: :feature do
   end
 
   def expect_voted
-    wait_for { page }.to have_css '.Button--variant-yes.Button--active'
-    expect(page).to have_content "Upvote#{expected_count > 0 ? " (#{expected_count})" : ''}"
+    within resource_selector("#{page.current_url}/pros", element: 'div.Collection') do
+      wait_for { page }.to have_css 'button[aria-pressed=true][title=Upvote]'
+      within find('button[aria-pressed=true][title=Upvote]') do
+        expect(page).to have_content expected_count
+      end
+    end
   end
 
   def expect_not_voted
-    wait_for { page }.not_to have_css '.Button--variant-yes.Button--active'
-    expect(page).to have_content 'Upvote (1)'
-    expect(page).not_to have_content 'Upvote (2)'
+    within resource_selector("#{page.current_url}/pros", element: 'div.Collection') do
+      wait_for { page }.not_to have_css 'button[aria-pressed=true]'
+      within find('button[title=Upvote]') do
+        expect(page).to have_content '1'
+        expect(page).not_to have_content '2'
+      end
+    end
   end
 end

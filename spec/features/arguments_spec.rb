@@ -21,9 +21,11 @@ RSpec.describe 'Arguments', type: :feature do
 
   shared_examples_for 'post argument' do
     example 'pro from card section' do
-      parent = '.FullResource div:nth-child(1) div.CID-Card'
       go_to_parent
-      fill_in_omniform(parent, click_to_open: true)
+      fill_in_omniform(
+        resource_selector("#{parent_resource}/menus/tabs#arguments"),
+        click_to_open: true
+      )
     end
   end
 
@@ -66,9 +68,11 @@ RSpec.describe 'Arguments', type: :feature do
       let(:expect_argument_content) { false }
 
       example 'pro from motion preview' do
-        parent = ".CID-Card[resource=\"#{parent_resource}\"]"
-
-        fill_in_omniform(parent, click_to_open: true)
+        fill_in_omniform(
+          resource_selector(parent_resource),
+          click_to_open: true,
+          preview: 'comment'
+        )
       end
     end
   end
@@ -90,20 +94,17 @@ RSpec.describe 'Arguments', type: :feature do
 
   private
 
-  def fill_in_omniform(omniform_parent, click_to_open: false, side: 'pro')
+  def fill_in_omniform(scope, click_to_open: false, side: 'pro', preview: nil)
     @side = side
     wait_until_loaded
-    scope =
-      resource_selector(
-        parent_resource,
-        element: omniform_parent
-      )
 
     within scope do
-      wait_for { page }.to have_content('Share a response...')
-      click_button 'Share a response...' if click_to_open
-      wait_for { page }.to have_button(@side.capitalize)
-      click_button @side.capitalize
+      wait_for { page }.to have_content("Share your #{preview || side}...")
+      click_button "Share your #{preview || side}..." if click_to_open
+      if preview
+        wait_for { page }.to have_button(@side.capitalize)
+        click_button @side.capitalize
+      end
       wait_for { page }.to have_field field_name('http://schema.org/name')
       fill_in field_name('http://schema.org/name'), with: title
       fill_in field_name('http://schema.org/text'), with: content

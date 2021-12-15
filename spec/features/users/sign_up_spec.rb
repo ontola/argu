@@ -50,7 +50,7 @@ RSpec.describe 'User sign up', type: :feature do
 
     wait_for_terms_notice
 
-    click_link 'cancel'
+    click_button 'cancel'
 
     fill_in_registration_form email
 

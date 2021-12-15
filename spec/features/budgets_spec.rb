@@ -133,7 +133,7 @@ RSpec.describe 'Budgets', type: :feature do
 
   def verify_order(user, value)
     login('staff@example.com')
-    go_to_menu_item('Orders')
+    select_tab('Orders')
     wait_until_loaded
     row = resource_selector("https://argu.localtest/argu/orders/#{next_id}", element: 'tr')
     within row do

@@ -14,7 +14,7 @@ RSpec.describe 'Disabled actions', type: :feature do
       wait_until_loaded
       state_expectation
 
-      wait_for { page }.not_to have_button('Share a response...')
+      wait_for { page }.not_to have_button('Share your comment...')
       expect(page).not_to have_css('.Omniform')
       expect(page).not_to have_css('.Omniform__preview')
       expect(page).not_to have_css('.fa-plus')

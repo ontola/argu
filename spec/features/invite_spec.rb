@@ -29,9 +29,10 @@ RSpec.describe 'Invites', type: :feature do
     fill_in field_name('https://argu.co/ns/core#emailAddresses'), with: 'invitee1@example.com invitee2@example.com '
     fill_in field_name('https://argu.co/ns/core#message'), with: 'Example body'
     fill_in field_name('https://ns.ontola.io/core#redirectUrl'), with: 'https://www.example.com'
-
-    wait_for(page).to have_link('Add group')
-    click_link('Add group')
+    within resource_selector('https://argu.co/ns/core#groupId') do
+      wait_for { page }.to have_css('.fa-plus')
+      find('.fa-plus').click
+    end
     wait_for(page).to have_content('Name singular')
     within_dialog do
       fill_in field_name('http://schema.org/name'), with: 'people'

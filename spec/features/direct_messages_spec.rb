@@ -24,8 +24,10 @@ RSpec.describe 'Direct messages', type: :feature do
     as 'staff@example.com', location: '/argu/m/freetown_motion'
     go_to_menu_item('Contact poster')
     wait_for { page }.to have_content('Send an e-mail to user_name_34')
-    wait_for { page }.to have_link('New email address')
-    click_link('New email address')
+    within resource_selector('http://schema.org/email') do
+      wait_for { page }.to have_css('.fa-plus')
+      find('.fa-plus').click
+    end
     wait_until_loaded
     within('.MuiDialog-paper') do
       fill_in field_name('http://schema.org/email'), with: new_email

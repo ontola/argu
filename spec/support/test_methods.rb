@@ -188,8 +188,8 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
   def cancel_setup
     wait_for { page }.to have_content 'Welcome!'
     within_dialog do
-      wait_for { page }.to have_link 'cancel'
-      click_link 'cancel'
+      wait_for { page }.to have_button 'cancel'
+      click_button 'cancel'
     end
     wait_for { page }.not_to have_content 'Welcome!'
   end

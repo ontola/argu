@@ -75,8 +75,8 @@ RSpec.describe 'Discussions', type: :feature do
     scope = resource_selector(page.current_url, element: '.FullResource div:nth-child(1) div.CID-Card')
 
     within scope do
-      wait_for { page }.to have_content('Share a response...')
-      click_button 'Share a response...'
+      wait_for { page }.to have_content('Share your idea...')
+      click_button 'Share your idea...'
 
       expect_form('/argu/q/freetown_question/m')
       wait_until_loaded
@@ -124,7 +124,7 @@ RSpec.describe 'Discussions', type: :feature do
 
   example 'staff updates a question' do
     as 'staff@example.com', location: '/argu/q/freetown_question'
-    go_to_menu_item('Edit')
+    select_tab('Edit')
     expect_form('/argu/q/freetown_question', advanced: true)
     fill_in_form(actor: false)
     expect_updated_message('Challenge')
@@ -133,7 +133,7 @@ RSpec.describe 'Discussions', type: :feature do
 
   example 'staff updates a motion' do
     as 'staff@example.com', location: '/argu/m/freetown_motion'
-    go_to_menu_item('Edit')
+    select_tab('Edit')
     expect_form('/argu/m/freetown_motion', advanced: true)
     fill_in_form(actor: false)
     expect_updated_message('Idea')
@@ -142,9 +142,9 @@ RSpec.describe 'Discussions', type: :feature do
 
   example 'staff updates a motion with movie attachment' do
     as 'staff@example.com', location: '/argu/m/freetown_motion'
-    go_to_menu_item('Edit')
+    select_tab('Edit')
     expect_form('/argu/m/freetown_motion', advanced: true)
-    add_child_to_form('https://argu.co/ns/core#attachments')
+    add_child_to_form('Attachments')
     within 'fieldset[property="https://argu.co/ns/core#attachments"]' do
       click_button 'On the internet'
       fill_in(
@@ -154,10 +154,8 @@ RSpec.describe 'Discussions', type: :feature do
     end
     click_button 'Save'
     expect_updated_message('Idea')
-    resource_selector(
-      'https://argu.localtest/argu/m/freetown_motion/attachments',
-      child: test_selector('ImageAttachmentPreview')
-    ).click
+    wait_for { page }.to have_css(test_selector('ImageAttachmentPreview'))
+    find(test_selector('ImageAttachmentPreview')).click
     wait_for(page).to have_css('iframe[src="//www.youtube.com/embed/mxQZNodm8OI"]')
   end
 
@@ -171,13 +169,13 @@ RSpec.describe 'Discussions', type: :feature do
     if omniform
       click_button 'Cover photo'
     else
-      add_child_to_form('https://ns.ontola.io/core#coverPhoto')
+      add_child_to_form('Cover photo')
     end
     select_cover_photo
     if omniform
       click_button 'Attachments'
     else
-      add_child_to_form('https://argu.co/ns/core#attachments')
+      add_child_to_form('Attachments')
     end
     select_attachment
     wait_until_loaded
@@ -193,13 +191,8 @@ RSpec.describe 'Discussions', type: :feature do
   def expect_content(path, creator: 'user_name_26', images: true)
     wait_for { page }.to have_content(title)
     expect(page).to have_content(content)
-    if images
-      resource_selector(
-        "https://argu.localtest/argu/#{path}/attachments",
-        child: test_selector('ImageAttachmentPreview')
-      )
-    end
-    expect(page).to have_css('.CoverImage__wrapper') if images
+    wait_for { page }.to have_css(test_selector('ImageAttachmentPreview')) if images
+    expect(page).to have_css(test_id_selector('CoverPhoto')) if images
     expect(page).to have_current_path("/argu/#{path}")
     expect(details_bar).to have_content(creator)
   end
