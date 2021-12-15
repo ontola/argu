@@ -70,7 +70,8 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
 
       expect(response.status).to eq(200)
 
-      cookies.each do |cookie|
+      login_cookies = HTTP::CookieJar.new.parse(response.headers['set-cookie'], 'https://argu.localtest')
+      (cookies + login_cookies).each do |cookie|
         page.driver.browser.manage.add_cookie(name: cookie.name, value: cookie.value)
       end
     end
