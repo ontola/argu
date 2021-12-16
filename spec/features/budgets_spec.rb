@@ -10,6 +10,7 @@ RSpec.describe 'Budgets', type: :feature do
   example 'Create budget and add offers' do
     as 'staff@example.com', location: '/argu/freetown'
     wait_until_loaded
+    find('h2', text: 'Topics').click
     wait_for { page }.to have_css('.ContainerFloat .fa-plus')
     find('.ContainerFloat .fa-plus').click
     wait_until_loaded
@@ -20,6 +21,7 @@ RSpec.describe 'Budgets', type: :feature do
     expect_draft_message('Budget')
     expect_budget_content
     wait_until_loaded
+    find('h2', text: 'Options').click
     within resource_selector("https://argu.localtest/argu/budgets/#{next_id}/offers", element: '.ContainerFloat') do
       find('.fa-plus').click
     end

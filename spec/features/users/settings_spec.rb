@@ -76,6 +76,7 @@ RSpec.describe 'User settings', type: :feature do
       visit_settings
       expect_email_row(1, 'user1@example.com', true, true)
       wait_until_loaded
+      find('h2', text: 'Email addresses').click
       resource_selector(
         'https://argu.localtest/argu/email_addresses?display=settingsTable',
         element: '.ContainerFloat',

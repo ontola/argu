@@ -8,6 +8,7 @@ RSpec.describe 'Token email management', type: :feature do
     select_tab('Invite by email')
 
     wait_for { page }.to have_content 'Email invites'
+    find('h2', text: 'Email invites').click
 
     resource_selector(
       'https://argu.localtest/argu/tokens/g/111/email?display=settingsTable',

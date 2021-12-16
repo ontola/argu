@@ -24,6 +24,8 @@ RSpec.describe 'Page settings', type: :feature do
       wait_for(components_row(1)).to have_content('Holland')
       wait_for(components_row(2)).to have_content('Freetown')
 
+      find('h2', text: 'Components').click
+
       resource_selector(
         'https://argu.localtest/argu/container_nodes?display=settingsTable',
         element: '.ContainerFloat',
@@ -101,6 +103,8 @@ RSpec.describe 'Page settings', type: :feature do
       visit_settings
       wait_for { page }.to have_content 'Redirects'
       wait_for(shortnames_row(1)).to have_content('No items yet')
+
+      find('h2', text: 'Redirects').click
 
       resource_selector(
         'https://argu.localtest/argu/shortnames?display=settingsTable',
