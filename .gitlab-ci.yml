@@ -7,7 +7,7 @@ variables:
 before_script:
   - sudo apt-get update && sudo apt-get -y install ruby postgresql-client
   - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" "$CI_REGISTRY" --password-stdin
-  - sudo gem install activesupport
+  - sudo gem install activesupport -v 6.1.4.4
   - sudo sh -c "echo '127.0.0.1 app.argu.localtest' >> /etc/hosts"
   - sudo sh -c "echo '127.0.0.1 argu.localtest' >> /etc/hosts"
   - sudo sh -c "echo '127.0.0.1 demogemeente.localdev' >> /etc/hosts"
