@@ -72,16 +72,12 @@ RSpec.describe 'Discussions', type: :feature do
 
   example 'Member posts a motion from omniform' do
     as 'member@example.com', location: '/argu/q/freetown_question'
-    scope = resource_selector(page.current_url, element: '.FullResource div:nth-child(1) div.CID-Card')
+    wait_for { page }.to have_content('Share your idea...')
+    click_button 'Share your idea...'
 
-    within scope do
-      wait_for { page }.to have_content('Share your idea...')
-      click_button 'Share your idea...'
-
-      expect_form('/argu/q/freetown_question/m')
-      wait_until_loaded
-      fill_in_form(submit: 'save', omniform: true)
-    end
+    expect_form('/argu/q/freetown_question/m')
+    wait_until_loaded
+    fill_in_form(submit: 'Publish', omniform: true)
     expect_published_message('Idea')
     wait_for { page }.to have_content(title)
     expect(page).to have_content(content)
