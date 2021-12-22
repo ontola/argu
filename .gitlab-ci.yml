@@ -36,6 +36,14 @@ ci_build:
         - ./dockerfiles/testrunner-base.Dockerfile
         - ./Gemfile.lock
 
+prometheus_build:
+  stage: ci_build
+  services:
+    - docker:18.09-dind
+  script:
+    - docker build -t $CI_REGISTRY_IMAGE:prometheus -f dockerfiles/prometheus.Dockerfile .
+    - docker push $CI_REGISTRY_IMAGE:prometheus
+
 test:
   stage: test
   services:

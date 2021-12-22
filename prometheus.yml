@@ -3,8 +3,20 @@ global:
   scrape_timeout: 5s
   evaluation_interval: 30s
 
+remote_write:
+  - url: "$PROMETHEUS_WRITE_ENDPOINT"
+    basic_auth:
+      username: "$PROMETHEUS_USERNAME"
+      password: "$PROMETHEUS_PASSWORD"
+
 scrape_configs:
   - job_name: apex
+    dns_sd_configs:
+      - type: A
+        port: 9394
+        names:
+          - argu.cloud66.local
+          - argu.svc.cluster.local
     static_configs:
       - targets:
         - "host.docker.internal:9394"
@@ -13,6 +25,13 @@ scrape_configs:
           component: server
           language: ruby
   - job_name: cache
+    metrics_path: /link-lib/cache/metrics
+    dns_sd_configs:
+      - type: A
+        port: 3030
+        names:
+          - cache.cloud66.local
+          - cache.svc.cluster.local
     static_configs:
       - targets:
         - "cache.svc.cluster.local:3080"
