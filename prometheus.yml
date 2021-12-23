@@ -16,6 +16,7 @@ scrape_configs:
         port: 9394
         names:
           - argu.cloud66.local
+          - argu_collector.cloud66.local
           - argu.svc.cluster.local
     static_configs:
       - targets:
