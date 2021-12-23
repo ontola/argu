@@ -43,6 +43,10 @@ prometheus_build:
   script:
     - docker build -t $CI_REGISTRY_IMAGE:prometheus -f dockerfiles/prometheus.Dockerfile .
     - docker push $CI_REGISTRY_IMAGE:prometheus
+  rules:
+    - changes:
+        - ./dockerfiles/prometheus.Dockerfile
+        - ./prometheus.yml
 
 test:
   stage: test
