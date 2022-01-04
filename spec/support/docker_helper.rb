@@ -138,6 +138,10 @@ END_HEREDOC
     @redis_cache_client ||= Redis.new(url: ENV['REDIS_URL'], db: 8)
   end
 
+  def redis_cache_persisted_client
+    @redis_cache_persisted_client ||= Redis.new(url: ENV['REDIS_URL'], db: 6)
+  end
+
   def redis_libro_client
     @redis_libro_client ||= Redis.new(url: ENV['REDIS_URL'], db: 0)
   end

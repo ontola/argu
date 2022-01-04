@@ -4,8 +4,8 @@ require 'spec_helper'
 
 RSpec.describe 'Navbar', type: :feature do
   it 'show freetown on homepage' do
-    redis_libro_client.set(
-      'backend.redirects.https://argu.localtest',
+    redis_cache_persisted_client.set(
+      'cache:redirect:argu.localtest',
       'https://argu.localtest/argu'
     )
     as :guest, location: '/'

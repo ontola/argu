@@ -12,8 +12,8 @@ RSpec.describe 'Redirect', type: :feature do
   end
 
   example 'cold redirect on app.' do
-    redis_apex_client.set(
-      'backend.redirects.https://app.argu.localtest/argu',
+    redis_cache_persisted_client.set(
+      'cache:redirect:app.argu.localtest/argu',
       'https://argu.localtest/argu'
     )
     visit 'https://app.argu.localtest/argu'
