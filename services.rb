@@ -6,7 +6,7 @@ SERVICES = {
   frontend: {
     manage_db: false,
     image: 'registry.gitlab.com/ontola/libro',
-    command: './bin/cache',
+    command: 'java -jar cache.jar',
     health: 'curl -H "Host: argu.localtest" -f http://localhost:3080/link-lib/cache/status',
     port: 3080,
     restart: 'unless-stopped',
