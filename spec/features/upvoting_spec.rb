@@ -82,7 +82,7 @@ RSpec.describe 'Upvoting', type: :feature do
   end
 
   def expect_voted
-    within resource_selector("#{page.current_url}/pros", element: 'div.Collection') do
+    within resource_selector("#{page.current_url}/pros", element: "#{test_id_selector('column')} > div") do
       wait_for { page }.to have_css 'button[aria-pressed=true][title=Upvote]'
       within find('button[aria-pressed=true][title=Upvote]') do
         expect(page).to have_content expected_count
@@ -91,7 +91,7 @@ RSpec.describe 'Upvoting', type: :feature do
   end
 
   def expect_not_voted
-    within resource_selector("#{page.current_url}/pros", element: 'div.Collection') do
+    within resource_selector("#{page.current_url}/pros", element: "#{test_id_selector('column')} > div") do
       wait_for { page }.not_to have_css 'button[aria-pressed=true]'
       within find('button[title=Upvote]') do
         expect(page).to have_content '1'

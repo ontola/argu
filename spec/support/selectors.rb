@@ -16,8 +16,8 @@ module Selectors
   end
 
   def count_bubble_count(element = nil)
-    wait_for { page }.to have_css('.CountBubble__number')
-    found = page.find('.CountBubble__number')
+    wait_for { page }.to have_css('[title="Click to read your notifications"]')
+    found = page.find('[title="Click to read your notifications"]')
     return found if element.nil?
 
     found.find(element)
@@ -28,7 +28,7 @@ module Selectors
   end
 
   def navbar(element = nil)
-    found = page.find('.App__container > .MuiAppBar-root')
+    found = page.find('#App__container > .MuiAppBar-root')
     return found if element.nil?
 
     found.find(element)
@@ -41,8 +41,8 @@ module Selectors
   end
 
   def navbar_tabs(element = nil)
-    wait_for { page }.to have_css('.MuiAppBar-root .NavBarContent__items')
-    found = page.find('.MuiAppBar-root .NavBarContent__items')
+    wait_for { page }.to have_css('.MuiAppBar-root .CID-NavBarContentItems')
+    found = page.find('.MuiAppBar-root .CID-NavBarContentItems')
     return found if element.nil?
 
     found.find(element)

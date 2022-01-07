@@ -28,7 +28,7 @@ RSpec.describe 'Page settings', type: :feature do
 
       resource_selector(
         'https://argu.localtest/argu/container_nodes?display=settingsTable',
-        element: '.ContainerFloat',
+        element: '.CID-ContainerFloat',
         child: '.fa-plus'
       ).click
 
@@ -108,7 +108,7 @@ RSpec.describe 'Page settings', type: :feature do
 
       resource_selector(
         'https://argu.localtest/argu/shortnames?display=settingsTable',
-        element: '.ContainerFloat',
+        element: '.CID-ContainerFloat',
         child: '.fa-plus'
       ).click
       wait_for { page }.to have_content('New redirect')
@@ -147,7 +147,7 @@ RSpec.describe 'Page settings', type: :feature do
 
   def visit_settings
     wait_for { page }.to have_content('Settings')
-    within('.NavBarContent__items') do
+    within('.CID-NavBarContentItems') do
       click_link 'Settings'
     end
     select_tab(tab) if tab

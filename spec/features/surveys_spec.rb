@@ -77,6 +77,8 @@ RSpec.describe 'Surveys', type: :feature do
   end
 
   def fill_in_survey
+    wait_until_loaded
+    wait_for { page }.to have_css('iframe[title="typeform-embed"]')
     page.within_frame(:css, 'iframe[title="typeform-embed"]') do
       wait_for { page }.to have_button('Submit')
       click_button('Submit')

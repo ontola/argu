@@ -8,11 +8,10 @@ RSpec.describe 'Notifications', type: :feature do
 
     within navbar do
       wait_for { count_bubble_count }.to have_content '5'
+      count_bubble_count.click
     end
 
-    go_to_user_page('Notifications')
-
-    expect(page).to have_content 'user_name_36 posted a challenge in Freetown'
+    wait_for { page }.to have_content 'user_name_36 posted a challenge in Freetown'
     expect(page).to have_content 'user_name_34 posted a idea in Freetown'
     expect(page).to have_content 'user_name_63 posted a thread in Freetown'
 

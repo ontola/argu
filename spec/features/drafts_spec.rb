@@ -13,7 +13,7 @@ RSpec.describe 'Drafts', type: :feature do
 
     go_to_user_page('My drafts')
 
-    wait_for { page }.to have_css('.Heading', text: 'My drafts')
+    wait_for { page }.to have_css('.CID-Heading', text: 'My drafts')
     wait_for { page }.to have_content 'Unpublished_question-title'
     wait_for { page }.to have_content 'Draft title'
     within(resource_selector('https://argu.localtest/argu/u/58/settings#drafts')) do

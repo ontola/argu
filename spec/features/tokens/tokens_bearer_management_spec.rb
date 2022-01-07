@@ -12,7 +12,7 @@ RSpec.describe 'Token bearer management', type: :feature do
 
     resource_selector(
       'https://argu.localtest/argu/tokens/g/111/bearer?display=settingsTable',
-      element: '.ContainerFloat',
+      element: '.CID-ContainerFloat',
       child: '.fa-plus'
     ).click
 

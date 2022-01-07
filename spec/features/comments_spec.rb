@@ -62,7 +62,7 @@ RSpec.describe 'Comments', type: :feature do
 
       selector = resource_selector(
         'https://argu.localtest/argu/c/nested_argument_comment',
-        element: '.Collection__Depth-1 > div > div'
+        element: '.CID-Card'
       )
       within(selector) do
         wait_for { page }.to have_link('Reply')

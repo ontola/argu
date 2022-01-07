@@ -9,7 +9,7 @@ RSpec.describe 'Discussions', type: :feature do
   example 'Hide new discussion link when not allowed' do
     self.current_tenant = 'https://argu.localtest/other_page'
     as 'member@example.com', location: '/other_page'
-    within '.NavBarContent__items' do
+    within '.CID-NavBarContentItems' do
       wait_for { page }.to have_content 'Other page forum'
       click_link 'Other page forum'
     end
@@ -105,7 +105,7 @@ RSpec.describe 'Discussions', type: :feature do
       click_link(href: '/argu/u/27')
     end
 
-    within '.Page > .FullResource' do
+    within 'main' do
       wait_for { page }.to have_content 'New user'
     end
   end

@@ -11,7 +11,7 @@ RSpec.describe 'Arguments', type: :feature do
   let(:after_post) do
     expect_argument_posted
   end
-  let(:result_element) { '.Column > div' }
+  let(:result_element) { "#{test_id_selector('column')} > div" }
   let(:parent_resource) { page.current_url }
   let(:expect_argument_content) { true }
 
@@ -63,7 +63,7 @@ RSpec.describe 'Arguments', type: :feature do
 
     context 'question#show' do
       let(:location) { '/argu/q/freetown_question' }
-      let(:result_element) { '.Column .Collection' }
+      let(:result_element) { "#{test_id_selector('column')} > div" }
       let(:parent_resource) { 'https://argu.localtest/argu/m/question_motion' }
       let(:expect_argument_content) { false }
 

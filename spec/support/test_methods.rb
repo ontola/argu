@@ -121,7 +121,7 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
 
   def login(email, password = 'password', modal: true, open_modal: true, two_fa: false)
     wait_for { page }.to have_content 'Log in / sign up'
-
+    wait_until_loaded
     page.click_link('Log in / sign up') if modal && open_modal
 
     wait_for { page }.to have_content 'Sign in or register'
@@ -138,14 +138,23 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
   def fill_in_login_form(email = 'user1@example.com', password = 'password', modal: true, two_fa: false)
     wait_for { page }.to have_content('Sign in or register')
 
-    wrapper = modal ? "[role='dialog']" : 'form.Form'
+    wait_until_loaded
+    wrapper = modal ? "[role='dialog']" : 'form[action=\'/argu/u/session\']'
+    wait_for { page }.to have_css(wrapper)
+
     within wrapper do
       wait_for { page }.to have_content('Email')
       fill_in placeholder: 'email@example.com', with: email, fill_options: {clear: :backspace}
 
       click_button 'Confirm'
+    end
 
+    wrapper = modal ? "[role='dialog']" : 'form[action=\'/argu/login\']'
+    wait_for { page }.to have_css(wrapper)
+
+    within wrapper do
       wait_for { page }.to have_content('Password')
+
       fill_in field_name('https://ns.ontola.io/core#password'), with: password
 
       click_button 'Continue'
@@ -209,7 +218,7 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
       without do
         within '.MuiAutocomplete-listbox' do
           expect(page).to have_content(selector)
-          find('.SelectItem', text: selector).click
+          find('.MuiAutocomplete-option', text: selector).click
         end
       end
     end
