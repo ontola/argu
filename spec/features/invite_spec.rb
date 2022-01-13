@@ -33,14 +33,14 @@ RSpec.describe 'Invites', type: :feature do
       wait_for { page }.to have_css('.fa-plus')
       find('.fa-plus').click
     end
-    wait_for(page).to have_content('Name singular')
+    wait_for { page }.to have_content('Name singular')
     within_dialog do
       fill_in field_name('http://schema.org/name'), with: 'people'
       fill_in field_name('https://argu.co/ns/core#nameSingular'), with: 'person'
       click_button 'Save'
     end
     wait_for { page }.to have_snackbar 'Group created successfully'
-    wait_for(page).to have_content('To which group do you want to add these people?')
+    wait_for { page }.to have_content('To which group do you want to add these people?')
     wait_until_loaded
     fill_in_select field_name('https://argu.co/ns/core#groupId'), with: 'people'
     click_button 'Save'

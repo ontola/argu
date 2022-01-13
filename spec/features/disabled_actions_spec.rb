@@ -34,7 +34,7 @@ RSpec.describe 'Disabled actions', type: :feature do
     let(:location) { '/argu/q/expired_question' }
     let(:state_expectation) { expect(page).to have_css('.fa-lock') }
     let(:vote_buttons_expectation) do
-      wait_for(page).to have_css('.Button[disabled][title="Voting no longer possible"]', count: 3)
+      wait_for { page }.to have_css('.Button[disabled][title="Voting no longer possible"]', count: 3)
     end
 
     it_behaves_like 'cannot perform actions'
@@ -50,7 +50,7 @@ RSpec.describe 'Disabled actions', type: :feature do
   context 'motion of expired question' do
     let(:location) { '/argu/m/expired_motion' }
     let(:vote_buttons_expectation) do
-      wait_for(page).to have_css('.Button[disabled][title="Voting no longer possible"]', count: 4)
+      wait_for { page }.to have_css('.Button[disabled][title="Voting no longer possible"]', count: 4)
     end
 
     it_behaves_like 'cannot perform actions'

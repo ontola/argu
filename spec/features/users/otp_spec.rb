@@ -14,7 +14,7 @@ RSpec.describe 'Otp', type: :feature do
       expect(page).not_to have_link('Disable two factor authentication')
       click_link 'Two factor authentication'
       wait_for { page }.to have_content('Install a authentication-application and scan this QR code.')
-      wait_for(page).not_to have_content('Disable two factor authentication')
+      wait_for { page }.not_to have_content('Disable two factor authentication')
       otp = var_from_rails_console('EmailAddress.find_by(email: \'user1@example.com\').user.otp_secret.otp_code')
 
       fill_in field_name('https://argu.co/ns/core#otp'), with: otp, fill_options: {clear: :backspace}
@@ -31,7 +31,7 @@ RSpec.describe 'Otp', type: :feature do
       wait_for { page }.to have_link('Two factor authentication')
       expect(page).not_to have_link('Disable two factor authentication')
       click_link 'Two factor authentication'
-      wait_for(page).to have_content('Install a authentication-application and scan this QR code.')
+      wait_for { page }.to have_content('Install a authentication-application and scan this QR code.')
       fill_in field_name('https://argu.co/ns/core#otp'), with: '123456', fill_options: {clear: :backspace}
       click_button 'Continue'
       wait_for { page }.to have_content 'The authentication code is incorrect.'
@@ -48,8 +48,8 @@ RSpec.describe 'Otp', type: :feature do
       wait_for { page }.to have_link('Disable two factor authentication')
       expect(page).not_to have_link('Two factor authentication')
       click_link 'Disable two factor authentication'
-      wait_for(page).not_to have_content('Install a authentication-application and scan this QR code.')
-      wait_for(page).to have_content('Disable two factor authentication')
+      wait_for { page }.not_to have_content('Install a authentication-application and scan this QR code.')
+      wait_for { page }.to have_content('Disable two factor authentication')
 
       click_button 'Confirm'
       wait_until_loaded

@@ -9,7 +9,7 @@ RSpec.describe 'Drafts', type: :feature do
     fill_in field_name('http://schema.org/name'), with: 'Draft title'
     fill_in_markdown field_name('http://schema.org/text'), with: 'Draft content'
     click_button 'Save'
-    wait_for(page).to have_content('Draft version, not yet published.')
+    wait_for { page }.to have_content('Draft version, not yet published.')
 
     go_to_user_page('My drafts')
 

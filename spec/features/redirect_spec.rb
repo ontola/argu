@@ -8,7 +8,7 @@ RSpec.describe 'Redirect', type: :feature do
 
   example 'cold redirect of wrong type' do
     as :guest, location: location
-    wait_for(page.current_url).to include(redirect_location)
+    wait_for { page.current_url }.to include(redirect_location)
   end
 
   example 'cold redirect on app.' do
@@ -17,6 +17,6 @@ RSpec.describe 'Redirect', type: :feature do
       'https://argu.localtest/argu'
     )
     visit 'https://app.argu.localtest/argu'
-    wait_for(page.current_url).to include('https://argu.localtest/argu')
+    wait_for { page.current_url }.to include('https://argu.localtest/argu')
   end
 end

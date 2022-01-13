@@ -152,7 +152,7 @@ RSpec.describe 'Discussions', type: :feature do
     expect_updated_message('Idea')
     wait_for { page }.to have_css(test_selector('ImageAttachmentPreview'))
     find(test_selector('ImageAttachmentPreview')).click
-    wait_for(page).to have_css('iframe[src="//www.youtube.com/embed/mxQZNodm8OI"]')
+    wait_for { page }.to have_css('iframe[src="//www.youtube.com/embed/mxQZNodm8OI"]')
   end
 
   # @todo spec for showing inline errors [core#370]

@@ -21,8 +21,8 @@ RSpec.describe 'Page settings', type: :feature do
       as 'staff@example.com'
       visit_settings
       wait_for { page }.to have_content 'Components'
-      wait_for(components_row(1)).to have_content('Holland')
-      wait_for(components_row(2)).to have_content('Freetown')
+      wait_for { components_row(1) }.to have_content('Holland')
+      wait_for { components_row(2) }.to have_content('Freetown')
 
       find('h2', text: 'Components').click
 
@@ -102,7 +102,7 @@ RSpec.describe 'Page settings', type: :feature do
       as 'staff@example.com'
       visit_settings
       wait_for { page }.to have_content 'Redirects'
-      wait_for(shortnames_row(1)).to have_content('No items yet')
+      wait_for { shortnames_row(1) }.to have_content('No items yet')
 
       find('h2', text: 'Redirects').click
 
@@ -111,14 +111,14 @@ RSpec.describe 'Page settings', type: :feature do
         element: '.ContainerFloat',
         child: '.fa-plus'
       ).click
-      wait_for(page).to have_content('New redirect')
+      wait_for { page }.to have_content('New redirect')
       fill_in field_name('https://argu.co/ns/core#shortname'), with: 'question66'
       fill_in field_name('https://argu.co/ns/core#destination'), with: 'https://argu.localtest/argu/q/expired_question'
       click_button('Save')
-      wait_for(page).to have_content('Expired_question-title')
+      wait_for { page }.to have_content('Expired_question-title')
       visit 'https://argu.localtest/argu/question66'
-      wait_for(page).to have_current_path('/argu/q/expired_question')
-      wait_for(page).to have_content('Expired_question-title')
+      wait_for { page }.to have_current_path('/argu/q/expired_question')
+      wait_for { page }.to have_content('Expired_question-title')
     end
   end
 

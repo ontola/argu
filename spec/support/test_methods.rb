@@ -140,12 +140,12 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
 
     wrapper = modal ? "[role='dialog']" : 'form.Form'
     within wrapper do
-      wait_for(page).to have_content('Email')
+      wait_for { page }.to have_content('Email')
       fill_in placeholder: 'email@example.com', with: email, fill_options: {clear: :backspace}
 
       click_button 'Confirm'
 
-      wait_for(page).to have_content('Password')
+      wait_for { page }.to have_content('Password')
       fill_in field_name('https://ns.ontola.io/core#password'), with: password
 
       click_button 'Continue'

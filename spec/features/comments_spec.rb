@@ -65,7 +65,7 @@ RSpec.describe 'Comments', type: :feature do
         element: '.Collection__Depth-1 > div > div'
       )
       within(selector) do
-        wait_for(page).to have_link('Reply')
+        wait_for { page }.to have_link('Reply')
         click_link('Reply')
         expect_form('/argu/c/nested_argument_comment/c')
         fill_in field_name('http://schema.org/text'), with: 'Nested comment'
@@ -76,7 +76,7 @@ RSpec.describe 'Comments', type: :feature do
       wait_for { page }.to have_content('Show 1 additional replies...')
       expect(page).not_to have_content('Nested comment')
       click_link('Show 1 additional replies...')
-      wait_for(page).to have_content('Nested comment')
+      wait_for { page }.to have_content('Nested comment')
     end
   end
 
