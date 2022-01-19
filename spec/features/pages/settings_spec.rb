@@ -146,10 +146,10 @@ RSpec.describe 'Page settings', type: :feature do
   end
 
   def visit_settings
-    wait_for { page }.to have_content('Settings')
-    within('.CID-NavBarContentItems') do
-      click_link 'Settings'
-    end
+    wait_for { page }.to have_button('Manage')
+    click_button 'Manage'
+    wait_for { page }.to have_link('Settings')
+    click_link 'Settings'
     select_tab(tab) if tab
   end
 end
