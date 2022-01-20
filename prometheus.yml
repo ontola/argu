@@ -31,12 +31,12 @@ scrape_configs:
       - type: A
         port: 3030
         names:
-          - cache.cloud66.local
-          - cache.svc.cluster.local
+          - frontend.cloud66.local
+          - frontend.svc.cluster.local
     static_configs:
       - targets:
-        - "cache.svc.cluster.local:3080"
+        - "frontend.svc.cluster.local:3080"
         labels:
-          service: cache
+          service: frontend
           component: server
           language: kotlin
