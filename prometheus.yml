@@ -29,7 +29,7 @@ scrape_configs:
     metrics_path: /link-lib/cache/metrics
     dns_sd_configs:
       - type: A
-        port: 3030
+        port: 3080
         names:
           - frontend.cloud66.local
           - frontend.svc.cluster.local
