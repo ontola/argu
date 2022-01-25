@@ -53,7 +53,7 @@ RSpec.describe 'User settings', type: :feature do
 
     example 'as user' do
       as 'user23@example.com'
-      visit_settings
+      visit_settings(user: 'user_name_24')
       wait_for { page }.to have_link 'Remove account'
       click_link 'Remove account'
       fill_in_form(submit: 'Delete')
@@ -147,8 +147,8 @@ RSpec.describe 'User settings', type: :feature do
     # @todo fill in fields, press save and reload page to see if values are persisted.
   end
 
-  def visit_settings
-    go_to_user_page(tab)
+  def visit_settings(user: 'user_name_2')
+    go_to_user_page(tab: tab, user: user)
 
     return unless form_group
 

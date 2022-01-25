@@ -15,7 +15,7 @@ RSpec.describe 'Not found', type: :feature do
     wait_for { page }.to have_content('Hidden_question-title')
     wait_for { page }.not_to have_content('This item is hidden')
     wait_for { page }.not_to have_button('Log in')
-    logout
+    logout(user: 'argu_owner')
     wait_for { page }.to have_content('This item is hidden')
     wait_for { page }.to have_button('Log in')
     wait_for { page }.not_to have_content('Hidden_question-title')

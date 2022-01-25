@@ -100,14 +100,7 @@ RSpec.describe 'Discussions', type: :feature do
     expect_draft_message('Idea')
     expect_content("m/#{next_id}", creator: 'New user')
 
-    within navbar do
-      within resource_selector('https://argu.localtest/argu/c_a') do
-        expect(page).to have_button
-        click_button
-      end
-    end
-    expect(page).to have_link('Profile')
-    click_link('Profile')
+    click_user_menu_button('Profile', user: 'New user')
 
     within 'main' do
       wait_for { page }.to have_content 'New user'

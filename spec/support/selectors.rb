@@ -10,11 +10,6 @@ module Selectors
     page.find('.AppMenu')
   end
 
-  def application_menu_button
-    wait_for { page }.to have_button(text: 'Menu')
-    page.find(:button, text: 'Menu')
-  end
-
   def count_bubble_count(element = nil)
     wait_for { page }.to have_css('[title="Click to read your notifications"]')
     found = page.find('[title="Click to read your notifications"]')

@@ -44,7 +44,7 @@ RSpec.describe 'Otp', type: :feature do
     example 'removes 2fa' do
       login '2fa@example.com', 'password', two_fa: true
 
-      visit_settings
+      visit_settings(user: 'user_name_77')
       wait_for { page }.to have_link('Disable two factor authentication')
       expect(page).not_to have_link('Two factor authentication')
       click_link 'Disable two factor authentication'
@@ -53,7 +53,7 @@ RSpec.describe 'Otp', type: :feature do
 
       click_button 'Confirm'
       wait_until_loaded
-      visit_settings
+      visit_settings(user: 'user_name_77')
 
       wait_for { page }.to have_link('Two factor authentication')
       expect(page).not_to have_link('Disable two factor authentication')
@@ -62,8 +62,8 @@ RSpec.describe 'Otp', type: :feature do
 
   private
 
-  def visit_settings
-    go_to_user_page('Settings')
+  def visit_settings(user: 'user_name_2')
+    go_to_user_page(tab: 'Settings', user: user)
 
     wait_for { page }.to have_content form_group
     expand_form_group form_group

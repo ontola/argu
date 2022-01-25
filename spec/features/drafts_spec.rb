@@ -11,7 +11,7 @@ RSpec.describe 'Drafts', type: :feature do
     click_button 'Save'
     wait_for { page }.to have_content('Draft version, not yet published.')
 
-    go_to_user_page('My drafts')
+    go_to_user_page(tab: 'My drafts', user: 'user_name_57')
 
     wait_for { page }.to have_css('.CID-Heading', text: 'My drafts')
     wait_for { page }.to have_content 'Unpublished_question-title'

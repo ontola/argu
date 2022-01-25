@@ -79,14 +79,17 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
     visit "https://argu.localtest#{location}"
   end
 
-  def click_application_menu_button(button)
-    application_menu_button.click
-    wait_until_loaded
-    wait_for { page }.to have_css '.AppMenu'
-    wait_for { application_menu }.to have_content button
-    sleep 1
-    within application_menu do
-      click_link button
+  def click_user_menu_button(button, user: 'user_name_2')
+    within navbar do
+      within resource_selector('https://argu.localtest/argu/c_a') do
+        expect(page).to have_button
+        find(:button, title: user).click(x: 1, y: 1)
+      end
+    end
+    expect(page).to have_css('.AppMenu')
+    within '.AppMenu' do
+      expect(page).to have_link(button)
+      click_link(button)
     end
   end
 
@@ -131,8 +134,8 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
     verify_logged_in
   end
 
-  def logout
-    click_application_menu_button('Sign out')
+  def logout(user: 'user_name_2')
+    click_user_menu_button('Sign out', user: user)
   end
 
   def fill_in_login_form(email = 'user1@example.com', password = 'password', modal: true, two_fa: false)
@@ -239,12 +242,10 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
     118
   end
 
-  def go_to_user_page(tab = nil)
+  def go_to_user_page(tab: nil, user: 'user_name_2')
     wait_until_loaded
 
-    within(resource_selector("#{current_tenant}/c_a")) do
-      find('.MuiButton-root').click
-    end
+    click_user_menu_button('Settings', user: user)
 
     return if tab.nil?
 

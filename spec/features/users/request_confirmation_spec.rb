@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe 'User request confirmation', type: :feature do
   context 'unconfirmed@example.com' do
     let(:email) { 'unconfirmed@example.com' }
+    let(:user_name) { 'user_name_1' }
 
     example 'guest requests confirmation of unconfirmed email' do
       as(:guest, location: '/argu/u/confirmation/new')
@@ -53,7 +54,7 @@ RSpec.describe 'User request confirmation', type: :feature do
       wait_for { page }.to(
         have_snackbar("You'll receive a mail containing instructions to confirm your account within a few minutes.")
       )
-      logout
+      logout(user: user_name)
       verify_not_logged_in
 
       expect_email(:confirmation_email)
@@ -78,6 +79,7 @@ RSpec.describe 'User request confirmation', type: :feature do
 
   context 'user1@example.com' do
     let(:email) { 'user1@example.com' }
+    let(:user_name) { 'user_name_2' }
 
     example 'guest requests confirmation of confirmed email' do
       as(:guest, location: '/argu/u/confirmation/new')
@@ -135,7 +137,7 @@ RSpec.describe 'User request confirmation', type: :feature do
     # @todo snackbars are shown, but the page is instantly reloaded.
     # wait_for { page }.to(have_snackbar('Your account has been confirmed.'))
 
-    go_to_user_page('Settings')
+    go_to_user_page(tab: 'Settings', user: user_name)
 
     wait_for { page }.to have_content 'Email addresses'
     expand_form_group 'Email addresses'

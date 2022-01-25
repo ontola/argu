@@ -89,7 +89,7 @@ RSpec.describe 'Voting', type: :feature do
           within navbar do
             wait_for { count_bubble_count }.to have_content '1'
           end
-          go_to_user_page('Notifications')
+          go_to_user_page(tab: 'Notifications', user: 'New user')
           wait_for { page }.to(
             have_content("Please confirm your vote by clicking the link we've sent to new_user@example.com")
           )
@@ -102,7 +102,7 @@ RSpec.describe 'Voting', type: :feature do
           fill_in field_name('https://ns.ontola.io/core#passwordConfirmation'), with: 'new password'
           click_button 'Save'
           wait_for { page }.to have_snackbar('Your password has been updated successfully.')
-          logout
+          logout(user: 'New user')
           login('new_user@example.com', 'new password')
           visit location
         end

@@ -16,7 +16,7 @@ RSpec.describe 'User sign up', type: :feature do
     verify_logged_in
     expect_homepage
 
-    logout
+    logout(user: 'New user')
     login(email, 'new password')
     expect_homepage
   end
@@ -24,7 +24,7 @@ RSpec.describe 'User sign up', type: :feature do
   example 'register as user and logout' do
     register_user
 
-    logout
+    logout(user: 'New user')
 
     verify_not_logged_in
     visit set_password_email.links.last
