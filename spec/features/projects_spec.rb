@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Discussions', type: :feature do
+RSpec.describe 'Projects', type: :feature do
   let(:title) { 'Project title' }
   let(:content) { 'Project content' }
 
