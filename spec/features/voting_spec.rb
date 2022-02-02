@@ -216,9 +216,9 @@ RSpec.describe 'Voting', type: :feature do
   def button_label(side)
     case side
     when 'yes'
-      'Click to vote for this idea'
+      'Agree'
     when 'no'
-      'Click to vote against this idea'
+      'Disagree'
     end
   end
 end
