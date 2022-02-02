@@ -274,8 +274,8 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
 
     return unless email
 
-    current_email_check = "match = LRS.store.find(window[Symbol.for('rdfFactory')].namedNode('#{current_tenant}/c_a'), window[Symbol.for('rdfFactory')].namedNode('https://argu.co/ns/core#primaryEmail')); "\
-      "return match && match.object.value;"
+    current_email_check = "value = LRS.store.getInternalStore().store.getField('#{current_tenant}/c_a', 'https://argu.co/ns/core#primaryEmail'); "\
+      "return value && value.value;"
     expect(page.execute_script(current_email_check)).to eq(email)
   end
 
