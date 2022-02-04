@@ -4,7 +4,7 @@ module Matchers
   RSpec::Matchers.define :have_snackbar do |expected|
     match do |actual|
       @actual =
-        actual.execute_script('return window.logging.logs')
+        actual.evaluate_script('window.logging.logs')
           .select(&method(:is_snackbar_action?))
           .map(&method(:action_log_snackbar_message))
 

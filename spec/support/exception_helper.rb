@@ -30,7 +30,7 @@ module ExceptionHelper
 
   def upload_browser_logs(example)
     Timeout.timeout(60, Timeout::Error, 'Uploading browser logs timed out') do
-      upload_javascript_console_logs(example)
+      # TODO: upload_javascript_console_logs(example)
       upload_javascript_errors(example)
       upload_javascript_logs(example)
     end
@@ -44,7 +44,7 @@ module ExceptionHelper
   end
 
   def upload_javascript_errors(example)
-    errors = page.execute_script('return (window.logging && window.logging.errors)')
+    errors = page.driver.evaluate_script('(window.logging && window.logging.errors)')
     return unless errors&.length&.positive?
 
     upload_exception_file(errors.map { |message| JSON.pretty_generate(message) }.join("\n"), example, 'javascript-errors.txt')
@@ -53,23 +53,37 @@ module ExceptionHelper
   end
 
   def upload_javascript_logs(example)
-    logs = page.execute_script('return (window.logging && window.logging.logs)')
+    logs = page.driver.evaluate_script('(window.logging && window.logging.logs)')
     upload_exception_file(logs.map { |message| message.join(' ') }.join("\n"), example, 'javascript-logs.txt') if logs
   rescue StandardError => e
     LOGGER.error "Failed to show javascript logs: #{e.message}"
   end
 
-  def upload_screenshot(name)
-    exception_file_dir
-    saver = Capybara::Screenshot.new_saver(Capybara, Capybara.page, false, name)
-    saver.save
+  def upload_screenshot(example, raw_screenshot)
+    upload_exception_file(raw_screenshot, example, 'screenshot.png')
+  end
+
+  def upload_screenrecord(example, video_path)
+    suffix = video_path.split('/').last
+
+    filename = name_for_file(example, suffix)
+    ensure_exception_dir(filename)
+    FileUtils.mv(video_path, filename)
   end
 
   private
 
-  def upload_exception_file(content, example, suffix)
-    filename = [exception_file_dir, example_filename(example, suffix)].join('/')
+  def name_for_file(example, suffix)
+    [exception_file_dir, example_filename(example, suffix)].join('/')
+  end
+
+  def ensure_exception_dir(filename)
     FileUtils.mkdir_p(filename.split('/')[0...-1].join('/'))
+  end
+
+  def upload_exception_file(content, example, suffix)
+    filename = name_for_file(example, suffix)
+    ensure_exception_dir(filename)
     File.open(filename, 'w', encoding: 'ascii-8bit') { |f| f.write(content) }
   end
 

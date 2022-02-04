@@ -1,10 +1,8 @@
 # frozen_string_literal: true
 
 require 'capybara/rspec'
-require 'capybara-screenshot/rspec'
+require 'capybara/playwright'
 require 'dotenv'
-require 'selenium/webdriver'
-require 'webdrivers'
 require 'rspec/wait'
 require 'rspec/instafail'
 require 'rspec/retry'
@@ -54,7 +52,6 @@ RSpec.configure do |config|
     ex.run_with_retry retry: 1
   end
   config.retry_callback = ->  { cleanup_before_test }
-  config.exceptions_to_retry = [Selenium::WebDriver::Error::StaleElementReferenceError]
 
   config.before(:suite) do
     db_managed_services.each do |service|
@@ -71,12 +68,21 @@ RSpec.configure do |config|
     puts 'Services are ready'
   end
 
-  config.before do
+  config.before do |example|
     cleanup_before_test
+
+    Capybara.current_session.driver.on_save_raw_screenshot_before_reset do |raw_screenshot|
+      upload_screenshot(example, raw_screenshot)
+    end
+
+    Capybara.current_session.driver.on_save_screenrecord do |video_path|
+      upload_screenrecord(example, video_path)
+    end
   end
 
   config.after do |example|
     if example.exception
+      puts 'Uploading exception details'
       upload_container_logs(example)
       upload_browser_logs(example)
       raise_catched_emails
@@ -86,86 +92,25 @@ end
 
 Capybara.configure do |config|
   config.run_server = false
-  config.default_driver = :selenium_chrome
+  config.default_driver = :playwright
+  config.javascript_driver = :playwright
   config.app_host = 'https://argu.localtest'
 end
 
-Capybara.register_driver :selenium_chrome do |app|
-  capabilities = Selenium::WebDriver::Remote::Capabilities.chrome(
-    'elementScrollBehavior' => 1,
-    'goog:loggingPrefs' => {browser: 'ALL'},
-    loggingPrefs: {
-      browser: 'ALL'
-    },
-    chromeOptions: {w3c: false}
-  )
-
-  client = Selenium::WebDriver::Remote::Http::Default.new
-  client.read_timeout = 90
-  client.open_timeout = 90
-  options = Selenium::WebDriver::Chrome::Options.new
-  options.headless! unless ENV['NO_HEADLESS']
-  options.add_argument('--window-size=1920,1080')
-  options.add_argument('--enable-logging')
-  options.add_argument('--disable-gpu')
-  options.add_argument('--disable-dev-shm-usage')
-  options.add_argument('--disable-extensions')
-  options.add_argument('--disable-popup-blocking')
-  options.add_argument('--no-sandbox')
-  options.add_preference('intl.accept_languages', 'en-US')
-  options.add_option('w3c', false)
-
-  Capybara::Selenium::Driver.new(
+Capybara.register_driver(:playwright) do |app|
+  Capybara::Playwright::Driver.new(
     app,
-    browser: :chrome,
-    options: options,
-    http_client: client,
-    desired_capabilities: capabilities
+    browser_type: :chromium,
+    headless: ENV['NO_HEADLESS'] ? false : true,
+    chromiumSandbox: false,
+    ignoreHTTPSErrors: true,
   )
 end
+
+Capybara.default_max_wait_time = 30
 
 MailCatcher::API.configure do |config|
   config.server = 'http://mailcatcher:1080'
 end
 
 Capybara.save_path = File.expand_path('../tmp/exceptions', __dir__)
-
-Capybara::Screenshot.register_filename_prefix_formatter(:rspec) do |example|
-  ExceptionHelper.example_filename(example)
-end
-Capybara::Screenshot.append_timestamp = false
-
-module CapybaraNodeFix
-  private
-
-  def synced_resolve(*args)
-    super
-  rescue Capybara::ElementNotFound
-    sleep 1
-    super
-  end
-end
-
-Capybara::Node::Base.prepend CapybaraNodeFix
-
-module CapybaraExecuteFix
-  def execute(*args)
-    super
-  rescue Selenium::WebDriver::Error::StaleElementReferenceError
-    sleep 1
-    super
-  end
-end
-
-Selenium::WebDriver::Remote::OSS::Bridge.prepend CapybaraExecuteFix
-
-module WaitFix
-  def with_wait(*args)
-    super
-  rescue Selenium::WebDriver::Error::StaleElementReferenceError
-    sleep 1
-    super
-  end
-end
-
-RSpec::Wait::Target.prepend WaitFix

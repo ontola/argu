@@ -118,7 +118,7 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
     is_done =
       'return LRS.api.requestMap.size === 0 && '\
       '(LRS.broadcastHandle || LRS.currentBroadcast || LRS.lastPostponed) === undefined;'
-    wait_for { page.execute_script(is_done) }.to be_truthy
+    wait_for { page.driver.evaluate_script(is_done) }.to be_truthy
     sleep(0.5)
   end
 
@@ -276,7 +276,7 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
 
     current_email_check = "value = LRS.store.getInternalStore().store.getField('#{current_tenant}/c_a', 'https://argu.co/ns/core#primaryEmail'); "\
       "return value && value.value;"
-    expect(page.execute_script(current_email_check)).to eq(email)
+    expect(page.driver.evaluate_script(current_email_check)).to eq(email)
   end
 
   def verify_not_logged_in

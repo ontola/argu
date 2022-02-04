@@ -2,6 +2,8 @@
 
 Core serves as a testing suite and development proxy server for various Ontola projects, such as Argu.
 
+- (Locator reference)[https://playwright-ruby-client.vercel.app/docs/api/locator]
+
 ## Usage (for setting up Argu)
 
 1. Install rbenv

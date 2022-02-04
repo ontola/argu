@@ -42,6 +42,6 @@ RSpec.describe 'Navbar', type: :feature do
   private
 
   def css_var(var)
-    page.execute_script("return getComputedStyle(document.documentElement).getPropertyValue('#{var}')")
+    page.driver.evaluate_script("getComputedStyle(document.documentElement).getPropertyValue('#{var}')")
   end
 end
