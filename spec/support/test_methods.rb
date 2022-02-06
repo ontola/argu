@@ -49,7 +49,7 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
     if actor != :guest
       visit 'https://argu.localtest/d/health'
       HEALTH_CHECKS.each do |check|
-        expect(page).to have_text("#{check} 🟩 pass")
+        expect(page.find_by_id(check.downcase.gsub(' ', '-'))).to have_text("pass")
       end
       cookies, csrf = authentication_values
 
