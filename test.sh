@@ -10,4 +10,4 @@ docker-compose up -d --force-recreate --build devproxy
 
 docker restart devproxy_argu_1
 
-echo "Don't forget to run 'bundle exec rake test:setup' if you haven't already"
+echo "Don't forget to run the following command if you haven't already: bundle exec rake test:setup"

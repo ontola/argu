@@ -4,6 +4,7 @@ Core serves as a testing suite and development proxy server for various Ontola p
 
 ## Usage (for setting up Argu)
 
+1. Install rbenv
 1. Sign in to our gitlab registry, make sure you have the correct rights. `docker login registry.gitlab.com`. When asked for a password, enter a [gitlab personal access token](https://gitlab.com/profile/personal_access_tokens) with access to the registry (tick `api`).
 1. Clone [apex](https://gitlab.com/ontola/apex) and [libro](https://gitlab.com/ontola/libro), if you need to run them locally.
 1. Set up your ENV variables (see [Setup ENV](#setup-env))

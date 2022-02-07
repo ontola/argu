@@ -26,8 +26,8 @@ namespace :test do
     docker_setup('token', seed: :test)
     puts 'setting up email'
     docker_setup('email', seed: :test)
+    puts 'Completed db initialization'
   end
-
 
   desc 'Dumps the databases of managed services to be restored before a test'
   task :dump do
@@ -35,6 +35,7 @@ namespace :test do
     check_env
 
     db_managed_services.each do |db|
+      puts "Dumping database #{db}"
       docker_exec(
         'postgres',
         ['pg_dump', "#{db}_test", '--username=postgres', '-Fc', '--data-only', "--file=/var/lib/postgresql/data/dump_#{db}"]
@@ -43,6 +44,7 @@ namespace :test do
     docker_dump_redis
   end
 
+  desc 'Restores the database dumps as the live database'
   task :reset do
     include DockerHelper
     check_env

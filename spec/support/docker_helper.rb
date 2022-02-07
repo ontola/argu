@@ -52,6 +52,7 @@ END_HEREDOC
   end
 
   def docker_dump_redis
+    puts 'Dumping database redis'
     docker_exec('redis', ['apt', 'update'])
     docker_exec('redis', ['apt', 'install', '-y', 'python3-pip'])
     docker_exec('redis', ['pip3', 'install', 'rdbtools', 'python-lzf'])
