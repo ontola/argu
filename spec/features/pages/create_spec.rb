@@ -16,12 +16,12 @@ RSpec.describe 'Page create', type: :feature do
     wait_for_terms_notice
     click_button 'Save'
 
-    wait_for { page }.to have_current_path('/my_website')
-    wait_for { main_content }.to have_content 'My Website'
+    wait_for(page).to have_current_path('/my_website')
+    wait_for { main_content.locator('[role="heading"]:has-text("My Website")').visible? }.to be_truthy
     expect(page).to have_title "My Website"
 
     visit('https://argu.localtest/argu/u/3/o')
-    wait_for { main_content }.to have_content 'First page'
-    wait_for { main_content }.to have_content 'My Website'
+    wait_for { main_content.locator('text=First page').visible? }.to be_truthy
+    wait_for { main_content.locator('text=My Website').visible? }.to be_truthy
   end
 end

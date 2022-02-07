@@ -30,13 +30,13 @@ RSpec.describe 'Navbar', type: :feature do
   it 'shows no forum for guest, one for staff' do
     as :guest, location: '/argu'
 
-    expect(navbar_tabs).not_to have_content 'Freetown'
-    expect(navbar_tabs).not_to have_content 'Holland'
+    wait_for { navbar_tabs.locator('text=Freetown').count }.to be 0
+    wait_for { navbar_tabs.locator('text=Holland').count }.to be 0
 
     login('staff@example.com')
 
-    expect(navbar_tabs).not_to have_content 'Freetown'
-    expect(navbar_tabs).to have_content 'Holland'
+    wait_for { navbar_tabs.locator('text=Freetown').count }.to be 0
+    wait_for { navbar_tabs.locator('text=Holland').count }.to be 1
   end
 
   private

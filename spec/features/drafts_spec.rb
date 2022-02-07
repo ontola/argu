@@ -16,9 +16,11 @@ RSpec.describe 'Drafts', type: :feature do
     wait_for { page }.to have_css('.CID-Heading', text: 'My drafts')
     wait_for { page }.to have_content 'Unpublished_question-title'
     wait_for { page }.to have_content 'Draft title'
-    within(resource_selector('https://argu.localtest/argu/u/58/settings#drafts')) do
-      expect(page).to have_css('.CID-Card', count: 2)
-    end
+
+    drafts = resource_selector('https://argu.localtest/argu/u/58/settings#drafts')
+    draft_count = drafts.locator('.CID-Card').count
+    expect(draft_count).to eq 2
+
     click_link 'Unpublished_question-title'
     wait_for { page }.to have_content 'Unpublished_motion-title'
     wait_for { page }.to have_content 'Fg argument title 7end'

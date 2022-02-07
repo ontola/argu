@@ -21,12 +21,11 @@ RSpec.describe 'Token email management', type: :feature do
     wait_for { page }.to have_snackbar 'Email invite created successfully'
 
     wait_for { page }.to have_content('https://www.example.com')
-    expect(token_row(1)).to have_content('https://www.example.com')
 
-    within(token_row(1)) do
-      wait_for { page }.to have_css('.fa-close')
-      find('td:last-child a').click
-    end
+    row = token_row(1)
+    expect(row.locator('text=https://www.example.com').visible?).to be_truthy
+    wait_for { row.locator('.fa-close').visible? }.to be_truthy
+    row.locator('td:last-child a').click
 
     within_dialog do
       wait_for { page }.to(

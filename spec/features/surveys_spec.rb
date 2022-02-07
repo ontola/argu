@@ -65,14 +65,20 @@ RSpec.describe 'Surveys', type: :feature do
   end
 
   def expect_submitted
-    wait_for { page }.to have_content('Thank you for your response')
-    visit survey_path
-    wait_for { page }.to have_content('Thank you for your response')
-    if reward
-      wait_for { page }.to have_button('Claim reward')
-    else
-      wait_until_loaded
-      expect(page).not_to have_button('Claim reward')
+    Capybara.current_session.driver.with_playwright_page do |page|
+      within_dialog do
+        wait_for { page.locator('text=Thank you for your response').visible? }.to be_truthy
+      end
+      visit survey_path
+      wait_for { page.locator('text=Thank you for your response').visible? }.to be_truthy
+
+      if reward
+        wait_for { page.locator('text=Claim reward').visible? }.to be_truthy
+        wait_for { page }.to have_button('Claim reward')
+      else
+        wait_until_loaded
+        wait_for { page.locator('text=Claim reward').count }.to eq 0
+      end
     end
   end
 

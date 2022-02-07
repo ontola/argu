@@ -11,7 +11,9 @@ RSpec.describe 'Budgets', type: :feature do
     as 'staff@example.com', location: '/argu/freetown'
     wait_until_loaded
     find('h2', text: 'Topics').click
-    wait_for { page }.to have_css('.CID-CollectionHeaderFloat .fa-plus')
+    Capybara.current_session.driver.with_playwright_page do |page|
+      page.wait_for_selector(".CID-CollectionHeaderFloat .fa-plus")
+    end
     find('.CID-CollectionHeaderFloat .fa-plus').click
     wait_until_loaded
     within_dialog do
@@ -25,7 +27,10 @@ RSpec.describe 'Budgets', type: :feature do
     wait_until_loaded
     find('h2', text: 'Options').click
     collection_float_button("https://argu.localtest/argu/budgets/#{next_id}/offers").click
-    wait_for { page }.to have_content('New option')
+
+    Capybara.current_session.driver.with_playwright_page do |page|
+      page.locator('text=New option')
+    end
     fill_in_select field_name('http://schema.org/itemOffered'), with: motion_title
     fill_in field_name('https://argu.co/ns/core#price'), with: 100
     click_button('Save')
@@ -78,9 +83,8 @@ RSpec.describe 'Budgets', type: :feature do
   private
 
   def add_order_detail(id = :offer_600)
-    within resource_selector("https://argu.localtest/argu/offers/#{id}", element: '.CID-Card') do
-      click_button 'Add'
-    end
+    scope = resource_selector("https://argu.localtest/argu/offers/#{id}", element: '.CID-Card')
+    scope.locator('text=Add').click
   end
 
   def cart
@@ -89,9 +93,8 @@ RSpec.describe 'Budgets', type: :feature do
 
   def expect_cart_value(value, valid = true)
     wait_until_loaded
-    within cart do
-      wait_for {page }.to have_content(value)
-    end
+
+    cart.locator("text=#{value}")
 
     expect(page).to(valid ? have_link('Finish') : have_button('Finish', disabled: true))
     expect(page).not_to(valid ? have_button('Finish', disabled: true) : have_link('Finish'))
@@ -116,21 +119,21 @@ RSpec.describe 'Budgets', type: :feature do
   end
 
   def remove_order_detail(id = :offer_600)
-    within resource_selector("https://argu.localtest/argu/offers/#{id}", element: '.CID-Card') do
-      click_button 'Remove'
-    end
+    scope = resource_selector("https://argu.localtest/argu/offers/#{id}", element: '.CID-Card')
+    scope.locator('text=Remove').click
   end
 
   def submit_cart(coupon = 'COUPON1')
-    within(cart) do
-      click_link('Finish')
+    Capybara.current_session.driver.with_playwright_page do |page|
+      page.expect_navigation do
+        cart.locator('text=Finish').click
       end
-    wait_for { page }.to have_current_path('/argu/budgets/budget_shop/orders/new')
-    wait_until_loaded
-    wait_for{ page }.to have_content('Question_motion-title')
-    wait_for{ page }.to have_content('Freetown_motion-title')
-    fill_in(field_name('https://argu.co/ns/core#coupon'), with: coupon)
-    click_button('Save')
+
+      page.locator("text=Question_motion-title")
+      page.locator("text=Freetown_motion-title")
+      page.fill(field_selector('https://argu.co/ns/core#coupon'), coupon)
+      page.locator('text=Save').click
+    end
   end
 
   def verify_order(user, value)
@@ -138,9 +141,8 @@ RSpec.describe 'Budgets', type: :feature do
     select_tab('Orders')
     wait_until_loaded
     row = resource_selector("https://argu.localtest/argu/orders/#{next_id}", element: 'tr')
-    within row do
-      expect(page).to have_content(user)
-      expect(page).to have_content(value)
-    end
+
+    row.locator("text=#{user}")
+    row.locator("text=#{value}")
   end
 end

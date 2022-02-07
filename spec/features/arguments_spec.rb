@@ -97,18 +97,14 @@ RSpec.describe 'Arguments', type: :feature do
     @side = side
     wait_until_loaded
 
-    within scope do
-      wait_for { page }.to have_content("Share your #{preview || side}...")
-      click_button "Share your #{preview || side}..." if click_to_open
-      if preview
-        wait_for { page }.to have_button(@side.capitalize)
-        click_button @side.capitalize
-      end
-      wait_for { page }.to have_field field_name('http://schema.org/name')
-      fill_in field_name('http://schema.org/name'), with: title
-      fill_in field_name('http://schema.org/text'), with: content
-      find('button[type=submit]').click
-    end
+    share_button = scope.locator("text=Share your #{preview || side}...")
+    share_button.click if click_to_open
+
+    scope.locator("text=#{@side.capitalize}").click if preview
+
+    scope.locator(field_selector('http://schema.org/name')).fill(title)
+    scope.locator(field_selector('http://schema.org/text')).fill(content)
+    scope.locator('button[type=submit]').click
 
     after_post
   end
@@ -120,10 +116,12 @@ RSpec.describe 'Arguments', type: :feature do
       )
     )
     wait_until_loaded
-    wait_for { page }.to have_content title
-    within resource_selector("#{parent_resource}/#{@side}s", element: result_element) do
-      wait_for { page }.to have_content title
-      wait_for { page }.to have_content content if expect_argument_content
+    Capybara.current_session.driver.with_playwright_page do |page|
+      page.locator("text=#{title}")
+
+      scope = resource_selector("#{parent_resource}/#{@side}s", element: result_element)
+      scope.locator("text=#{title}")
+      scope.locator("text=#{content}") if expect_argument_content
     end
   end
 end

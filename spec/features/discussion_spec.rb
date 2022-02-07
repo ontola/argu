@@ -187,7 +187,7 @@ RSpec.describe 'Discussions', type: :feature do
     wait_for { page }.to have_css(test_selector('ImageAttachmentPreview')) if images
     expect(page).to have_css(test_id_selector('CoverPhoto')) if images
     expect(page).to have_current_path("/argu/#{path}")
-    expect(details_bar).to have_content(creator)
+    details_bar.locator("text=#{creator}")
   end
 
   def select_attachment

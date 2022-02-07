@@ -6,8 +6,9 @@ module Selectors
   end
 
   def application_menu
-    wait_for { page }.to have_css('.CID-AppMenu')
-    page.find('.CID-AppMenu')
+    Capybara.current_session.driver.with_playwright_page do |page|
+      page.locator('.CID-AppMenu')
+    end
   end
 
   def collection_float_button(collection)
@@ -17,50 +18,53 @@ module Selectors
     )
   end
 
-  def count_bubble_count(element = nil)
-    wait_for { page }.to have_css('[title="Click to read your notifications"]')
-    found = page.find('[title="Click to read your notifications"]')
-    return found if element.nil?
-
-    found.find(element)
+  def count_bubble_count
+    Capybara.current_session.driver.with_playwright_page do |page|
+      page.locator('[title="Click to read your notifications"]')
+    end
   end
 
   def field_name(*names)
-    names.map { |name| name.is_a?(String) ? Base64.encode64(name).gsub("\n", '') : name }.join('.')
+    names
+      .map { |name| name.is_a?(String) ? Base64.encode64(name).gsub("\n", '') : name }
+      .join('.')
   end
 
-  def navbar(element = nil)
-    found = page.find('#App__container > .MuiAppBar-root')
-    return found if element.nil?
+  def field_selector(*names)
+    name = field_name(*names)
+    "[name='#{name}']"
+  end
 
-    found.find(element)
+  def navbar
+    Capybara.current_session.driver.with_playwright_page do |page|
+      page.locator('#App__container > .MuiAppBar-root')
+    end
   end
 
   def details_bar
-    wait_for { page }.to have_css(test_selector('DetailsBar'))
-
-    page.find(test_selector('DetailsBar'))
+    Capybara.current_session.driver.with_playwright_page do |page|
+      page.locator(test_selector('DetailsBar'))
+    end
   end
 
-  def navbar_tabs(element = nil)
-    wait_for { page }.to have_css('.MuiAppBar-root .CID-NavBarContentItems')
-    found = page.find('.MuiAppBar-root .CID-NavBarContentItems')
-    return found if element.nil?
-
-    found.find(element)
+  def navbar_tabs
+    Capybara.current_session.driver.with_playwright_page do |page|
+      page.locator('.MuiAppBar-root .CID-NavBarContentItems')
+    end
   end
 
-  def main_content(element = nil)
-    found = page.find('#start-of-content')
-    return found if element.nil?
-
-    found.find(element)
+  def main_content
+    Capybara.current_session.driver.with_playwright_page do |page|
+      page.locator('#start-of-content')
+    end
   end
 
-  def resource_selector(iri, element: 'div', child: nil, parent: page)
-    selector = "#{element}[resource='#{iri}'] #{child}"
-    wait_for { parent }.to have_css selector
-    parent.find(selector)
+  def resource_selector(iri, element: 'div', child: nil, parent: nil)
+    Capybara.current_session.driver.with_playwright_page do |page|
+      selector = "#{element}[resource='#{iri}'] #{child}"
+
+      (parent || page).locator(selector)
+    end
   end
 
   def test_selector(selector)

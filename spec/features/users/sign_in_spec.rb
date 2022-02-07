@@ -28,11 +28,13 @@ RSpec.describe 'User sign in', type: :feature do
     wait_for { page }.to have_content('Log in / sign up')
     page.click_link('Log in / sign up')
 
-    fill_in_login_form '2fa@example.com', 'password'
+    fill_in_login_form '2fa@example.com', 'password', expect_reload: false
 
     wait_for{ page }.to have_content('Two factor authentication')
 
-    fill_in field_name('https://argu.co/ns/core#otp'), with: '123456', fill_options: {clear: :backspace}
+    fill_in field_name('https://argu.co/ns/core#otp'),
+            with: '123456',
+            fill_options: {clear: :backspace}
 
     click_button 'Continue'
 
@@ -64,7 +66,7 @@ RSpec.describe 'User sign in', type: :feature do
     wait_for { page }.to have_content('Log in / sign up')
     page.click_link('Log in / sign up')
 
-    fill_in_login_form 'user1@example.com', 'wrong_password'
+    fill_in_login_form 'user1@example.com', 'wrong_password', expect_reload: false
 
     wait_for { page }.to have_content 'Invalid password'
   end

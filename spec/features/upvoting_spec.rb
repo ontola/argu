@@ -84,21 +84,18 @@ RSpec.describe 'Upvoting', type: :feature do
   end
 
   def expect_voted
-    within resource_selector("#{page.current_url}/pros", element: "#{test_id_selector('column')} > div") do
-      wait_for { page }.to have_css 'button[aria-pressed=true][title=Upvote]'
-      within find('button[aria-pressed=true][title=Upvote]') do
-        expect(page).to have_content expected_count
-      end
-    end
+    pro_column = resource_selector("#{page.current_url}/pros", element: "#{test_id_selector('column')} > div")
+    wait_for { pro_column.locator('button[aria-pressed=true][title=Upvote]').visible? }.to be_truthy
+    button = pro_column.locator('button[aria-pressed=true][title=Upvote]')
+
+    button.locator("text=#{expected_count}")
   end
 
   def expect_not_voted
-    within resource_selector("#{page.current_url}/pros", element: "#{test_id_selector('column')} > div") do
-      wait_for { page }.not_to have_css 'button[aria-pressed=true]'
-      within find('button[title=Upvote]') do
-        expect(page).to have_content '1'
-        expect(page).not_to have_content '2'
-      end
-    end
+    pro_column = resource_selector("#{page.current_url}/pros", element: "#{test_id_selector('column')} > div")
+    wait_for { pro_column.locator('button[aria-pressed=true]').count }.to eq 0
+    button = pro_column.locator('button[title=Upvote]')
+
+    button.locator("text=1")
   end
 end

@@ -21,8 +21,8 @@ RSpec.describe 'Page settings', type: :feature do
       as 'staff@example.com'
       visit_settings
       wait_for { page }.to have_content 'Components'
-      wait_for { components_row(1) }.to have_content('Holland')
-      wait_for { components_row(2) }.to have_content('Freetown')
+      components_row(1).locator('text=Holland')
+      components_row(2).locator('text=Freetown')
 
       find('h2', text: 'Components').click
 
@@ -50,22 +50,20 @@ RSpec.describe 'Page settings', type: :feature do
       click_button 'Save'
 
       wait_for { page }.to have_snackbar 'Forum created successfully'
-      within navbar do
-        wait_for { page }.to have_content 'New Forum'
-      end
+      navbar.locator('text=New Forum')
 
       expect(page).to have_current_path('/argu/new_forum')
 
       visit_settings
       wait_for { page }.to have_content 'Components'
       wait_until_loaded
-      expect(components_row(1)).to have_content('New Forum')
-      expect(components_row(2)).to have_content('Holland')
-      expect(components_row(3)).to have_content('Freetown')
-      within(components_row(1)) do
-        wait_for { page }.to have_css('.fa-close')
-        find('td:last-child a').click
-      end
+      components_row(1).locator('text=New Forum')
+      components_row(2).locator('text=Holland')
+      components_row(3).locator('text=Freetown')
+      first_row = components_row(1)
+      first_row.locator('.fa-close')
+      first_row.locator('td:last-child a').click
+
       within_dialog do
         expect(page).to(
           have_content('This object and all related data will be permanently removed. This cannot be undone.')
@@ -78,8 +76,8 @@ RSpec.describe 'Page settings', type: :feature do
       # wait_for { page }.to have_snackbar 'Forum deleted successfully'
 
       wait_for {page}.not_to have_content('New Forum')
-      expect(components_row(1)).to have_content('Holland')
-      expect(components_row(2)).to have_content('Freetown')
+      components_row(1).locator('text=Holland')
+      components_row(2).locator('text=Freetown')
     end
   end
 
@@ -100,7 +98,7 @@ RSpec.describe 'Page settings', type: :feature do
       as 'staff@example.com'
       visit_settings
       wait_for { page }.to have_content 'Redirects'
-      wait_for { shortnames_row(1) }.to have_content('No items yet')
+      shortnames_row(1).locator('text=No items yet')
 
       find('h2', text: 'Redirects').click
 
@@ -140,8 +138,9 @@ RSpec.describe 'Page settings', type: :feature do
   end
 
   def visit_settings
-    wait_for { page }.to have_link('Manage')
-    click_link 'Manage'
+    Capybara.current_session.driver.with_playwright_page do |page|
+      page.locator('text=Manage').click
+    end
     select_tab(tab) if tab
   end
 end

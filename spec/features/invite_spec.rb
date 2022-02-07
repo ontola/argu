@@ -13,10 +13,11 @@ RSpec.describe 'Invites', type: :feature do
     fill_in field_name('https://ns.ontola.io/core#redirectUrl'), with: 'https://www.example.com'
     click_button 'Save'
     wait_for { page }.to have_snackbar 'Email invite created successfully'
-    expect(token_row).to have_content('invitee2@example.com')
-    expect(token_row).to have_content('https://www.example.com')
-    expect(token_row).to have_content('invitee1@example.com')
-    expect(token_row).to have_content('https://www.example.com')
+
+    token_row.locator('text=invitee2@example.com')
+    token_row.locator('text=https://www.example.com')
+    token_row.locator('text=invitee1@example.com')
+    token_row.locator('text=https://www.example.com')
 
     expect_email :invite_email_1
     expect_email :invite_email_2
@@ -29,26 +30,28 @@ RSpec.describe 'Invites', type: :feature do
     fill_in field_name('https://argu.co/ns/core#emailAddresses'), with: 'invitee1@example.com invitee2@example.com '
     fill_in field_name('https://argu.co/ns/core#message'), with: 'Example body'
     fill_in field_name('https://ns.ontola.io/core#redirectUrl'), with: 'https://www.example.com'
-    within resource_selector('https://argu.co/ns/core#groupId') do
-      wait_for { page }.to have_css('.fa-plus')
-      find('.fa-plus').click
-    end
+
+    group = resource_selector('https://argu.co/ns/core#groupId')
+    group.locator('.fa-plus').click
     wait_for { page }.to have_content('Name singular')
+
     within_dialog do
       fill_in field_name('http://schema.org/name'), with: 'people'
       fill_in field_name('https://argu.co/ns/core#nameSingular'), with: 'person'
       click_button 'Save'
     end
+
     wait_for { page }.to have_snackbar 'Group created successfully'
     wait_for { page }.to have_content('To which group do you want to add these people?')
     wait_until_loaded
     fill_in_select field_name('https://argu.co/ns/core#groupId'), with: 'people'
     click_button 'Save'
     wait_for { page }.to have_snackbar 'Email invite created successfully'
-    expect(token_row(5)).to have_content('invitee2@example.com')
-    expect(token_row(5)).to have_content('https://www.example.com')
-    expect(token_row(5)).to have_content('invitee1@example.com')
-    expect(token_row(5)).to have_content('https://www.example.com')
+
+    token_row(5).locator('text=invitee2@example.com')
+    token_row(5).locator('text=https://www.example.com')
+    token_row(5).locator('text=invitee1@example.com')
+    token_row(5).locator('text=https://www.example.com')
 
     expect_email :invite_email_1
     expect_email :invite_email_2

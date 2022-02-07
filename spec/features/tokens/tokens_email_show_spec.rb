@@ -50,7 +50,7 @@ RSpec.describe 'Token email show', type: :feature do
 
       fill_in_login_form
 
-      wait_for { page }.to have_content("user1@example.com is invited for the group 'Members'")
+      wait_for { page }.to have_content("You have been invited for the group 'Members'")
 
       accept_token
     end
@@ -70,7 +70,11 @@ RSpec.describe 'Token email show', type: :feature do
       wait_for { page }.to have_content('The invitation you are following is meant for user1@example.com')
       expect(page).not_to have_content('add user1@example.com')
 
-      click_button 'Switch account'
+      Capybara.current_session.driver.with_playwright_page do |page|
+        page.expect_navigation do
+          click_button 'Switch account'
+        end
+      end
 
       fill_in_login_form modal: false
 

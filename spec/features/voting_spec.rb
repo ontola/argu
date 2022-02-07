@@ -77,25 +77,30 @@ RSpec.describe 'Voting', type: :feature do
         let(:confirm) do
           login_to_confirm
           wait_for_terms_notice
-          click_button 'Confirm'
+          Capybara.current_session.driver.with_playwright_page do |page|
+            page.expect_navigation do
+              click_button 'Confirm'
+            end
+          end
         end
         let(:after_confirmation) do
           wait_until_loaded
-          wait_for { page }.to(
-            have_content(
-              'Please confirm your vote by clicking the link we\'ve sent to '\
-              'new_user@example.com'
+          Capybara.current_session.driver.with_playwright_page do |page|
+            page.locator(
+              'text=Please confirm your vote by clicking the link we\'ve '\
+                'sent to new_user@example.com'
             )
-          )
+          end
           finish_setup
           expect_voted
-          within navbar do
-            wait_for { count_bubble_count }.to have_content '1'
-          end
+          wait_for { count_bubble_count.locator('text=1').count }.to be 1
           go_to_user_page(tab: 'Notifications', user: 'New user')
-          wait_for { page }.to(
-            have_content("Please confirm your vote by clicking the link we've sent to new_user@example.com")
-          )
+          Capybara.current_session.driver.with_playwright_page do |page|
+            page.locator(
+              'text=Please confirm your vote by clicking the link we\'ve '\
+                'sent to new_user@example.com'
+            )
+          end
           expect_email(:confirm_vote_email)
           expect(confirm_vote_email.body).to have_content('Freetown_motion-title: Agree')
           visit confirm_vote_email.links.last
@@ -173,7 +178,12 @@ RSpec.describe 'Voting', type: :feature do
     return unless password
 
     fill_in field_name('https://ns.ontola.io/core#password'), with: password
-    click_button 'Continue'
+
+    Capybara.current_session.driver.with_playwright_page do |page|
+      page.expect_navigation do
+        click_button 'Continue'
+      end
+    end
   end
 
   def confirm_vote_email

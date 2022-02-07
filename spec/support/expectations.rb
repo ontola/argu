@@ -2,13 +2,17 @@
 
 module Expectations
   def expect_form(action, advanced: false)
-    wait_for { page }.to have_css "form[action='#{action}']"
+    wait_for { page }.to have_css form_selector(action)
     wait_until_loaded
     if advanced
       wait_for { page }.to have_content('Advanced')
     else
       expect(page).not_to have_content('Advanced')
     end
+  end
+
+  def form_selector(action)
+    "form[action='#{action}']"
   end
 
   def expect_draft_message(_type)

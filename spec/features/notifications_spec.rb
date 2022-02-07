@@ -6,10 +6,8 @@ RSpec.describe 'Notifications', type: :feature do
   it 'marks notifications as read' do
     as 'user1@example.com'
 
-    within navbar do
-      wait_for { count_bubble_count }.to have_content '5'
-      count_bubble_count.click
-    end
+    count_bubble_count.locator("text=5")
+    count_bubble_count.click
 
     wait_for { page }.to have_content 'user_name_36 posted a challenge in Freetown'
     expect(page).to have_content 'user_name_34 posted a idea in Freetown'
@@ -17,12 +15,14 @@ RSpec.describe 'Notifications', type: :feature do
 
     wait_until_loaded
 
-    wait_for { page.all(test_selector('Notification-Unread')).count }.to eq(5)
-    page.all(test_selector('Notification-Unread')).first.click
-    within navbar do
-      wait_for { count_bubble_count }.to have_content '4'
-    end
+    Capybara.current_session.driver.with_playwright_page do |page|
+      wait_for { page.locator(test_selector('Notification-Unread')).count }.to eq 5
+      page.locator(test_selector('Notification-Unread')).first.click
 
-    expect(page.all(test_selector('Notification-Unread')).count).to eq(4)
+      count_bubble_count.locator("text=4")
+
+      wait_for { page.locator(test_selector('Notification-Unread')).count }.to eq 4
+      expect(page.locator(test_selector('Notification-Unread')).count).to eq 4
+    end
   end
 end

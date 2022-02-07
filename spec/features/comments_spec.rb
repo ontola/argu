@@ -64,14 +64,12 @@ RSpec.describe 'Comments', type: :feature do
         'https://argu.localtest/argu/c/nested_argument_comment',
         element: '.CID-Card'
       )
-      within(selector) do
-        wait_for { page }.to have_link('Reply')
-        click_link('Reply')
-        expect_form('/argu/c/nested_argument_comment/c')
-        fill_in field_name('http://schema.org/text'), with: 'Nested comment'
-        click_button('Publish')
-        wait_for { page }.to have_snackbar('Comment published.')
-      end
+
+      selector.locator('text=Reply').click
+      form = selector.locator(form_selector('/argu/c/nested_argument_comment/c'))
+      form.locator(field_selector('http://schema.org/text')).fill('Nested comment')
+      form.locator('text=Publish').click
+      wait_for { page }.to have_snackbar('Comment published.')
 
       wait_for { page }.to have_content('Show 1 additional replies...')
       expect(page).not_to have_content('Nested comment')
@@ -112,6 +110,8 @@ RSpec.describe 'Comments', type: :feature do
       have_snackbar('Comment published.')
     )
     wait_until_loaded
-    wait_for { page }.to have_content content
+    Capybara.current_session.driver.with_playwright_page do |page|
+      wait_for { page.locator("text=#{content}").visible? }.to be_truthy
+    end
   end
 end

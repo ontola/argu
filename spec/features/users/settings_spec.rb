@@ -126,16 +126,18 @@ RSpec.describe 'User settings', type: :feature do
 
   def expect_email_row(row, email, primary, confirmed)
     wait_for { page }.to have_content(email)
-    expect(email_addresses_row(row)).to have_content(email)
+    row_element = email_addresses_row(row)
+
+    expect(row_element.inner_text).to have_content(email)
     if primary
-      expect(email_addresses_row(row)).to have_css('button:disabled .fa-circle')
+      wait_for { row_element.locator('button:disabled .fa-circle').visible? }.to be_truthy
     elsif confirmed
-      expect(email_addresses_row(row)).to have_css('a .fa-circle-o')
+      wait_for { row_element.locator('a .fa-circle-o').visible? }.to be_truthy
     else
-      expect(email_addresses_row(row)).to have_css('button:disabled .fa-circle-o')
+      wait_for { row_element.locator('button:disabled .fa-circle-o').visible? }.to be_truthy
     end
 
-    expect(email_addresses_row(row)).to have_css("#{confirmed ? 'button:disabled' : 'a'} .fa-send")
+    wait_for { row_element.locator("#{confirmed ? 'button:disabled' : 'a'} .fa-send").visible? }.to be_truthy
   end
 
   def fill_in_form(submit: 'Save')

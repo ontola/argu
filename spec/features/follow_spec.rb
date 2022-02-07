@@ -10,17 +10,18 @@ RSpec.describe 'Follow', type: :feature do
       expect_following 2
     end
     wait_for { page }.to have_snackbar 'Your notification settings are updated'
-    resource_selector("#{page.current_url}/menus/follow").click
-    expect_following 0
+    go_to_menu_item('Important items', menu: :follow) do
+      expect_following 0
+    end
 
     visit '/argu/m/freetown_motion'
     go_to_menu_item('Never receive notifications', menu: :follow) do
       expect_following 0
     end
     wait_for { page }.to have_snackbar 'Your notification settings are updated'
-
-    resource_selector("#{page.current_url}/menus/follow").click
-    expect_following 2
+    go_to_menu_item('Never receive notifications', menu: :follow) do
+      expect_following 2
+    end
   end
 
   example 'Unfollow from notification' do
@@ -89,10 +90,10 @@ RSpec.describe 'Follow', type: :feature do
   end
 
   def expect_following(index)
-    3.times do |i|
-      expect(page).to(
-        have_css(".MuiListItem-button:nth-child(#{i + 2}) .fa-circle#{i == index ? '' : '-o'}")
-      )
+    Capybara.current_session.driver.with_playwright_page do |page|
+      3.times do |i| button = page.locator("[role='menuitem']:nth-child(#{i + 2}) .fa-circle#{i == index ? '' : '-o'}")
+        expect(button.visible?).to be_truthy
+      end
     end
   end
 
