@@ -10,6 +10,7 @@ RSpec.describe 'Follow', type: :feature do
       expect_following 2
     end
     wait_for { page }.to have_snackbar 'Your notification settings are updated'
+    resource_selector("#{page.current_url}/menus/follow").click
     expect_following 0
 
     visit '/argu/m/freetown_motion'
@@ -17,6 +18,8 @@ RSpec.describe 'Follow', type: :feature do
       expect_following 0
     end
     wait_for { page }.to have_snackbar 'Your notification settings are updated'
+
+    resource_selector("#{page.current_url}/menus/follow").click
     expect_following 2
   end
 
