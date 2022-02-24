@@ -85,7 +85,7 @@ RSpec.describe 'Comments', type: :feature do
     let(:go_to_parent) do
       accept_token
       cancel_setup
-      wait(30).for(page).to have_content('Fg motion title 3end')
+      wait_for { page }.to have_content('Fg motion title 3end')
       click_link 'Fg motion title 3end'
       select_tab('Comments')
     end

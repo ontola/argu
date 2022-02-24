@@ -143,7 +143,7 @@ RSpec.describe 'User settings', type: :feature do
   end
 
   def fill_in_form(submit: 'Save')
-    wait(30).for(page).to have_content submit
+    wait_for { page }.to have_content submit
     # @todo fill in fields, press save and reload page to see if values are persisted.
   end
 

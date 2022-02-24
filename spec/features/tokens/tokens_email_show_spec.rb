@@ -67,7 +67,7 @@ RSpec.describe 'Token email show', type: :feature do
       as('member@example.com')
       visit "https://argu.localtest#{token}"
 
-      wait(30).for(page).to have_content('The invitation you are following is meant for user1@example.com')
+      wait_for { page }.to have_content('The invitation you are following is meant for user1@example.com')
       expect(page).not_to have_content('add user1@example.com')
 
       click_button 'Switch account'

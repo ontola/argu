@@ -26,7 +26,7 @@ RSpec.describe 'Token bearer management', type: :feature do
     expect(token_row(1)).to have_content('https://www.example.com')
 
     within(token_row(1)) do
-      wait(30).for(page).to have_css('.fa-close')
+      wait_for { page }.to have_css('.fa-close')
       find('td:last-child a').click
     end
 

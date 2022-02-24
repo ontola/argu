@@ -16,7 +16,7 @@ RSpec.describe 'Page create', type: :feature do
     wait_for_terms_notice
     click_button 'Save'
 
-    wait(30).for(page).to have_current_path('/my_website')
+    wait_for { page }.to have_current_path('/my_website')
     wait_for { main_content }.to have_content 'My Website'
     expect(page).to have_title "My Website"
 

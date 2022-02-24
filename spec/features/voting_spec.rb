@@ -6,7 +6,7 @@ RSpec.describe 'Voting', type: :feature do
   before do
     as actor, location: location
     before_vote
-    wait(30).for(page).to have_content motion_content
+    wait_for { page }.to have_content motion_content
   end
 
   let(:actor) { :guest }

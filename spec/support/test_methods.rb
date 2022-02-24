@@ -30,7 +30,7 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
     # when :already_member
     #   wait_for { page }.to have_snackbar('You are already member of this group')
     # end
-    wait(30).for(page).to have_current_path('/argu/holland')
+    wait_for { page }.to have_current_path('/argu/holland')
     wait_for { navbar_tabs }.to have_content 'Holland'
     wait_for { main_content }.to have_content('Holland')
     verify_logged_in
@@ -118,7 +118,7 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
     is_done =
       'return LRS.api.requestMap.size === 0 && '\
       '(LRS.broadcastHandle || LRS.currentBroadcast || LRS.lastPostponed) === undefined;'
-    wait(30).for { page.execute_script(is_done) }.to be_truthy
+    wait_for { page.execute_script(is_done) }.to be_truthy
     sleep(0.5)
   end
 
@@ -270,7 +270,7 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
   end
 
   def verify_logged_in(email = nil)
-    wait(30).for { page }.to have_css "div[resource=\"#{current_tenant}/c_a\"]"
+    wait_for { page }.to have_css "div[resource=\"#{current_tenant}/c_a\"]"
 
     return unless email
 
