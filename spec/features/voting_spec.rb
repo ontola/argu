@@ -94,7 +94,7 @@ RSpec.describe 'Voting', type: :feature do
             have_content("Please confirm your vote by clicking the link we've sent to new_user@example.com")
           )
           expect_email(:confirm_vote_email)
-          expect(confirm_vote_email.body).to have_content('In favour of Freetown_motion-title')
+          expect(confirm_vote_email.body).to have_content('Freetown_motion-title: Agree')
           visit confirm_vote_email.links.last
           wait_for { page }.to have_snackbar('Your account has been confirmed.')
           wait_for { page }.to have_content('Set your password')
