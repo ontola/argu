@@ -20,6 +20,6 @@ RSpec.describe 'Delete', type: :feature do
     expect(page).to have_current_path('/argu/m/freetown_motion')
 
     visit '/argu/m/freetown_motion'
-    wait_for { page }.to have_content 'The item was not found'
+    wait_for { page }.to have_content 'This item is not found'
   end
 end
