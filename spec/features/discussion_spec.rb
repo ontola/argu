@@ -100,7 +100,7 @@ RSpec.describe 'Discussions', type: :feature do
     expect_draft_message('Idea')
     expect_content("m/#{next_id}", creator: 'New user')
 
-    click_user_menu_button('Profile', user: 'New user')
+    click_user_menu_button('Profile')
 
     within 'main' do
       wait_for { page }.to have_content 'New user'

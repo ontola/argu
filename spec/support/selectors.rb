@@ -6,8 +6,8 @@ module Selectors
   end
 
   def application_menu
-    wait_for { page }.to have_css('.AppMenu')
-    page.find('.AppMenu')
+    wait_for { page }.to have_css('.CID-AppMenu')
+    page.find('.CID-AppMenu')
   end
 
   def count_bubble_count(element = nil)

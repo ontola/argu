@@ -79,15 +79,15 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
     visit "https://argu.localtest#{location}"
   end
 
-  def click_user_menu_button(button, user: 'user_name_2')
+  def click_user_menu_button(button)
     within navbar do
       within resource_selector('https://argu.localtest/argu/c_a') do
         expect(page).to have_button
-        find(:button, title: user).click(x: 1, y: 1)
+        find(:button, title: 'User settings').click(x: 1, y: 1)
       end
     end
-    expect(page).to have_css('.AppMenu')
-    within '.AppMenu' do
+    expect(page).to have_css('.CID-AppMenu')
+    within '.CID-AppMenu' do
       expect(page).to have_link(button)
       click_link(button)
     end
@@ -135,7 +135,7 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
   end
 
   def logout(user: 'user_name_2')
-    click_user_menu_button('Sign out', user: user)
+    click_user_menu_button('Sign out')
   end
 
   def fill_in_login_form(email = 'user1@example.com', password = 'password', modal: true, two_fa: false)
@@ -245,7 +245,7 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
   def go_to_user_page(tab: nil, user: 'user_name_2')
     wait_until_loaded
 
-    click_user_menu_button('Settings', user: user)
+    click_user_menu_button('Settings')
 
     return if tab.nil?
 
