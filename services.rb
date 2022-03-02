@@ -12,7 +12,7 @@ SERVICES = {
     restart: 'unless-stopped',
   },
   argu: {
-    path: :argu,
+    path: :apex,
     image: 'registry.gitlab.com/ontola/apex',
     health: 'curl -H "Host: argu.localtest" -f http://localhost:2999/argu/d/health',
     worker: {
