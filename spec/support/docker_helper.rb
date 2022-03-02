@@ -89,8 +89,12 @@ END_HEREDOC
   end
 
   def docker_container(name)
-    container = Docker::Container.get("devproxy_#{name}_1")
-    container if container.info['State']['Running']
+    docker_container_find("devproxy_#{name}_1") || docker_container_find("devproxy-#{name}-1")
+  end
+
+  def docker_container_find(name)
+    container = Docker::Container.get(name)
+    container if container.is_a?(Docker::Container) && container.info['State']['Running']
   rescue Docker::Error::NotFoundError
     nil
   end
