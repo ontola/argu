@@ -79,7 +79,7 @@ RSpec.describe 'User settings', type: :feature do
       find('h2', text: 'Email addresses').click
       resource_selector(
         'https://argu.localtest/argu/email_addresses?display=settingsTable',
-        element: '.CID-ContainerFloat',
+        element: '.CID-CollectionHeaderFloat',
         child: '.fa-plus'
       ).click
       fill_in field_name('http://schema.org/email'), with: new_email

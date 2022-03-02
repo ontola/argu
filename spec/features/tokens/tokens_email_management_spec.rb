@@ -12,7 +12,7 @@ RSpec.describe 'Token email management', type: :feature do
 
     resource_selector(
       'https://argu.localtest/argu/tokens/g/111/email?display=settingsTable',
-      element: '.CID-ContainerFloat',
+      element: '.CID-CollectionHeaderFloat',
       child: '.fa-plus'
     ).click
 
