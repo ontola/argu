@@ -63,13 +63,12 @@ RSpec.describe 'Arguments', type: :feature do
 
     context 'question#show' do
       let(:location) { '/argu/q/freetown_question' }
-      let(:result_element) { "#{test_id_selector('column')} > div" }
       let(:parent_resource) { 'https://argu.localtest/argu/m/question_motion' }
       let(:expect_argument_content) { false }
 
       example 'pro from motion preview' do
         fill_in_omniform(
-          resource_selector(parent_resource),
+          resource_selector(parent_resource, element: '.CID-Card'),
           click_to_open: true,
           preview: 'comment'
         )

@@ -26,11 +26,7 @@ RSpec.describe 'Page settings', type: :feature do
 
       find('h2', text: 'Components').click
 
-      resource_selector(
-        'https://argu.localtest/argu/container_nodes?display=settingsTable',
-        element: '.CID-ContainerFloat',
-        child: '.fa-plus'
-      ).click
+      collection_float_button('https://argu.localtest/argu/container_nodes?display=settingsTable').click
 
       wait_for { page }.to have_content('New forum')
       click_link 'New forum'
@@ -106,11 +102,7 @@ RSpec.describe 'Page settings', type: :feature do
 
       find('h2', text: 'Redirects').click
 
-      resource_selector(
-        'https://argu.localtest/argu/shortnames?display=settingsTable',
-        element: '.CID-ContainerFloat',
-        child: '.fa-plus'
-      ).click
+      collection_float_button('https://argu.localtest/argu/shortnames?display=settingsTable').click
       wait_for { page }.to have_content('New redirect')
       fill_in field_name('https://argu.co/ns/core#shortname'), with: 'question66'
       fill_in field_name('https://argu.co/ns/core#destination'), with: 'https://argu.localtest/argu/q/expired_question'

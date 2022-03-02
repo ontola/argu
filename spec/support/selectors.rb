@@ -10,6 +10,13 @@ module Selectors
     page.find('.CID-AppMenu')
   end
 
+  def collection_float_button(collection)
+    resource_selector(
+      collection,
+      child: '.CID-CollectionHeaderFloat .fa-plus'
+    )
+  end
+
   def count_bubble_count(element = nil)
     wait_for { page }.to have_css('[title="Click to read your notifications"]')
     found = page.find('[title="Click to read your notifications"]')
@@ -51,13 +58,9 @@ module Selectors
   end
 
   def resource_selector(iri, element: 'div', child: nil, parent: page)
-    selector = "#{element}[resource='#{iri}']"
+    selector = "#{element}[resource='#{iri}'] #{child}"
     wait_for { parent }.to have_css selector
-    found = parent.find(selector)
-    return found if child.nil?
-
-    wait_for { found }.to have_css child
-    found.find(child)
+    parent.find(selector)
   end
 
   def test_selector(selector)

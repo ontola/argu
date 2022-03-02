@@ -11,8 +11,8 @@ RSpec.describe 'Budgets', type: :feature do
     as 'staff@example.com', location: '/argu/freetown'
     wait_until_loaded
     find('h2', text: 'Topics').click
-    wait_for { page }.to have_css('.CID-ContainerFloat .fa-plus')
-    find('.CID-ContainerFloat .fa-plus').click
+    wait_for { page }.to have_css('.CID-CollectionHeaderFloat .fa-plus')
+    find('.CID-CollectionHeaderFloat .fa-plus').click
     wait_until_loaded
     click_link('New budget')
     fill_in field_name('http://schema.org/name'), with: title, fill_options: {clear: :backspace}
@@ -22,9 +22,7 @@ RSpec.describe 'Budgets', type: :feature do
     expect_budget_content
     wait_until_loaded
     find('h2', text: 'Options').click
-    within resource_selector("https://argu.localtest/argu/budgets/#{next_id}/offers", element: '.CID-ContainerFloat') do
-      find('.fa-plus').click
-    end
+    collection_float_button("https://argu.localtest/argu/budgets/#{next_id}/offers").click
     wait_for { page }.to have_content('New option')
     fill_in_select field_name('http://schema.org/itemOffered'), with: motion_title
     fill_in field_name('https://argu.co/ns/core#price'), with: 100
