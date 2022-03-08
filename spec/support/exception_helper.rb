@@ -25,7 +25,7 @@ module ExceptionHelper
   end
 
   def example_filename(example, suffix = nil)
-    [example.full_description.tr(' ', '-'), suffix].compact.join('/')
+    [example.full_description.tr(' ', '-'), suffix].compact.join('/').gsub('#', '-')
   end
 
   def upload_browser_logs(example)
