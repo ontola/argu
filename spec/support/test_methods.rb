@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'active_support'
+require 'faraday/multipart'
 require 'http-cookie'
 require 'mailcatcher/api'
 
@@ -228,7 +229,7 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
   end
 
   def fill_in_markdown(locator, **args)
-    fill_in(locator, args)
+    fill_in(locator, **args)
   end
 
   def fill_in_registration_form(email = 'new_user@example.com')

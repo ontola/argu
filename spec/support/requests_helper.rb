@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'httparty'
+require 'faraday/multipart'
 require 'oj'
 require 'rdf'
 require 'rdf/vocab'
