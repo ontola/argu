@@ -29,9 +29,11 @@ module ExceptionHelper
   end
 
   def upload_browser_logs(example)
-    upload_javascript_console_logs(example)
-    upload_javascript_errors(example)
-    upload_javascript_logs(example)
+    Timeout.timeout(60, Timeout::Error, 'Uploading browser logs timed out') do
+      upload_javascript_console_logs(example)
+      upload_javascript_errors(example)
+      upload_javascript_logs(example)
+    end
   end
 
   def upload_javascript_console_logs(example)
