@@ -6,7 +6,7 @@ require 'rdf'
 require 'rdf/vocab'
 
 module RequestsHelper
-  LL = RDF::Vocabulary.new('http://purl.org/link-lib/')
+  LD = RDF::Vocabulary.new('http://purl.org/linked-delta/')
   FORM = RDF::Vocabulary.new('https://ns.ontola.io/form#')
   ONTOLA = RDF::Vocabulary.new('https://ns.ontola.io/core#')
 
@@ -73,7 +73,7 @@ module RequestsHelper
     @body = value.body
   end
 
-  def expect_triple(subject, predicate, object, graph = LL[:supplant])
+  def expect_triple(subject, predicate, object, graph = LD[:supplant])
     statement = RDF::Statement(normalize_iri(subject), normalize_iri(predicate), object, graph_name: graph)
     expect(body).to include(to_hndjson(statement))
   end
