@@ -14,7 +14,9 @@ RSpec.describe 'Budgets', type: :feature do
     wait_for { page }.to have_css('.CID-CollectionHeaderFloat .fa-plus')
     find('.CID-CollectionHeaderFloat .fa-plus').click
     wait_until_loaded
-    click_link('New budget')
+    within_dialog do
+      click_link('Budget')
+    end
     fill_in field_name('http://schema.org/name'), with: title, fill_options: {clear: :backspace}
     fill_in_markdown field_name('http://schema.org/text'), with: content
     click_button('Save')

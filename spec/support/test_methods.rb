@@ -142,7 +142,7 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
     wait_for { page }.to have_content('Sign in or register')
 
     wait_until_loaded
-    wrapper = modal ? "[role='dialog']" : 'form[action=\'/argu/u/session\']'
+    wrapper = modal ? "[role='presentation']" : 'form[action=\'/argu/u/session\']'
     wait_for { page }.to have_css(wrapper)
 
     within wrapper do
@@ -152,7 +152,7 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
       click_button 'Confirm'
     end
 
-    wrapper = modal ? "[role='dialog']" : 'form[action=\'/argu/login\']'
+    wrapper = modal ? "[role='presentation']" : 'form[action=\'/argu/login\']'
     wait_for { page }.to have_css(wrapper)
 
     within wrapper do
@@ -298,13 +298,13 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
   end
 
   def within_dialog
-    within "[role='dialog']" do
+    within "[role='presentation']" do
       yield
     end
   end
 
   def expect_no_dialog
-    wait_for { page }.not_to have_css("[role='dialog']")
+    wait_for { page }.not_to have_css("[role='presentation']")
   end
 
   def expect_email(email_name)

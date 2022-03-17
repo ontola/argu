@@ -28,33 +28,35 @@ RSpec.describe 'Page settings', type: :feature do
 
       collection_float_button('https://argu.localtest/argu/container_nodes?display=settingsTable').click
 
-      wait_for { page }.to have_content('New forum')
-      click_link 'New forum'
-
       within_dialog do
-        wait_for { page }.to have_css('form')
-        fill_in field_name('http://schema.org/name'), with: 'New Forum'
-        fill_in field_name('https://argu.co/ns/core#shortname'), with: 'new_forum'
-        wait_until_loaded
-        add_child_to_form('Grants')
-        wait_until_loaded
-        fill_in_select(
-          field_name('https://argu.co/ns/core#grants', 0, 'https://argu.co/ns/core#group'),
-          with: 'Public'
-        )
-        fill_in_select(
-          field_name('https://argu.co/ns/core#grants', 0, 'https://argu.co/ns/core#grantSet'),
-          with: 'Participate'
-        )
-        click_button 'Save'
+        wait_for { page }.to have_content('Forum')
+        click_link 'Forum'
       end
+
+      wait_for { page }.to have_css('form')
+      fill_in field_name('http://schema.org/name'), with: 'New Forum'
+      fill_in field_name('https://argu.co/ns/core#shortname'), with: 'new_forum'
+      wait_until_loaded
+      add_child_to_form('Grants')
+      wait_until_loaded
+      fill_in_select(
+        field_name('https://argu.co/ns/core#grants', 0, 'https://argu.co/ns/core#group'),
+        with: 'Public'
+      )
+      fill_in_select(
+        field_name('https://argu.co/ns/core#grants', 0, 'https://argu.co/ns/core#grantSet'),
+        with: 'Participate'
+      )
+      click_button 'Save'
 
       wait_for { page }.to have_snackbar 'Forum created successfully'
       within navbar do
         wait_for { page }.to have_content 'New Forum'
       end
 
-      wait_until_loaded
+      expect(page).to have_current_path('/argu/new_forum')
+
+      visit_settings
       wait_for { page }.to have_content 'Components'
       wait_until_loaded
       expect(components_row(1)).to have_content('New Forum')

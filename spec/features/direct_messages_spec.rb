@@ -29,7 +29,7 @@ RSpec.describe 'Direct messages', type: :feature do
       find('.fa-plus').click
     end
     wait_until_loaded
-    within('.MuiDialog-paper') do
+    within_dialog do
       fill_in field_name('http://schema.org/email'), with: new_email
       click_button('Add')
     end
