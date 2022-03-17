@@ -11,8 +11,9 @@ RSpec.describe 'Voting', type: :feature do
 
   let(:actor) { :guest }
   let(:after_confirmation) { nil }
+  let(:succeed_message) { 'Thanks for your vote!' }
   let(:after_vote) do
-    wait_for { page }.to have_snackbar 'Thanks for your vote!'
+    wait_for { page }.to have_snackbar succeed_message
     expect_voted(side: @side)
   end
   let(:before_vote) {}
@@ -47,6 +48,8 @@ RSpec.describe 'Voting', type: :feature do
     let(:motion_content) { 'freetown_motion-text' }
 
     context 'as guest' do
+      let(:succeed_message) { 'Please login to confirm your vote!' }
+
       it_behaves_like 'voting'
 
       context 'confirm as existing user' do
@@ -124,7 +127,7 @@ RSpec.describe 'Voting', type: :feature do
       let(:motion_content) { 'fg motion content 3end' }
       let(:after_vote) do
         accept_terms
-        wait_for { page }.to have_snackbar 'Thanks for your vote!'
+        wait_for { page }.to have_snackbar succeed_message
         expect_voted(side: @side)
       end
       let(:before_vote) do
@@ -146,6 +149,8 @@ RSpec.describe 'Voting', type: :feature do
     let(:vote_counts) { { yes: 2, no: 0 }.with_indifferent_access }
 
     context 'as guest' do
+      let(:succeed_message) { 'Please login to confirm your vote!' }
+
       it_behaves_like 'voting'
     end
 
@@ -195,7 +200,7 @@ RSpec.describe 'Voting', type: :feature do
     link_race_condition_patch
     click_button 'Disagree'
     after_vote
-    wait_for { page }.to have_snackbar 'Thanks for your vote!'
+    wait_for { page }.to have_snackbar succeed_message
     expect_voted(side: @side)
   end
 

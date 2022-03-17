@@ -13,6 +13,7 @@ RSpec.describe 'Upvoting', type: :feature do
   let(:before_vote) {}
   let(:expected_count) { 2 }
   let(:location) { '/argu/m/freetown_motion' }
+  let(:succeed_message) { 'Thanks for your vote!' }
   let(:motion_content) { 'freetown_motion-text' }
 
   shared_examples_for 'upvoting' do
@@ -31,6 +32,7 @@ RSpec.describe 'Upvoting', type: :feature do
 
   context 'as guest' do
     let(:expected_count) { 1 }
+    let(:succeed_message) { 'Please login to confirm your vote!' }
 
     it_behaves_like 'upvoting'
   end
@@ -66,7 +68,7 @@ RSpec.describe 'Upvoting', type: :feature do
     find('button[title=Upvote]').click
     return unless success
 
-    wait_for { page }.to have_snackbar 'Thanks for your vote!'
+    wait_for { page }.to have_snackbar succeed_message
     click_link class: 'MuiIconButton-root'
     expect_voted
   end
