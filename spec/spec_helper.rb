@@ -20,6 +20,7 @@ require_relative './support/slice_matchers'
 
 OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE
 
+Playwright.define_channel_owner :Tracing
 Dotenv.load
 
 RSpec.configure do |config|
