@@ -104,13 +104,9 @@ install_docker() {
 
 install_hosts() {
   ensure_hosts '127.0.0.1' 'argu.localdev'
-  ensure_hosts '127.0.0.1' 'app.argu.localdev'
   ensure_hosts '::1' 'argu.localdev'
-  ensure_hosts '::1' 'app.argu.localdev'
   ensure_hosts '127.0.0.1' 'argu.localtest'
-  ensure_hosts '127.0.0.1' 'app.argu.localtest'
   ensure_hosts '::1' 'argu.localtest'
-  ensure_hosts '::1' 'app.argu.localtest'
   ensure_hosts '127.0.0.1' 'elastic'
   ensure_hosts '127.0.0.1' 'postgres'
   ensure_hosts '127.0.0.1' 'redis'

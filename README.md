@@ -35,10 +35,8 @@ Core needs a lot of `/etc/hosts`:
 
 ```
 127.0.0.1 argu.localdev
-127.0.0.1 app.argu.localdev
  ::1 argu.localdev
 127.0.0.1 argu.localtest
-127.0.0.1 app.argu.localtest
  ::1 argu.localtest
 127.0.0.1 dexpods.localdev
 127.0.0.1 elastic
