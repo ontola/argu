@@ -21,10 +21,6 @@ SERVICES = {
   },
   email: {
     path: :email_service,
-    subscriber: {
-      command: 'bundle exec rake broadcast:subscribe',
-      depends_on: 'rabbitmq'
-    },
     worker: {
       command: 'bundle exec sidekiq -e staging'
     }
