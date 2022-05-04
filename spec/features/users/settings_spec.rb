@@ -76,7 +76,7 @@ RSpec.describe 'User settings', type: :feature do
       visit_settings
       expect_email_row(1, 'user1@example.com', true, true)
       wait_until_loaded
-      find('h2', text: 'Email addresses').click
+      find('h3', text: 'Email addresses').click
       collection_float_button('https://argu.localtest/argu/email_addresses?display=settingsTable').click
       fill_in field_name('http://schema.org/email'), with: new_email
       click_button 'Add'
