@@ -23,8 +23,8 @@ Core serves as a testing suite and development proxy server for various Ontola p
 1. Run the following commands in your local Argu backend Rails Console (e.g. `docker-compose exec argu bundle exec rails c`) and set the .env variables:
 
 ```
-ARGU_APP_ID = Doorkeeper::Application.argu.uid
-ARGU_APP_SECRET = Doorkeeper::Application.argu.secret
+LIBRO_CLIENT_ID = Doorkeeper::Application.argu.uid
+LIBRO_CLIENT_SECRET = Doorkeeper::Application.argu.secret
 RAILS_OAUTH_TOKEN = Doorkeeper::Application.argu_front_end.access_tokens.find_by(scopes: :service).token
 SERVICE_TOKEN = Doorkeeper::Application.argu.access_tokens.find_by(scopes: :service).token
 ```
