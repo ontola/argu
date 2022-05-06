@@ -31,8 +31,8 @@ ci_build:
   services:
     - docker:18.09-dind
   script:
-    - docker build -t $CI_REGISTRY_IMAGE:base -f dockerfiles/testrunner-base.Dockerfile .
-    - docker push $CI_REGISTRY_IMAGE:base
+    - docker build -t $CI_REGISTRY_IMAGE:base-pw -f dockerfiles/testrunner-base.Dockerfile .
+    - docker push $CI_REGISTRY_IMAGE:base-pw
   rules:
     - changes:
         - ./dockerfiles/testrunner-base.Dockerfile

@@ -1,4 +1,4 @@
-FROM registry.gitlab.com/ontola/core:base
+FROM registry.gitlab.com/ontola/core:base-pw
 
 COPY . /usr/src/app
 COPY ./devproxyCA /usr/src/app/devproxyCA
