@@ -46,7 +46,6 @@ Core needs a lot of `/etc/hosts`:
 127.0.0.1 elastic_search
 127.0.0.1 postgres
 127.0.0.1 redis
-127.0.0.1 rabbitmq
 127.0.0.1 mailcatcher
 127.0.0.1 token.svc.cluster.localdev
 127.0.0.1 email.svc.cluster.localdev

@@ -24,14 +24,6 @@ module ComposeCreator
       base_opts[:ports] = ["#{opts[:port]}:#{opts[:port]}"] if opts[:port]
       service_base = service_entry_item(base_opts)
       derivative_opts = derivative_opts_filter(opts)
-      subscriber_service =
-        if opts[:subscriber]
-          subscriber_opts = derivative_opts
-                              .merge(subscriber_template_opts(derivative_opts))
-                              .merge(name: "#{name}_subscriber")
-                              .merge(derivative_opts[:subscriber])
-          service_entry_item(subscriber_opts)
-        end
       worker_service =
         if opts[:worker]
           worker_opts = derivative_opts
@@ -41,7 +33,7 @@ module ComposeCreator
           service_entry_item(worker_opts)
         end
 
-      [service_base, setup_service, worker_service, subscriber_service].compact.join
+      [service_base, setup_service, worker_service].compact.join
     end
 
     def testrunner_entry
@@ -118,7 +110,6 @@ END_HEREDOC
         'depends_on' => %w[
           redis
           postgres
-          rabbitmq
           elastic
         ],
         'port' => port(opts[:port]),
@@ -144,12 +135,6 @@ END_HEREDOC
         'expose' => nil,
         'health' => nil,
         'networks' => nil,
-      )
-    end
-
-    def subscriber_template_opts(opts)
-      base_template(opts).merge(
-        'volumes' => ['certdata:/etc/ssl/certs']
       )
     end
 
@@ -181,12 +166,6 @@ END_HEREDOC
       return "" unless opts[:worker]
 
       "  #{opts[:name]}_worker  "
-    end
-
-    def subscriber_entry(opts)
-      return "" unless opts[:subscriber]
-
-      "  #{opts[:name]}_subscriber  "
     end
 
     def port(port)
