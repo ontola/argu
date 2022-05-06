@@ -110,6 +110,7 @@ install_hosts() {
   ensure_hosts '127.0.0.1' 'elastic'
   ensure_hosts '127.0.0.1' 'postgres'
   ensure_hosts '127.0.0.1' 'redis'
+  ensure_hosts '127.0.0.1' 'rabbitmq'
   ensure_hosts '127.0.0.1' 'mailcatcher'
   ensure_hosts '127.0.0.1' 'prometheus'
   ensure_hosts '127.0.0.1' 'grafana'

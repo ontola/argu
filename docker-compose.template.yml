@@ -70,6 +70,16 @@ services:{testrunner}
     ports:
       - 1080:1080
       - 1025:1025
+  rabbitmq:
+    image: healthcheck/rabbitmq
+    ports:
+      - 15672:15672
+      - 5672:5672
+    networks:
+      default:
+      external:
+    volumes:
+      - rabbitdata:/var/lib/rabbitmq
   prometheus:
     image: prom/prometheus
     ports:
@@ -109,6 +119,7 @@ networks:
 volumes:
   certdata:
   pgdata:
+  rabbitdata:
   redisdata:
   promdata:
   grafanadata:
