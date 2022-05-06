@@ -17,9 +17,10 @@ RSpec.describe 'Delete', type: :feature do
     click_button 'Delete'
 
     wait_for { page }.to have_snackbar "Idea deleted successfully"
-    expect(page).to have_current_path('/argu/m/freetown_motion')
 
-    visit '/argu/m/freetown_motion'
-    wait_for { page }.to have_content 'This item is not found'
+    expect(page).to have_current_path('/argu/freetown')
+
+    wait_for { page }.to have_content 'Freetown_question-title'
+    expect(page).not_to have_content 'Freetown_motion-title'
   end
 end

@@ -25,7 +25,7 @@ RSpec.describe 'Disabled actions', type: :feature do
   context 'trashed question' do
     let(:location) { '/argu/q/trashed_question' }
     let(:state_expectation) { expect(page).to have_content('This resource has been deleted on') }
-    let(:vote_buttons_expectation) { expect(page).not_to have_css('.Button') }
+    let(:vote_buttons_expectation) { expect(find('#start-of-content')).not_to have_css('.Button') }
 
     it_behaves_like 'cannot perform actions'
   end
@@ -42,7 +42,7 @@ RSpec.describe 'Disabled actions', type: :feature do
 
   context 'motion of trashed question' do
     let(:location) { '/argu/m/trashed_question' }
-    let(:vote_buttons_expectation) { expect(page).not_to have_css('.Button') }
+    let(:vote_buttons_expectation) { expect(find('#start-of-content')).not_to have_css('.Button') }
 
     it_behaves_like 'cannot perform actions'
   end
