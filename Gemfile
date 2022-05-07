@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 source 'https://rubygems.org/'
+ruby '~> 3'
 
 gem 'activesupport'
 gem 'capybara'
@@ -17,6 +18,7 @@ gem 'rake'
 gem 'rdf'
 gem 'rdf-vocab'
 gem 'redis'
+gem 'rexml'
 gem 'rspec'
 gem 'rspec-instafail'
 gem 'rspec_junit_formatter'
