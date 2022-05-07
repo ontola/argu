@@ -5,12 +5,16 @@ require 'oj'
 require 'rdf'
 require 'rdf/vocab'
 
+require_relative './slice_helper_methods'
+
 module RequestsHelper
+  include SliceHelperMethods
+
   LD = RDF::Vocabulary.new('http://purl.org/linked-delta/')
   FORM = RDF::Vocabulary.new('https://ns.ontola.io/form#')
   ONTOLA = RDF::Vocabulary.new('https://ns.ontola.io/core#')
 
-  attr_reader :response, :request, :headers, :body
+  attr_reader :response, :request, :headers, :body, :current_slice
 
   def bulk(resources, **opts)
     set_result HTTParty.post(
@@ -29,7 +33,7 @@ module RequestsHelper
     end
     response = conn.put do |req|
       req.headers.merge!(
-        'Accept': 'application/hex+x-ndjson',
+        'Accept': 'application/empathy+json',
         'Content-Type': 'multipart/form-data',
         'Cookie' => HTTP::Cookie.cookie_value(cookies),
         'X-CSRF-Token' => csrf,
@@ -43,13 +47,13 @@ module RequestsHelper
 
   def request_headers
     {
-      Accept: 'application/hex+x-ndjson',
+      Accept: 'application/empathy+json',
       'Accept-Language': 'en-US',
       'Cookie': @cookies && HTTP::Cookie.cookie_value(@cookies),
       'Website-IRI': 'https://argu.localtest/argu',
       'X-Forwarded-Host': 'argu.localtest',
       'X-Forwarded-Proto': 'https',
-      'X-Forwarded-Ssl': 'on',
+      'X-Forwarded-Ssl': 'on'
     }
   end
 
@@ -71,11 +75,17 @@ module RequestsHelper
     @response = value.response
     @headers = value.headers
     @body = value.body
+    @current_slice = value.body ? Oj.load(value.body) : {}
   end
 
-  def expect_triple(subject, predicate, object, graph = LD[:supplant])
-    statement = RDF::Statement(normalize_iri(subject), normalize_iri(predicate), object, graph_name: graph)
-    expect(body).to include(to_hndjson(statement))
+  def expect_value(subject, predicate, object)
+    expect_slice_attribute(
+      current_slice,
+      normalize_iri(subject),
+      normalize_iri(predicate),
+      object,
+      current_tenant
+    )
   end
 
   def to_hndjson(st)

@@ -18,6 +18,7 @@ require 'support/requests_helper'
 require 'support/selectors'
 
 require_relative '../services'
+require_relative './support/slice_matchers'
 
 OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE
 
@@ -34,6 +35,7 @@ RSpec.configure do |config|
   config.include DockerHelper
   config.include TestMethods
   config.include Selectors
+  config.include SliceMatchers
 
   config.expect_with :rspec do |expectations|
     expectations.include_chain_clauses_in_custom_matcher_descriptions = true

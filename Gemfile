@@ -10,6 +10,7 @@ gem 'dotenv'
 gem 'faraday'
 gem 'http-cookie'
 gem 'httparty'
+gem 'linked_rails', git: 'https://github.com/ontola/linked_rails', branch: :empathy
 gem 'oj'
 gem 'mailcatcher-api'
 gem 'rake'
