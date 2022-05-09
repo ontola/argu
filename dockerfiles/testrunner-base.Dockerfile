@@ -1,4 +1,4 @@
-FROM circleci/ruby:2.7-rc-stretch-browsers
+FROM circleci/ruby:2.7-buster-browsers
 
 RUN sudo apt-get -qy update && sudo apt-get -qfy install docker git tzdata openssh-client build-essential libxml2-dev \
         libffi-dev libxslt-dev liblzma-dev \

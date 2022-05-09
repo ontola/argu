@@ -59,7 +59,7 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
       end
       response = conn.post do |req|
         req.headers.merge!(
-          'Accept': 'application/hex+x-ndjson',
+          'Accept': 'application/empathy+json',
           'Content-Type': 'multipart/form-data',
           'Cookie' => HTTP::Cookie.cookie_value(cookies),
           'X-CSRF-Token' => csrf,
