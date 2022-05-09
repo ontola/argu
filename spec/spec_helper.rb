@@ -92,12 +92,12 @@ end
 
 Capybara.register_driver :selenium_chrome do |app|
   capabilities = Selenium::WebDriver::Remote::Capabilities.chrome(
-    'elementScrollBehavior' => 1,
+    # 'elementScrollBehavior' => 1,
     'goog:loggingPrefs' => {browser: 'ALL'},
-    loggingPrefs: {
-      browser: 'ALL'
-    },
-    chromeOptions: {w3c: false}
+    # loggingPrefs: {
+    #   browser: 'ALL'
+    # }
+    # chromeOptions: {w3c: false}
   )
 
   client = Selenium::WebDriver::Remote::Http::Default.new
@@ -113,7 +113,7 @@ Capybara.register_driver :selenium_chrome do |app|
   options.add_argument('--disable-popup-blocking')
   options.add_argument('--no-sandbox')
   options.add_preference('intl.accept_languages', 'en-US')
-  options.add_option('w3c', false)
+  # options.add_option('w3c', false)
 
   Capybara::Selenium::Driver.new(
     app,
@@ -148,16 +148,16 @@ end
 
 Capybara::Node::Base.prepend CapybaraNodeFix
 
-module CapybaraExecuteFix
-  def execute(*args)
-    super
-  rescue Selenium::WebDriver::Error::StaleElementReferenceError
-    sleep 1
-    super
-  end
-end
-
-Selenium::WebDriver::Remote::OSS::Bridge.prepend CapybaraExecuteFix
+# module CapybaraExecuteFix
+#   def execute(*args)
+#     super
+#   rescue Selenium::WebDriver::Error::StaleElementReferenceError
+#     sleep 1
+#     super
+#   end
+# end
+#
+# Selenium::WebDriver::Remote::OSS::Bridge.prepend CapybaraExecuteFix
 
 module WaitFix
   def with_wait(*args)
