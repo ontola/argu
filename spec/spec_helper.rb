@@ -108,7 +108,7 @@ Capybara.register_driver(:playwright) do |app|
   )
 end
 
-Capybara.default_max_wait_time = 30
+Capybara.default_max_wait_time = 15
 
 MailCatcher::API.configure do |config|
   config.server = 'http://mailcatcher:1080'
