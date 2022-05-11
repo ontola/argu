@@ -99,12 +99,18 @@ Capybara.configure do |config|
 end
 
 Capybara.register_driver(:playwright) do |app|
+  height = ENV['CI'] == 'true' ? 2000 : 768
+
   Capybara::Playwright::Driver.new(
     app,
     browser_type: :chromium,
     headless: ENV['NO_HEADLESS'] ? false : true,
     chromiumSandbox: false,
     ignoreHTTPSErrors: true,
+    viewport: {height: height, width: 1024},
+    recordVideo: {
+      size: {height: height, width: 1024}
+    }
   )
 end
 
