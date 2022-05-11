@@ -197,7 +197,9 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
         page.fill(field_selector('https://ns.ontola.io/core#password'), password)
       end
 
-      unless two_fa
+      if two_fa
+        click_button 'Continue'
+      else
         Capybara.current_session.driver.with_playwright_page do |page|
           if expect_reload
             page.expect_navigation do
@@ -207,17 +209,15 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
             click_button 'Continue'
           end
         end
-      else
-        click_button 'Continue'
       end
     end
 
     return unless two_fa
 
-    wait_for{ page }.to have_content('Two factor authentication')
+    wait_for { page }.to have_content('Two factor authentication')
     otp = var_from_rails_console("EmailAddress.find_by(email: '#{email}').user.otp_secret.otp_code")
-    fill_in field_name('https://argu.co/ns/core#otp'), with: otp, fill_options: {clear: :backspace}
     Capybara.current_session.driver.with_playwright_page do |page|
+      page.fill(field_selector('https://argu.co/ns/core#otp'), otp)
       if expect_reload
         page.expect_navigation do
           click_button 'Continue'

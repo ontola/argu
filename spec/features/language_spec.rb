@@ -23,7 +23,7 @@ RSpec.describe 'Language', type: :feature do
 
     wait_for {
       Capybara.current_session.driver.with_playwright_page do |page|
-          page.locator('text=Taal instellen').visible?
+        page.locator('text=Taal instellen').visible?
       end
     }.to be_truthy
     wait_for {

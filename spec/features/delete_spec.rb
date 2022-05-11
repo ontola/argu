@@ -19,12 +19,12 @@ RSpec.describe 'Delete', type: :feature do
     wait_for { page }.to have_snackbar "Idea deleted successfully"
 
     Capybara.current_session.driver.with_playwright_page do |page|
-      page.expect_navigation {
+      page.expect_navigation do
         visit '/argu/freetown'
-      }
-
-      wait_for { page }.to have_content 'Freetown_question-title'
-      wait_for { page }.not_to have_content 'Freetown_motion-title'
+      end
     end
+
+    wait_for { page }.to have_content 'Freetown_question-title'
+    wait_for { page }.not_to have_content 'Freetown_motion-title'
   end
 end

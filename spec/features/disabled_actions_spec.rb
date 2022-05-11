@@ -53,7 +53,7 @@ RSpec.describe 'Disabled actions', type: :feature do
     let(:location) { '/argu/m/expired_motion' }
     let(:vote_buttons_expectation) do
       Capybara.current_session.driver.with_playwright_page do |page|
-        wait_for { page.locator('.Button[disabled][title="Voting is no longer possible"]').count }.to eq 3
+        wait_for { page.locator('.Button[disabled][title="Voting is no longer possible"]').count }.to be >= 3
       end
     end
 
