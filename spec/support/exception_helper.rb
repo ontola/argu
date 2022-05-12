@@ -16,16 +16,16 @@ module ExceptionHelper
 
   def upload_container_logs(example)
     docker_containers.each do |container|
-        upload_exception_file(
-          container.logs(stdout: true, stderr: true),
-          example,
-          "#{docker_container_name(container)}_#{container.id}.txt"
-        )
+      upload_exception_file(
+        container.logs(stdout: true, stderr: true),
+        example,
+        "#{docker_container_name(container)}_#{container.id}.txt"
+      )
     end
   end
 
   def example_filename(example, suffix = nil)
-    [example.full_description.tr(' ', '-'), suffix].compact.join('/').gsub('#', '-')
+    [example.full_description, suffix].compact.join('/').gsub('#', '-')
   end
 
   def upload_browser_logs(example)
