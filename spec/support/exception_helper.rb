@@ -17,7 +17,7 @@ module ExceptionHelper
   def upload_container_logs(example)
     docker_containers.each do |container|
       upload_exception_file(
-        container.logs(stdout: true, stderr: true),
+        container.logs(stdout: true, stderr: true, since: example.metadata[:start_time].to_time.to_i),
         example,
         "#{docker_container_name(container)}_#{container.id}.txt"
       )

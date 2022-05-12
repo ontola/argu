@@ -70,6 +70,7 @@ RSpec.configure do |config|
   end
 
   config.before do |example|
+    example.metadata[:start_time] = DateTime.now
     cleanup_before_test
 
     Capybara.current_session.driver.on_save_raw_screenshot_before_reset do |raw_screenshot|
@@ -82,6 +83,8 @@ RSpec.configure do |config|
   end
 
   config.after do |example|
+    example.metadata[:end_time] = DateTime.now
+
     if example.exception
       puts 'Uploading exception details'
       upload_container_logs(example)
