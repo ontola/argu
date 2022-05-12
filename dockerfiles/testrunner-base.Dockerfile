@@ -1,9 +1,17 @@
 FROM mcr.microsoft.com/playwright:v1.21.0-focal
 
 RUN apt-get -qy update && apt-get -qfy install docker git tzdata openssh-client \
-        build-essential libxml2-dev libffi-dev libxslt-dev liblzma-dev \
-        ruby ruby-dev \
+        build-essential libxml2-dev libffi-dev libxslt-dev liblzma-dev libssl-dev zlib1g-dev \
         && rm -rf /var/cache/apk/*
+
+
+RUN git clone https://github.com/rbenv/rbenv.git /root/.rbenv; \
+    git clone https://github.com/rbenv/ruby-build.git /root/.rbenv/plugins/ruby-build; \
+    /root/.rbenv/plugins/ruby-build/install.sh; \
+    /root/.rbenv/bin/rbenv install 3.0.2
+ENV PATH /root/.rbenv/versions/3.0.2/bin:$PATH
+
+RUN /root/.rbenv/versions/3.0.2/bin/gem -v
 
 USER root:root
 
