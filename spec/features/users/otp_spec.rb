@@ -18,8 +18,12 @@ RSpec.describe 'Otp', type: :feature do
       otp = var_from_rails_console('EmailAddress.find_by(email: \'user1@example.com\').user.otp_secret.otp_code')
 
       fill_in field_name('https://argu.co/ns/core#otp'), with: otp, fill_options: {clear: :backspace}
-      click_button 'Continue'
-      wait_until_loaded
+
+      Capybara.current_session.driver.with_playwright_page do |page|
+        page.expect_navigation do
+          click_button 'Continue'
+        end
+      end
       visit_settings
 
       wait_for { page }.to have_link('Disable two factor authentication')

@@ -297,8 +297,6 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
   end
 
   def go_to_user_page(tab: nil, user: 'user_name_2')
-    wait_until_loaded
-
     click_user_menu_button('Settings')
 
     return if tab.nil?
