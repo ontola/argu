@@ -74,6 +74,10 @@ File.open(File.expand_path('docker-compose.template.yml')) do |source_file|
 
   contents.gsub!(/\{testrunner\}/, ComposeCreator.testrunner_entry)
 
+  document = YAML.safe_load(contents)
+  document['services'].reject! { |k| local_ports.key?(k) }
+  contents = YAML.dump(document)
+
   # Write to docker-compose file
   File.open(File.expand_path('docker-compose.yml'), 'w+') { |f| f.write(contents) }
 end
