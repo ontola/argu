@@ -11,7 +11,7 @@ RUN git clone https://github.com/rbenv/rbenv.git /root/.rbenv; \
     /root/.rbenv/bin/rbenv install 3.0.2
 ENV PATH /root/.rbenv/versions/3.0.2/bin:$PATH
 
-RUN /root/.rbenv/versions/3.0.2/bin/gem -v
+RUN npx playwright install chromium
 
 USER root:root
 
