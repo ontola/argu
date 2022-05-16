@@ -62,14 +62,14 @@ RSpec.describe 'Invites', type: :feature do
   def invite_email_1
     @invite_email_1 ||= mailcatcher_email(
       to: ['invitee1@example.com'],
-      subject: 'Uitnodiging voor Argu page'
+      subject: 'Invitation for Argu page'
     )
   end
 
   def invite_email_2
     @invite_email_2 ||= mailcatcher_email(
       to: ['invitee2@example.com'],
-      subject: 'Uitnodiging voor Argu page'
+      subject: 'Invitation for Argu page'
     )
   end
 

@@ -51,7 +51,7 @@ RSpec.describe 'Token email management', type: :feature do
   private
 
   def invite_email
-    @invite_email ||= mailcatcher_email(to: ['user3@example.com'], subject: 'Uitnodiging voor Argu page')
+    @invite_email ||= mailcatcher_email(to: ['user3@example.com'], subject: 'Invitation for Argu page')
   end
 
   def token_row(row = 1)
