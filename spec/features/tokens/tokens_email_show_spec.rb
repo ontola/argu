@@ -20,7 +20,11 @@ RSpec.describe 'Token email show', type: :feature do
 
       wait_for { page }.to have_content('The invitation you are following is meant for invitee@example.com')
       expect(page).to have_content('add invitee@example.com')
-      click_button 'Create new account'
+      Capybara.current_session.driver.with_playwright_page do |page|
+        page.expect_navigation do
+          click_button 'Create new account'
+        end
+      end
 
       fill_in_registration_form 'invitee@example.com'
 
