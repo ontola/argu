@@ -293,7 +293,7 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
   end
 
   def next_id
-    118
+    120
   end
 
   def go_to_user_page(tab: nil, user: 'user_name_2')
