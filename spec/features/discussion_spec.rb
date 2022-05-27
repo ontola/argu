@@ -35,7 +35,7 @@ RSpec.describe 'Discussions', type: :feature do
     wait_for { page }.to have_button 'Save'
     select_cover_photo
     select_attachment
-    click_button 'Save'
+    submit_form
     expect_draft_message('Challenge')
     expect_content("q/#{next_id}", creator: 'New user', images: false)
   end
@@ -49,7 +49,7 @@ RSpec.describe 'Discussions', type: :feature do
     wait_for { page }.to have_button 'Save'
     select_cover_photo
     select_attachment
-    click_button 'Save'
+    submit_form
     expect_draft_message('Challenge')
     expect_content("q/#{next_id}", creator: 'user_name_2', images: false)
   end
@@ -145,7 +145,7 @@ RSpec.describe 'Discussions', type: :feature do
         with: 'https://www.youtube.com/watch?v=mxQZNodm8OI'
       )
     end
-    click_button 'Save'
+    submit_form
     expect_updated_message('Idea')
     wait_for { page }.to have_css(test_selector('ImageAttachmentPreview'))
     find(test_selector('ImageAttachmentPreview')).click
@@ -178,7 +178,7 @@ RSpec.describe 'Discussions', type: :feature do
     else
       expect(page).not_to have_content("div[aria-labelledby='#{field_name('http://schema.org/creator')}-label']")
     end
-    click_button submit
+    submit_form(submit)
   end
 
   def expect_content(path, creator: 'user_name_26', images: true)
@@ -195,11 +195,19 @@ RSpec.describe 'Discussions', type: :feature do
       click_button 'On my computer'
       attach_file(nil, File.absolute_path('spec/fixtures/profile_photo.png'), make_visible: true)
     end
+    wait_for { page }.to have_css('input[value="profile_photo.png"]', visible: false)
   end
 
   def select_cover_photo
     within('fieldset[property="https://ns.ontola.io/core#coverPhoto"]') do
       attach_file(nil, File.absolute_path('spec/fixtures/cover_photo.jpg'), make_visible: true)
     end
+    wait_for { page }.to have_css('input[value="cover_photo.jpg"]', visible: false)
+  end
+
+  def submit_form(submit = 'Save')
+    wait_for { page }.to have_css('form:valid')
+
+    click_button submit
   end
 end

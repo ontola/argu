@@ -177,7 +177,7 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
     wait_for { page }.to have_content('Sign in or register')
 
     wait_until_loaded
-    wrapper = modal ? "[role='presentation']" : 'form[action=\'/argu/u/session\']'
+    wrapper = modal ? ".MuiModal-root[role='presentation']" : 'form[action=\'/argu/u/session\']'
     wait_for { page }.to have_css(wrapper)
 
     within wrapper do
@@ -187,7 +187,7 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
       click_button 'Confirm'
     end
 
-    wrapper = modal ? "[role='presentation']" : 'form[action=\'/argu/login\']'
+    wrapper = modal ? ".MuiModal-root[role='presentation']" : 'form[action=\'/argu/login\']'
     Capybara.current_session.driver.with_playwright_page do |page|
       wait_for { page.locator(wrapper).count }.to be 1
     end
@@ -287,9 +287,9 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
     resource_selector("#{resource}/menus/#{menu}").click
     wait_until_loaded
     yield if block_given?
-    wait_for { page }.to have_css('.MuiListItem-button', text: text)
+    wait_for { page }.to have_css('.MuiListItemText-primary', text: text)
     sleep(1)
-    find('.MuiListItem-button', text: text, match: :prefer_exact).click
+    find('.MuiListItemText-primary', text: text, match: :prefer_exact).click
   end
 
   def next_id
@@ -356,13 +356,13 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
   end
 
   def within_dialog
-    within "[role='presentation']" do
+    within ".MuiModal-root[role='presentation']" do
       yield
     end
   end
 
   def expect_no_dialog
-    wait_for { page }.not_to have_css("[role='presentation']")
+    wait_for { page }.not_to have_css(".MuiModal-root[role='presentation']")
   end
 
   def expect_email(email_name)

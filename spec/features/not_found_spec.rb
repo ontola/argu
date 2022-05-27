@@ -11,6 +11,6 @@ RSpec.describe 'Not found', type: :feature do
   example 'request non existing path' do
     as(:guest, location: '/argu/wrong_tenant')
     wait_for { page }.to have_content('This item is not found')
-    wait_for { page }.to have_button('Log in')
+    wait_for { page }.to have_link('Log in')
   end
 end

@@ -67,17 +67,10 @@ RSpec.describe 'Surveys', type: :feature do
   def expect_submitted
     Capybara.current_session.driver.with_playwright_page do |page|
       within_dialog do
-        wait_for { page.locator('[role="presentation"]:has-text("Thank you for your response")').visible? }.to be_truthy
+        wait_for { page.locator('.MuiModal-root[role="presentation"]:has-text("Thank you for your response")').visible? }.to be_truthy
       end
       visit survey_path
       wait_for { page.locator('text=Thank you for your response').visible? }.to be_truthy
-
-      if reward
-        wait_for { page.locator('text=Claim reward').visible? }.to be_truthy
-      else
-        wait_until_loaded
-        wait_for { page.locator('text=Claim reward').count }.to eq 0
-      end
     end
   end
 

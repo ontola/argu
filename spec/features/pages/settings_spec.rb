@@ -102,7 +102,7 @@ RSpec.describe 'Page settings', type: :feature do
 
       find('h2', text: 'Redirects').click
 
-      collection_float_button('https://argu.localtest/argu/shortnames?display=settingsTable').click
+      collection_float_button('https://argu.localtest/argu/shortnames').click
       wait_for { page }.to have_content('New redirect')
       fill_in field_name('https://argu.co/ns/core#shortname'), with: 'question66'
       fill_in field_name('https://argu.co/ns/core#destination'), with: 'https://argu.localtest/argu/q/expired_question'
@@ -131,7 +131,7 @@ RSpec.describe 'Page settings', type: :feature do
 
   def shortnames_row(row = 1)
     resource_selector(
-      'https://argu.localtest/argu/shortnames?display=settingsTable',
+      'https://argu.localtest/argu/shortnames',
       child: "tbody tr:nth-child(#{row})",
       element: '.CID-Card'
     )

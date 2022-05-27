@@ -50,7 +50,7 @@ RSpec.describe 'Token email show', type: :feature do
       as(:guest, location: token)
 
       wait_for { page }.to have_content('An account for this email address already exists.')
-      click_button 'Log in'
+      click_link 'Log in'
 
       fill_in_login_form
 
@@ -97,7 +97,7 @@ RSpec.describe 'Token email show', type: :feature do
       as(:guest, location: token)
 
       wait_for { page }.to have_content('An account for this email address already exists.')
-      click_button 'Log in'
+      click_link 'Log in'
 
       fill_in_login_form 'member@example.com'
 

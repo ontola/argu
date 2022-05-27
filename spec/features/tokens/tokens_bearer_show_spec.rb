@@ -11,7 +11,7 @@ RSpec.describe 'Token bearer show', type: :feature do
 
       wait_for { page }.to have_content("You have been invited for the group 'Members'")
 
-      click_button 'Log in'
+      click_link 'Log in'
       fill_in_registration_form
 
       cancel_setup
@@ -23,7 +23,7 @@ RSpec.describe 'Token bearer show', type: :feature do
 
       wait_for { page }.to have_content("You have been invited for the group 'Members'")
 
-      click_button 'Log in'
+      click_link 'Log in'
       fill_in_login_form
 
       accept_token
@@ -34,7 +34,7 @@ RSpec.describe 'Token bearer show', type: :feature do
 
       wait_for { page }.to have_content("You have been invited for the group 'Members'")
 
-      click_button 'Log in'
+      click_link 'Log in'
 
       fill_in_login_form 'member@example.com'
 
