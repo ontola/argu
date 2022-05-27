@@ -125,7 +125,7 @@ END_HEREDOC
         'networks' => {
           'default' => {
             'aliases' => [
-              "#{opts[:name].to_s.dasherize}.svc.cluster.local"
+              "#{opts[:name].to_s.dasherize}.svc.cluster.localdev"
             ]
           },
         }

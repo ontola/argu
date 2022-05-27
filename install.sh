@@ -114,10 +114,10 @@ install_hosts() {
   ensure_hosts '127.0.0.1' 'mailcatcher'
   ensure_hosts '127.0.0.1' 'prometheus'
   ensure_hosts '127.0.0.1' 'grafana'
-  ensure_hosts '127.0.0.1' 'token.svc.cluster.local'
-  ensure_hosts '127.0.0.1' 'email.svc.cluster.local'
-  ensure_hosts '127.0.0.1' 'argu.svc.cluster.local'
-  ensure_hosts '127.0.0.1' 'frontend.svc.cluster.local'
+  ensure_hosts '127.0.0.1' 'token.svc.cluster.localdev'
+  ensure_hosts '127.0.0.1' 'email.svc.cluster.localdev'
+  ensure_hosts '127.0.0.1' 'argu.svc.cluster.localdev'
+  ensure_hosts '127.0.0.1' 'frontend.svc.cluster.localdev'
 }
 
 setup_path() {

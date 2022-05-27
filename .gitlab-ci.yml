@@ -12,7 +12,7 @@ before_script:
   - sudo sh -c "echo '127.0.0.1 app.argu.localtest' >> /etc/hosts"
   - sudo sh -c "echo '127.0.0.1 argu.localtest' >> /etc/hosts"
   - sudo sh -c "echo '127.0.0.1 demogemeente.localdev' >> /etc/hosts"
-  - sudo sh -c "echo '127.0.0.1 frontend.svc.cluster.local' >> /etc/hosts"
+  - sudo sh -c "echo '127.0.0.1 frontend.svc.cluster.localdev' >> /etc/hosts"
   - echo "" > ./.env.dev
   - echo FRONTEND_SERVICE_PORT=3080 >> ./.env.template
   - echo DEFAULT_LOCALE=en >> ./.env.template

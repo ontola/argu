@@ -48,10 +48,10 @@ Core needs a lot of `/etc/hosts`:
 127.0.0.1 redis
 127.0.0.1 rabbitmq
 127.0.0.1 mailcatcher
-127.0.0.1 token.svc.cluster.local
-127.0.0.1 email.svc.cluster.local
-127.0.0.1 argu.svc.cluster.local
-127.0.0.1 frontend.svc.cluster.local
+127.0.0.1 token.svc.cluster.localdev
+127.0.0.1 email.svc.cluster.localdev
+127.0.0.1 argu.svc.cluster.localdev
+127.0.0.1 frontend.svc.cluster.localdev
 127.0.0.1 dextransfer.localdev
 ```
 

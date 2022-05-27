@@ -17,7 +17,7 @@ scrape_configs:
         names:
           - argu.cloud66.local
           - argu_collector.cloud66.local
-          - argu.svc.cluster.local
+          - argu.svc.cluster.localdev
     static_configs:
       - targets:
         - "host.docker.internal:9394"
@@ -32,10 +32,10 @@ scrape_configs:
         port: 3080
         names:
           - frontend.cloud66.local
-          - frontend.svc.cluster.local
+          - frontend.svc.cluster.localdev
     static_configs:
       - targets:
-        - "frontend.svc.cluster.local:3080"
+        - "frontend.svc.cluster.localdev:3080"
         labels:
           service: frontend
           component: server
