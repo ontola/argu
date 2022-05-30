@@ -59,6 +59,10 @@ module ExceptionHelper
     LOGGER.error "Failed to show javascript logs: #{e.message}"
   end
 
+  def upload_html(example, html)
+    upload_exception_file(html, example, 'index.html')
+  end
+
   def upload_screenshot(example, raw_screenshot)
     upload_exception_file(raw_screenshot, example, 'screenshot.png')
   end

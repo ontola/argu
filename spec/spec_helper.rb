@@ -74,11 +74,12 @@ RSpec.configure do |config|
     cleanup_before_test
 
     Capybara.current_session.driver.on_save_raw_screenshot_before_reset do |raw_screenshot|
-      upload_screenshot(example, raw_screenshot)
+      upload_html(example, page.html) if example.exception
+      upload_screenshot(example, raw_screenshot) if example.exception
     end
 
     Capybara.current_session.driver.on_save_screenrecord do |video_path|
-      upload_screenrecord(example, video_path)
+      upload_screenrecord(example, video_path) if example.exception
     end
   end
 
