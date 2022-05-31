@@ -1,14 +1,11 @@
 # frozen_string_literal: true
 
 require 'empathy/emp_json/helpers/slices'
-require 'empathy/emp_json/constants'
-require 'empathy/emp_json/primitives'
-require 'empathy/emp_json/fields'
+require 'empathy/emp_json/helpers/primitives'
 
 module SliceHelperMethods
   include Empathy::EmpJson::Helpers::Slices
-  include Empathy::EmpJson::Primitives
-  include Empathy::EmpJson::Fields
+  include Empathy::EmpJson::Helpers::Primitives
 
   attr_accessor :symbolize
 
