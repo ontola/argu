@@ -10,7 +10,7 @@ RSpec.describe 'Token bearer management', type: :feature do
     find('h2', text: 'Invite links').click
     wait_for { page }.to have_content 'Invite links'
 
-    collection_float_button('https://argu.localtest/argu/tokens/g/111/bearer?display=settingsTable').click
+    collection_float_button(expand: false).click
 
     wait_for { page }.to have_content('New invite link')
     fill_in field_name('https://ns.ontola.io/core#redirectUrl'), with: 'https://www.example.com'

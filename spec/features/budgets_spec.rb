@@ -10,11 +10,7 @@ RSpec.describe 'Budgets', type: :feature do
   example 'Create budget and add offers' do
     as 'staff@example.com', location: '/argu/freetown'
     wait_until_loaded
-    find('h2', text: 'Topics').click
-    Capybara.current_session.driver.with_playwright_page do |page|
-      page.wait_for_selector(".CID-CollectionHeaderFloat .fa-plus")
-    end
-    find('.CID-CollectionHeaderFloat .fa-plus').click
+    collection_float_button.click
     wait_until_loaded
     within_dialog do
       click_link('Budget')
@@ -26,7 +22,7 @@ RSpec.describe 'Budgets', type: :feature do
     expect_budget_content
     wait_until_loaded
     find('h2', text: 'Options').click
-    collection_float_button("https://argu.localtest/argu/budgets/#{next_id}/offers").click
+    collection_float_button.click
 
     Capybara.current_session.driver.with_playwright_page do |page|
       page.locator('text=New option')

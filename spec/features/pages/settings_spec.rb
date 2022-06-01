@@ -26,7 +26,7 @@ RSpec.describe 'Page settings', type: :feature do
 
       find('h2', text: 'Components').click
 
-      collection_float_button('https://argu.localtest/argu/container_nodes?display=settingsTable').click
+      collection_float_button.click
 
       within_dialog do
         wait_for { page }.to have_content('Forum')
@@ -102,7 +102,7 @@ RSpec.describe 'Page settings', type: :feature do
 
       find('h2', text: 'Redirects').click
 
-      collection_float_button('https://argu.localtest/argu/shortnames').click
+      collection_float_button.click
       wait_for { page }.to have_content('New redirect')
       fill_in field_name('https://argu.co/ns/core#shortname'), with: 'question66'
       fill_in field_name('https://argu.co/ns/core#destination'), with: 'https://argu.localtest/argu/q/expired_question'
