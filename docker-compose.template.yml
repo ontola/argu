@@ -63,10 +63,8 @@ services:{testrunner}
       - 9200:9200
       - 9300:9300
   mailcatcher:
-    image: schickling/mailcatcher
-    networks:
-      default:
-      external:
+    command: ["mailcatcher", "--foreground", "--ip=0.0.0.0", "--smtp-port=1025", "--http-port=1080"]
+    image: tophfr/mailcatcher:0.6.5_3
     ports:
       - 1080:1080
       - 1025:1025
