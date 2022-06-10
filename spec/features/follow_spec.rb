@@ -6,20 +6,20 @@ RSpec.describe 'Follow', type: :feature do
   example 'Follow motion' do
     as 'user1@example.com', location: '/argu/m/freetown_motion'
 
-    go_to_menu_item('Important items', menu: :follow) do
+    change_follow('Important items') do
       expect_following 2
     end
     wait_for { page }.to have_snackbar 'Your notification settings are updated'
-    go_to_menu_item('Important items', menu: :follow) do
+    change_follow('Important items') do
       expect_following 0
     end
 
     visit '/argu/m/freetown_motion'
-    go_to_menu_item('Never receive notifications', menu: :follow) do
+    change_follow('Never receive notifications') do
       expect_following 0
     end
     wait_for { page }.to have_snackbar 'Your notification settings are updated'
-    go_to_menu_item('Never receive notifications', menu: :follow) do
+    change_follow('Never receive notifications') do
       expect_following 2
     end
   end
@@ -84,6 +84,16 @@ RSpec.describe 'Follow', type: :feature do
   end
 
   private
+
+  def change_follow(text)
+    wait_for { page }.to have_css('a[title="Notifications"]')
+    find('a[title="Notifications"]').click
+    wait_until_loaded
+    yield
+    wait_for { page }.to have_css('.MuiListItemText-primary', text: text)
+    sleep(1)
+    find('.MuiListItemText-primary', text: text, match: :prefer_exact).click
+  end
 
   def notifications_email
     @notifications_email ||= mailcatcher_email(to: ['user1@example.com'], subject: "New notifications in 'Freetown'")

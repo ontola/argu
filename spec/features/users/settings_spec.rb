@@ -77,7 +77,7 @@ RSpec.describe 'User settings', type: :feature do
       expect_email_row(1, 'user1@example.com', true, true)
       wait_until_loaded
       find('h3', text: 'Email addresses').click
-      collection_float_button.click
+      collection_float_button('New email address').click
       fill_in field_name('http://schema.org/email'), with: new_email
       click_button 'Add'
       wait_for { page }.to have_content form_group

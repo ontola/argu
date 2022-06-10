@@ -286,7 +286,6 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
     wait_until_loaded
     resource_selector("#{resource}/menus/#{menu}").click
     wait_until_loaded
-    yield if block_given?
     wait_for { page }.to have_css('.MuiListItemText-primary', text: text)
     sleep(1)
     find('.MuiListItemText-primary', text: text, match: :prefer_exact).click

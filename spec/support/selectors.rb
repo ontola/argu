@@ -11,16 +11,10 @@ module Selectors
     end
   end
 
-  def collection_float_button(collection: nil, expand: true)
+  def collection_float_button(button, collection: nil)
     prepend = collection ? "div[resource='#{collection}'] " : ''
 
-    if expand
-      dots_css = "#{prepend}button[aria-label='Collection actions']"
-      wait_for { page }.to have_css(dots_css)
-      find(dots_css).click
-    end
-
-    button_css = "#{prepend}button[title='Add item']"
+    button_css = "#{prepend}a[title='#{button}']"
     wait_for { page }.to have_css(button_css)
     find(button_css)
   end

@@ -10,7 +10,7 @@ RSpec.describe 'Token email management', type: :feature do
     wait_for { page }.to have_content 'Email invites'
     find('h2', text: 'Email invites').click
 
-    collection_float_button(expand: false).click
+    collection_float_button('New email invite').click
 
     wait_for { page }.to have_content('New email invite')
 

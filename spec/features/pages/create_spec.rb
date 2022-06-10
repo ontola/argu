@@ -7,7 +7,7 @@ RSpec.describe 'Page create', type: :feature do
     as 'user1@example.com', location: '/argu/u/3/o'
     wait_for { page }.to have_content 'First page'
     find('h1', text: 'Organizations').click
-    collection_float_button.click
+    collection_float_button('New website').click
 
     wait_until_loaded
 

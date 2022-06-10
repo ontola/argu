@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Direct messages', type: :feature do
   let(:new_email) { 'new_email@example.com'}
 
-  example 'Staff sends a direct message' do
+  example 'Staff sends a direct message with default mail' do
     as 'staff@example.com', location: '/argu/m/freetown_motion'
     go_to_menu_item('Contact poster')
     wait_for { page }.to have_content 'Send an e-mail to user_name_34'

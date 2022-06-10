@@ -26,7 +26,7 @@ RSpec.describe 'Page settings', type: :feature do
 
       find('h2', text: 'Components').click
 
-      collection_float_button.click
+      collection_float_button('Add item').click
 
       within_dialog do
         wait_for { page }.to have_content('Forum')
@@ -51,11 +51,6 @@ RSpec.describe 'Page settings', type: :feature do
 
       wait_for { page }.to have_snackbar 'Forum created successfully'
       navbar.locator('text=New Forum')
-
-      expect(page).to have_current_path('/argu/new_forum')
-
-      visit_settings
-      wait_for { page }.to have_content 'Components'
       wait_until_loaded
       components_row(1).locator('text=New Forum')
       components_row(2).locator('text=Holland')
@@ -102,7 +97,7 @@ RSpec.describe 'Page settings', type: :feature do
 
       find('h2', text: 'Redirects').click
 
-      collection_float_button.click
+      collection_float_button('New redirect').click
       wait_for { page }.to have_content('New redirect')
       fill_in field_name('https://argu.co/ns/core#shortname'), with: 'question66'
       fill_in field_name('https://argu.co/ns/core#destination'), with: 'https://argu.localtest/argu/q/expired_question'
