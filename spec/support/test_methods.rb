@@ -120,9 +120,10 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
   end
 
   def expand_form_group(label)
-    wait_for { page }.to have_css('form')
-    within 'form' do
-      click_button(label)
+    wait_for { page }.to have_content label
+
+    page.driver.with_playwright_page do |page|
+      page.click("form button:has-text('#{label}')")
     end
   end
 
@@ -292,7 +293,7 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
   end
 
   def next_id
-    120
+    124
   end
 
   def go_to_user_page(tab: nil, user: 'user_name_2')
@@ -300,8 +301,9 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
 
     return if tab.nil?
 
-    wait_for { page }.to have_button tab
-    click_button tab
+    page.driver.with_playwright_page do |page|
+      page.click("section[aria-label='Participate'] a:has-text('#{tab}')")
+    end
   end
 
   def select_radio(label)

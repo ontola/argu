@@ -16,14 +16,14 @@ RSpec.describe 'Navbar', type: :feature do
   it 'has organization color' do
     as :guest, location: '/argu'
 
-    expect(css_var('--navbar-background')).to eq('#475668')
+    expect(css_var('--navbar-background')).to eq('#FFFFFF')
     expect(css_var('--accent-color')).to eq('#FFFFFF')
 
     expect(navbar).not_to have_content 'Other page'
 
     switch_organization 'other_page'
 
-    wait_for { css_var('--navbar-background') }.to eq('#800000')
+    wait_for { css_var('--navbar-background') }.to eq('#FFFFFF')
     expect(css_var('--accent-color')).to eq('#FFFFFF')
   end
 

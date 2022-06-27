@@ -139,7 +139,6 @@ RSpec.describe 'User request confirmation', type: :feature do
 
     go_to_user_page(tab: 'Settings', user: user_name)
 
-    wait_for { page }.to have_content 'Email addresses'
     expand_form_group 'Email addresses'
 
     wait_for { page }.to have_content email

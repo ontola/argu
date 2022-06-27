@@ -117,7 +117,7 @@ RSpec.describe 'Discussions', type: :feature do
 
   example 'staff updates a question' do
     as 'staff@example.com', location: '/argu/q/freetown_question'
-    select_tab('Edit')
+    go_to_menu_item('Edit')
     expect_form('/argu/q/freetown_question', advanced: true)
     fill_in_form(actor: false)
     expect_updated_message('Challenge')
@@ -126,7 +126,7 @@ RSpec.describe 'Discussions', type: :feature do
 
   example 'staff updates a motion' do
     as 'staff@example.com', location: '/argu/m/freetown_motion'
-    select_tab('Edit')
+    go_to_menu_item('Edit')
     expect_form('/argu/m/freetown_motion', advanced: true)
     fill_in_form(actor: false)
     expect_updated_message('Idea')
@@ -135,7 +135,7 @@ RSpec.describe 'Discussions', type: :feature do
 
   example 'staff updates a motion with movie attachment' do
     as 'staff@example.com', location: '/argu/m/freetown_motion'
-    select_tab('Edit')
+    go_to_menu_item('Edit')
     expect_form('/argu/m/freetown_motion', advanced: true)
     add_child_to_form('Attachments')
     within 'fieldset[property="https://argu.co/ns/core#attachments"]' do

@@ -69,7 +69,6 @@ RSpec.describe 'Otp', type: :feature do
   def visit_settings(user: 'user_name_2')
     go_to_user_page(tab: 'Settings', user: user)
 
-    wait_for { page }.to have_content form_group
     expand_form_group form_group
   end
 end

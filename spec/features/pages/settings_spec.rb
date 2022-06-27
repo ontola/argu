@@ -95,6 +95,7 @@ RSpec.describe 'Page settings', type: :feature do
       wait_for { page }.to have_content 'Redirects'
       shortnames_row(1).locator('text=No items yet')
 
+      wait_until_loaded
       find('h2', text: 'Redirects').click
 
       collection_float_button('New redirect').click
