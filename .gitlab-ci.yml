@@ -5,26 +5,8 @@ variables:
   HOST_IP: 172.99.0.1
 
 before_script:
-  - sudo apt-get update && sudo apt-get -y install ruby postgresql-client
   - echo "$DOCKER_REGISTRY_TOKEN" | docker login --username "$DOCKER_REGISTRY_USER" --password-stdin
   - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" "$CI_REGISTRY" --password-stdin
-  - sudo gem install activesupport -v 6.1.4.4
-  - sudo sh -c "echo '127.0.0.1 app.argu.localtest' >> /etc/hosts"
-  - sudo sh -c "echo '127.0.0.1 argu.localtest' >> /etc/hosts"
-  - sudo sh -c "echo '127.0.0.1 demogemeente.localdev' >> /etc/hosts"
-  - sudo sh -c "echo '127.0.0.1 frontend.svc.cluster.localdev' >> /etc/hosts"
-  - echo "" > ./.env.dev
-  - echo FRONTEND_SERVICE_PORT=3080 >> ./.env.template
-  - echo DEFAULT_LOCALE=en >> ./.env.template
-  - echo DISABLE_PROMETHEUS=true >> ./.env.template
-  - sed -i "s/{bugsnag_key}/$BUGSNAG_KEY/g" ./.env.template
-  - ./setup_certificate.sh
-  - BACKEND_HOST=argu:3000 TESTRUNNER=true ENV=test ./setup.sh
-  - sudo chown -R $(whoami):$(whoami) ./ssl
-  - "[[ $CI_COMMIT_BRANCH = master ]] && RAILS_ENV=production || RAILS_ENV=staging"
-  - docker create -v /cfg --name certdata alpine:3.4 /bin/true
-  - sudo chown -R $(whoami):$(whoami) ./devproxyCA
-  - docker cp ./devproxyCA/cacert.pem certdata:/cacert.pem
 
 ci_build:
   stage: ci_build
@@ -51,6 +33,27 @@ test:
   stage: test
   services:
     - docker:18.09-dind
+  before_script:
+    - sudo apt-get update && sudo apt-get -y install ruby postgresql-client
+    - echo "$DOCKER_REGISTRY_TOKEN" | docker login --username "$DOCKER_REGISTRY_USER" --password-stdin
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" "$CI_REGISTRY" --password-stdin
+    - sudo gem install activesupport -v 6.1.4.4
+    - sudo sh -c "echo '127.0.0.1 app.argu.localtest' >> /etc/hosts"
+    - sudo sh -c "echo '127.0.0.1 argu.localtest' >> /etc/hosts"
+    - sudo sh -c "echo '127.0.0.1 demogemeente.localdev' >> /etc/hosts"
+    - sudo sh -c "echo '127.0.0.1 frontend.svc.cluster.localdev' >> /etc/hosts"
+    - echo "" > ./.env.dev
+    - echo FRONTEND_SERVICE_PORT=3080 >> ./.env.template
+    - echo DEFAULT_LOCALE=en >> ./.env.template
+    - echo DISABLE_PROMETHEUS=true >> ./.env.template
+    - sed -i "s/{bugsnag_key}/$BUGSNAG_KEY/g" ./.env.template
+    - ./setup_certificate.sh
+    - BACKEND_HOST=argu:3000 TESTRUNNER=true ENV=test ./setup.sh
+    - sudo chown -R $(whoami):$(whoami) ./ssl
+    - "[[ $CI_COMMIT_BRANCH = master ]] && RAILS_ENV=production || RAILS_ENV=staging"
+    - docker create -v /cfg --name certdata alpine:3.4 /bin/true
+    - sudo chown -R $(whoami):$(whoami) ./devproxyCA
+    - docker cp ./devproxyCA/cacert.pem certdata:/cacert.pem
   script:
     - RAILS_ENV=$RAILS_ENV docker-compose pull
     - docker-compose up -d postgres elastic devproxy
