@@ -15,5 +15,4 @@ echo "end"
 
 # Replace ENV vars
 ENV_FILE=$(readlink -f .env)
-sed -i "s/RAILS_OAUTH_TOKEN=.*/RAILS_OAUTH_TOKEN=${NEW_FRONTEND_TOKEN}/g" $ENV_FILE
 sed -i "s/SERVICE_TOKEN=.*/SERVICE_TOKEN=${NEW_SERVICE_TOKEN}/g" $ENV_FILE

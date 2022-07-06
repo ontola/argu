@@ -28,7 +28,6 @@ Core serves as a testing suite and development proxy server for various Ontola p
 ```
 LIBRO_CLIENT_ID = Doorkeeper::Application.argu.uid
 LIBRO_CLIENT_SECRET = Doorkeeper::Application.argu.secret
-RAILS_OAUTH_TOKEN = Doorkeeper::Application.argu_front_end.access_tokens.find_by(scopes: :service).token
 SERVICE_TOKEN = Doorkeeper::Application.argu.access_tokens.find_by(scopes: :service).token
 ```
 
