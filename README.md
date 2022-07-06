@@ -52,6 +52,7 @@ Core needs a lot of `/etc/hosts`:
 127.0.0.1 argu.svc.cluster.localdev
 127.0.0.1 frontend.svc.cluster.localdev
 127.0.0.1 dextransfer.localdev
+127.0.0.1 rdf.studio.localdev
 ```
 
 ## Using local services
