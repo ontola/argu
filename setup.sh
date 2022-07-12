@@ -13,7 +13,6 @@ write_env() {
     sed -i.bak "s/{postgres_password}/$PG_PASSWORD/g" ./.env.$1
     sed -i.bak "s/{argu_client_id}/$ARGU_CLIENT_ID/g" ./.env.$1
     sed -i.bak "s/{argu_client_secret}/$ARGU_CLIENT_SECRET/g" ./.env.$1
-    sed -i.bak "s/{service_token}/$SERVICE_TOKEN/g" ./.env.$1
     sed -i.bak "s/{database_suffix}/$DB_SUFFIX/g" ./.env.$1
     sed -i.bak "s#{elastic_search}#$ELASTICSEARCH_URL#g" ./.env.$1
     sed -i.bak "s/{secret}/$SECRET/g" ./.env.$1
@@ -28,8 +27,6 @@ if [ ! -f ./.env.dev ]; then
     read -s ARGU_CLIENT_ID
     echo argu_client_secret:
     read -s ARGU_CLIENT_SECRET
-    echo service_token:
-    read -s SERVICE_TOKEN
     DB_SUFFIX=production
     write_env dev;
 fi
@@ -40,8 +37,6 @@ if [ ! -f ./.env.test ]; then
     ARGU_CLIENT_ID=client_id
     ARGU_CLIENT_SECRET=client_secret
     DB_SUFFIX=test
-    FRONTEND_TOKEN=$(./generate_jwt.sh $SECRET -2 1 service)
-    SERVICE_TOKEN=$(./generate_jwt.sh $SECRET -2 0 service)
     write_env test;
 fi
 

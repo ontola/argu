@@ -23,13 +23,6 @@ Core serves as a testing suite and development proxy server for various Ontola p
 1. Copy `.env.template` to `.env`
 1. Symlink it to all projects that you're running locally (e.g. libro, apex) `ln -s .env ../apex.env`
 1. Set the Mapbox key (see `env.template` for where you can find it)
-1. Run the following commands in your local Argu backend Rails Console (e.g. `docker-compose exec argu bundle exec rails c`) and set the .env variables:
-
-```
-LIBRO_CLIENT_ID = Doorkeeper::Application.argu.uid
-LIBRO_CLIENT_SECRET = Doorkeeper::Application.argu.secret
-SERVICE_TOKEN = Doorkeeper::Application.argu.access_tokens.find_by(scopes: :service).token
-```
 
 ## Hosts
 
@@ -79,8 +72,6 @@ Run `./restart.sh %{service_name}`, e.g. `./restart.sh argu`
 Run `./update.sh` to pull the latest images and run migrations.
 
 ## When your CSRF token is wrong
-
-Run `./sync_tokens.sh` and follow the instructions.
 
 ## CI
 
