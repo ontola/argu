@@ -1,0 +1,53 @@
+# frozen_string_literal: true
+
+require 'rspec/core/rake_task'
+require_relative 'spec/support/docker_helper'
+require 'faraday'
+
+RSpec::Core::RakeTask.new(:spec)
+
+namespace :test do
+  desc 'Setup for running tests'
+  task :setup => %w[initialize_db dump]
+
+  desc 'Run db initialization and seed commands for ruby services'
+  task :initialize_db do
+    include DockerHelper
+    MANAGED_DATABASES.each do |db|
+      puts "setting up #{db}"
+      docker_setup(db, seed: :test)
+    end
+    puts Faraday.new('https://argu.localtest/d/health', ssl: {verify: false}).get.body
+    puts 'Completed db initialization'
+  end
+
+  desc 'Dumps the databases of managed services to be restored before a test'
+  task :dump do
+    include DockerHelper
+    MANAGED_DATABASES.each do |db|
+      puts "Dumping database #{db}"
+      docker_exec(
+        'postgres',
+        ['pg_dump', "#{db}_test", '--username=postgres', '-Fc', '--data-only', "--file=/var/lib/postgresql/data/dump_#{db}"]
+      )
+    end
+    docker_dump_redis
+  end
+
+  desc 'Restores the database dumps as the live database'
+  task :reset do
+    include DockerHelper
+    docker_reset_databases
+    docker_reset_redis
+  end
+end
+
+namespace :dev do
+  desc 'Setup for development'
+  task :setup do
+    include DockerHelper
+    docker_setup('apex')
+    docker_setup('token')
+    docker_setup('email')
+  end
+end

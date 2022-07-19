@@ -1,0 +1,377 @@
+---
+version: '3.6'
+services:
+  testrunner:
+    platform: linux/amd64
+    image: registry.gitlab.com/ontola/argu:base-pw
+    env_file:
+      - ./.env
+    networks:
+      default:
+    volumes:
+      - ${PWD}/test/spec:/usr/src/app/spec
+      - ${PWD}/test/Rakefile:/usr/src/app/Rakefile
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /dev/shm:/dev/shm
+  nginx:
+    image: nginx:latest
+    extra_hosts:
+      - host.docker.internal:${HOST_IP:-host-gateway}
+    networks:
+      default:
+        aliases:
+          - redirect.argu.localtest
+          - argu.localtest
+    ports:
+      - 443:443
+      - 80:80
+    restart: unless-stopped
+    volumes:
+      - ${PWD}/docker/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ${PWD}/docker/nginx/ssl:/etc/nginx/ssl
+  postgres:
+    image: postgis/postgis:14-master
+    env_file:
+      - ./.env
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    restart: unless-stopped
+  redis:
+    image: redis:6
+    ports:
+      - 6379:6379
+    restart: unless-stopped
+    volumes:
+      - redisdata:/data
+  elastic:
+    platform: linux/amd64
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.10.2
+    env_file:
+      - ./.env
+    environment:
+      - ES_JAVA_OPTS=-Xms1g -Xmx1g
+      - discovery.type=single-node
+    volumes:
+      - elasticdata:/usr/share/elasticsearch/data
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    ports:
+      - 9200:9200
+      - 9300:9300
+    restart: unless-stopped
+  mailcatcher:
+    command:
+      - mailcatcher
+      - "--foreground"
+      - "--ip=0.0.0.0"
+      - "--smtp-port=1025"
+      - "--http-port=1080"
+    image: tophfr/mailcatcher:0.6.5_3
+    ports:
+      - 1080:1080
+      - 1025:1025
+    restart: unless-stopped
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - 9090:9090
+    volumes:
+      - ${PWD}/docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - promdata:/prometheus
+  grafana:
+    image: grafana/grafana
+    environment:
+      - GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-simple-json-datasource,redis-datasource
+    ports:
+      - 8888
+    volumes:
+      - grafanadata:/var/lib/grafana
+      - ./docker/grafana/:/etc/grafana/provisioning/
+  libro_server:
+    platform: linux/amd64
+    profiles:
+      - libro
+    image: registry.gitlab.com/ontola/argu/libro:${LIBRO_TAG:-latest}
+    depends_on:
+      - redis
+    env_file:
+      - ./.env
+    healthcheck:
+      interval: 10s
+      test: 'curl -H "Host: argu.localtest" -f http://localhost:3080/link-lib/cache/status'
+    ports:
+      - 3001:3080
+      - 3080:3080
+    restart: unless-stopped
+    extra_hosts:
+      - libro.svc.cluster.localdev:${HOST_IP:-host-gateway}
+      - apex.svc.cluster.localdev:${HOST_IP:-host-gateway}
+      - token.svc.cluster.localdev:${HOST_IP:-host-gateway}
+      - email.svc.cluster.localdev:${HOST_IP:-host-gateway}
+    volumes:
+      - ./docker/nginx/devproxyCA/cacert.p12:/opt/graalvm-ce-java17-21.3.0/lib/security/cacerts
+    command: java -Djavax.net.ssl.trustStorePassword=password -jar libro.jar
+  libro_server_dev:
+    platform: linux/amd64
+    profiles:
+      - libro-dev
+    depends_on:
+      - redis
+    build:
+      context: services/libro-server
+      dockerfile: Dockerfile-dev
+    env_file:
+      - ./.env
+    environment:
+      - KTOR_ENV=development
+    ports:
+      - 3080:3080
+    restart: unless-stopped
+    volumes:
+      - $HOME/.gradle:/root/.gradle
+      - ./services/libro-server:/usr/src/app
+  libro_client:
+    platform: linux/amd64
+    profiles:
+      - libro-dev
+    build:
+      context: services/libro-client
+      dockerfile: Dockerfile-dev
+    environment:
+      - LIBRO_VERSION=dev
+    ports:
+      - 3001:3001
+    restart: unless-stopped
+    volumes:
+      - ./services/libro-client:/usr/src/app
+  apex_worker:
+    platform: linux/amd64
+    image: registry.gitlab.com/ontola/apex:${APEX_TAG:-latest}
+    depends_on:
+      - postgres
+      - redis
+    env_file:
+      - ./.env
+    environment:
+      - HOSTNAME=argu.localtest
+    restart: unless-stopped
+    extra_hosts:
+      - libro.svc.cluster.localdev:${HOST_IP:-host-gateway}
+      - apex.svc.cluster.localdev:${HOST_IP:-host-gateway}
+      - token.svc.cluster.localdev:${HOST_IP:-host-gateway}
+      - email.svc.cluster.localdev:${HOST_IP:-host-gateway}
+    volumes:
+      - ${PWD}/docker/nginx/devproxyCA/cacert.pem:${PWD}/docker/nginx/devproxyCA/cacert.pem
+    command: bundle exec sidekiq
+  token_worker:
+    platform: linux/amd64
+    image: registry.gitlab.com/ontola/token_service:${TOKEN_TAG:-latest}
+    depends_on:
+      - postgres
+      - redis
+    env_file:
+      - ./.env
+    environment:
+      - HOSTNAME=argu.localtest
+    restart: unless-stopped
+    extra_hosts:
+      - libro.svc.cluster.localdev:${HOST_IP:-host-gateway}
+      - apex.svc.cluster.localdev:${HOST_IP:-host-gateway}
+      - token.svc.cluster.localdev:${HOST_IP:-host-gateway}
+      - email.svc.cluster.localdev:${HOST_IP:-host-gateway}
+    volumes:
+      - ${PWD}/docker/nginx/devproxyCA/cacert.pem:${PWD}/docker/nginx/devproxyCA/cacert.pem
+    command: bundle exec sidekiq - staging
+  apex:
+    platform: linux/amd64
+    profiles:
+      - apex
+    image: registry.gitlab.com/ontola/apex:${APEX_TAG:-latest}
+    depends_on:
+      - elastic
+      - postgres
+      - redis
+    env_file:
+      - ./.env
+    environment:
+      - HOSTNAME=argu.localtest
+      - PIDFILE=/tmp/server.pid
+    healthcheck:
+      interval: 10s
+      test: 'curl -H "Host: argu.localtest" -f http://localhost:3000/argu/d/health'
+    ports:
+      - 3000:3000
+      - 1234:1234
+      - 26166:26168
+    restart: unless-stopped
+    extra_hosts:
+      - libro.svc.cluster.localdev:${HOST_IP:-host-gateway}
+      - apex.svc.cluster.localdev:${HOST_IP:-host-gateway}
+      - token.svc.cluster.localdev:${HOST_IP:-host-gateway}
+      - email.svc.cluster.localdev:${HOST_IP:-host-gateway}
+    volumes:
+      - ${PWD}/docker/nginx/devproxyCA/cacert.pem:${PWD}/docker/nginx/devproxyCA/cacert.pem
+    tmpfs:
+      - /tmp/pids/
+  apex_dev:
+    platform: linux/amd64
+    profiles:
+      - apex-dev
+    build:
+      context: services/apex
+      dockerfile: Dockerfile-dev
+    depends_on:
+      - elastic
+      - postgres
+      - redis
+    env_file:
+      - ./.env
+    environment:
+      - PIDFILE=/tmp/server.pid
+    ports:
+      - 3000:3000
+      - 1234:1234
+      - 26166:26168
+    restart: unless-stopped
+    extra_hosts:
+      - libro.svc.cluster.localdev:${HOST_IP:-host-gateway}
+      - apex.svc.cluster.localdev:${HOST_IP:-host-gateway}
+      - token.svc.cluster.localdev:${HOST_IP:-host-gateway}
+      - email.svc.cluster.localdev:${HOST_IP:-host-gateway}
+    volumes:
+      - ./services/apex:/usr/src/app
+      - ${PWD}/docker/nginx/devproxyCA/cacert.pem:${PWD}/docker/nginx/devproxyCA/cacert.pem
+    tmpfs:
+      - /tmp/pids/
+  token:
+    platform: linux/amd64
+    profiles:
+      - token
+    image: registry.gitlab.com/ontola/token_service:${TOKEN_TAG:-latest}
+    depends_on:
+      - postgres
+      - redis
+    env_file:
+      - ./.env
+    environment:
+      - HOSTNAME=argu.localtest
+      - PIDFILE=/tmp/server.pid
+    ports:
+      - 3003:3003
+      - 1235:1234
+      - 26167:26168
+    restart: unless-stopped
+    extra_hosts:
+      - libro.svc.cluster.localdev:${HOST_IP:-host-gateway}
+      - apex.svc.cluster.localdev:${HOST_IP:-host-gateway}
+      - token.svc.cluster.localdev:${HOST_IP:-host-gateway}
+      - email.svc.cluster.localdev:${HOST_IP:-host-gateway}
+    volumes:
+      - ${PWD}/docker/nginx/devproxyCA/cacert.pem:${PWD}/docker/nginx/devproxyCA/cacert.pem
+    tmpfs:
+      - /tmp/pids/
+    command: ./bin/rails server -b 0.0.0.0 -p 3003
+  token_dev:
+    platform: linux/amd64
+    profiles:
+      - token-dev
+    build:
+      context: services/token_service
+      dockerfile: Dockerfile-dev
+    depends_on:
+      - postgres
+      - redis
+    env_file:
+      - ./.env
+    environment:
+      - PIDFILE=/tmp/server.pid
+    ports:
+      - 3003:3003
+      - 1235:1234
+      - 26167:26168
+    restart: unless-stopped
+    extra_hosts:
+      - libro.svc.cluster.localdev:${HOST_IP:-host-gateway}
+      - apex.svc.cluster.localdev:${HOST_IP:-host-gateway}
+      - token.svc.cluster.localdev:${HOST_IP:-host-gateway}
+      - email.svc.cluster.localdev:${HOST_IP:-host-gateway}
+    volumes:
+      - ./services/token_service:/usr/src/app
+      - ${PWD}/docker/nginx/devproxyCA/cacert.pem:${PWD}/docker/nginx/devproxyCA/cacert.pem
+    tmpfs:
+      - /tmp/pids/
+  email:
+    platform: linux/amd64
+    profiles:
+      - email
+    image: registry.gitlab.com/ontola/email_service:${EMAIL_TAG:-latest}
+    depends_on:
+      - postgres
+      - redis
+    env_file:
+      - ./.env
+    environment:
+      - HOSTNAME=argu.localtest
+      - PIDFILE=/tmp/server.pid
+    ports:
+      - 3002:3002
+      - 1236:1234
+      - 26168:26168
+    restart: unless-stopped
+    extra_hosts:
+      - libro.svc.cluster.localdev:${HOST_IP:-host-gateway}
+      - apex.svc.cluster.localdev:${HOST_IP:-host-gateway}
+      - token.svc.cluster.localdev:${HOST_IP:-host-gateway}
+      - email.svc.cluster.localdev:${HOST_IP:-host-gateway}
+    volumes:
+      - ${PWD}/docker/nginx/devproxyCA/cacert.pem:${PWD}/docker/nginx/devproxyCA/cacert.pem
+    tmpfs:
+      - /tmp/pids/
+    command: ./bin/rails server -b 0.0.0.0 -p 3002
+  email_dev:
+    platform: linux/amd64
+    profiles:
+      - email-dev
+    build:
+      context: services/email_service
+      dockerfile: Dockerfile-dev
+    depends_on:
+      - postgres
+      - redis
+    env_file:
+      - ./.env
+    environment:
+      - PIDFILE=/tmp/server.pid
+    ports:
+      - 3002:3002
+      - 1236:1234
+      - 26168:26168
+    extra_hosts:
+      - libro.svc.cluster.localdev:${HOST_IP:-host-gateway}
+      - apex.svc.cluster.localdev:${HOST_IP:-host-gateway}
+      - token.svc.cluster.localdev:${HOST_IP:-host-gateway}
+      - email.svc.cluster.localdev:${HOST_IP:-host-gateway}
+    volumes:
+      - ./services/email_service:/usr/src/app
+      - ${PWD}/docker/nginx/devproxyCA/cacert.pem:${PWD}/docker/nginx/devproxyCA/cacert.pem
+    tmpfs:
+      - /tmp/pids/
+networks:
+  default:
+    internal: false
+    ipam:
+      config:
+        - subnet: 172.99.0.0/16
+volumes:
+  pgdata:
+  redisdata:
+  promdata:
+  grafanadata:
+  elasticdata:

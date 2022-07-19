@@ -1,84 +1,107 @@
-image: circleci/buildpack-deps:bionic-curl-dind
+image: docker:20
+
+services:
+  - docker:20-dind
 
 variables:
+  DOCKER_BUILDKIT: 0
   DOCKER_DRIVER: overlay2
+  DOCKER_HOST: tcp://docker:2375
+  DOCKER_TLS_CERTDIR: ""
   HOST_IP: 172.99.0.1
 
 before_script:
   - echo "$DOCKER_REGISTRY_TOKEN" | docker login --username "$DOCKER_REGISTRY_USER" --password-stdin
   - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" "$CI_REGISTRY" --password-stdin
 
-ci_build:
-  stage: ci_build
-  services:
-    - docker:18.09-dind
-  script:
-    - docker build -t $CI_REGISTRY_IMAGE:base-pw -f dockerfiles/testrunner-base.Dockerfile .
-    - docker push $CI_REGISTRY_IMAGE:base-pw
-  rules:
-    - changes:
-        - ./dockerfiles/testrunner-base.Dockerfile
-        - ./Gemfile.lock
-
 prometheus_build:
   stage: ci_build
-  services:
-    - docker:18.09-dind
   script:
-    - docker build -t $CI_REGISTRY_IMAGE:prometheus -f dockerfiles/prometheus.Dockerfile .
+    - cd docker/prometheus
+    - docker build -t $CI_REGISTRY_IMAGE:prometheus .
     - docker push $CI_REGISTRY_IMAGE:prometheus
+  when: manual
+
+testrunner_build:
+  stage: ci_build
+  script:
+    - cd test
+    - docker build -t registry.gitlab.com/ontola/argu:base-pw .
+    - docker push registry.gitlab.com/ontola/argu:base-pw
+  when: manual
+
+libro_build:
+  stage: build
+  image: docker:18.09.8
+  services:
+    - docker:18.09.8-dind
+  before_script:
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" "$CI_REGISTRY" --password-stdin
+  script:
+    - apk add git
+    - LIBRO_CLIENT_TAG=$(git submodule status --cached services/libro-client | awk '{print $1;}' | tr -cd '[:alnum:]')
+    - LIBRO_SERVER_TAG=$(git submodule status --cached services/libro-server | awk '{print $1;}' | tr -cd '[:alnum:]')
+    - echo $LIBRO_CLIENT_TAG
+    - echo $LIBRO_SERVER_TAG
+    - docker build --tag $CI_REGISTRY_IMAGE/libro:$CI_COMMIT_SHA --tag $CI_REGISTRY_IMAGE/libro:latest --build-arg=LIBRO_CLIENT_TAG=$LIBRO_CLIENT_TAG --build-arg=LIBRO_SERVER_TAG=$LIBRO_SERVER_TAG ./docker/libro
+    - docker push $CI_REGISTRY_IMAGE/libro:$CI_COMMIT_SHA
+    - docker push $CI_REGISTRY_IMAGE/libro:latest
+
+tag_production:
+  stage: tag
+  image: docker:18.09.8
+  services:
+    - docker:18.09.8-dind
+  before_script:
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" "$CI_REGISTRY" --password-stdin
+  script:
+    - apk add git
+    - docker pull $CI_REGISTRY_IMAGE/libro:$CI_COMMIT_SHA
+    - docker tag $CI_REGISTRY_IMAGE/libro:$CI_COMMIT_SHA $CI_REGISTRY_IMAGE/libro:production
+    - docker push $CI_REGISTRY_IMAGE/libro:production
+    - APEX_TAG=$(git submodule status --cached services/apex | awk '{print $1;}' | tr -cd '[:alnum:]')
+    - docker pull registry.gitlab.com/ontola/apex:$APEX_TAG
+    - docker tag registry.gitlab.com/ontola/apex:$APEX_TAG registry.gitlab.com/ontola/apex:production
+    - docker push registry.gitlab.com/ontola/apex:production
+    - EMAIL_TAG=$(git submodule status --cached services/email_service | awk '{print $1;}' | tr -cd '[:alnum:]')
+    - docker pull registry.gitlab.com/ontola/email_service:$EMAIL_TAG
+    - docker tag registry.gitlab.com/ontola/email_service:$EMAIL_TAG registry.gitlab.com/ontola/email_service:production
+    - docker push registry.gitlab.com/ontola/email_service:production
+    - TOKEN_TAG=$(git submodule status --cached services/token_service | awk '{print $1;}' | tr -cd '[:alnum:]')
+    - docker pull registry.gitlab.com/ontola/token_service:$TOKEN_TAG
+    - docker tag registry.gitlab.com/ontola/token_service:$TOKEN_TAG registry.gitlab.com/ontola/token_service:production
+    - docker push registry.gitlab.com/ontola/token_service:production
   when: manual
 
 test:
   stage: test
-  services:
-    - docker:18.09-dind
-  before_script:
-    - sudo apt-get update && sudo apt-get -y install ruby postgresql-client
-    - echo "$DOCKER_REGISTRY_TOKEN" | docker login --username "$DOCKER_REGISTRY_USER" --password-stdin
-    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" "$CI_REGISTRY" --password-stdin
-    - sudo gem install activesupport -v 6.1.4.4
-    - sudo sh -c "echo '127.0.0.1 app.argu.localtest' >> /etc/hosts"
-    - sudo sh -c "echo '127.0.0.1 argu.localtest' >> /etc/hosts"
-    - sudo sh -c "echo '127.0.0.1 demogemeente.localdev' >> /etc/hosts"
-    - sudo sh -c "echo '127.0.0.1 frontend.svc.cluster.localdev' >> /etc/hosts"
-    - echo "" > ./.env.dev
-    - echo FRONTEND_SERVICE_PORT=3080 >> ./.env.template
+  script:
+    - "[[ $CI_COMMIT_BRANCH = master ]] && RAILS_ENV=production || RAILS_ENV=staging"
+    - apk add bash ca-certificates curl git openssl sudo
     - echo DEFAULT_LOCALE=en >> ./.env.template
     - echo DISABLE_PROMETHEUS=true >> ./.env.template
     - sed -i "s/{bugsnag_key}/$BUGSNAG_KEY/g" ./.env.template
-    - ./setup_certificate.sh
-    - BACKEND_HOST=argu:3000 TESTRUNNER=true ENV=test ./setup.sh
-    - sudo chown -R $(whoami):$(whoami) ./ssl
-    - "[[ $CI_COMMIT_BRANCH = master ]] && RAILS_ENV=production || RAILS_ENV=staging"
-    - docker create -v /cfg --name certdata alpine:3.4 /bin/true
-    - sudo chown -R $(whoami):$(whoami) ./devproxyCA
-    - docker cp ./devproxyCA/cacert.pem certdata:/cacert.pem
-  script:
-    - RAILS_ENV=$RAILS_ENV docker-compose pull
-    - docker-compose up -d postgres elastic devproxy
-    - docker-compose up -d mailcatcher redis
-    - RAILS_ENV=$RAILS_ENV docker-compose up -d argu argu_worker
-    - RAILS_ENV=$RAILS_ENV docker-compose up -d token token_worker frontend email email_worker
-    - docker-compose run --rm testrunner bundle exec rake test:initialize_db
-    - docker restart devproxy_argu_1
-    - ./restart.sh devproxy || true
-    - docker-compose run --rm argu bundle exec rake cache:warm
-    - docker-compose run --rm testrunner bundle exec rake test:dump
-    - docker restart devproxy_argu_worker_1
-    - ./restart.sh devproxy || true
-    - timeout 5m bash -c 'until [ $(docker ps -f name=devproxy_argu_1 -f health=healthy -q | wc -l) -gt 0 ]; do sleep 1; done'
+    - ./bin/build_testrunner.sh
+    - ./bin/install.sh
+    - ./bin/test.sh
+    - timeout 5m bash -c 'until [ $(docker ps -f health=starting -q | wc -l) -eq 0 ]; do sleep 1; done'
+    - ./bin/initialize_db.sh
+    - docker-compose restart apex
+    - timeout 5m bash -c 'until [ $(docker ps -f health=starting -q | wc -l) -eq 0 ]; do sleep 1; done'
+    - docker-compose exec -T apex bundle exec rake cache:warm
+    - ./bin/dump_db.sh
+    - timeout 5m bash -c 'until [ $(docker ps -f health=starting -q | wc -l) -eq 0 ]; do sleep 1; done'
     - docker ps -a
     - docker images
-    - docker-compose exec -T frontend cat client_version.txt
-    - docker-compose exec -T frontend cat server_version.txt
+    - docker-compose exec -T libro_server cat client_version.txt
+    - docker-compose exec -T libro_server cat server_version.txt
     - TEST_TIMEOUT=${TEST_TIMEOUT:-50m}
     - echo test timeout $TEST_TIMEOUT
-    - timeout $TEST_TIMEOUT bash -c 'docker-compose run -e REDIS_URL --name testrunner testrunner'
+    - timeout $TEST_TIMEOUT bash -c 'docker-compose exec testrunner sh -c "bundle exec rspec --format documentation --format RSpec::Instafail --format RspecJunitFormatter --out /tmp/test-results/rspec.xml $TEST_FILES"'
   after_script:
     - mkdir $CI_PROJECT_DIR/test-results || true
-    - docker cp testrunner:/tmp/test-results/rspec.xml $CI_PROJECT_DIR/test-results/rspec.xml || true
-    - docker cp testrunner:/usr/src/app/tmp/exceptions $CI_PROJECT_DIR/test-results/exceptions || true
+    - docker cp argu-testrunner-1:/tmp/test-results/rspec.xml $CI_PROJECT_DIR/test-results/rspec.xml || true
+    - docker cp argu-testrunner-1:/usr/src/app/tmp/exceptions $CI_PROJECT_DIR/test-results/exceptions || true
     - docker ps --no-trunc -a > $CI_PROJECT_DIR/test-results/docker-ps.txt || true
     - docker-compose logs > $CI_PROJECT_DIR/test-results/docker-compose-logs.txt || true
     - 'curl -H "Host: argu.localtest" -f http://localhost:3080/link-lib/cache/status > cache_health.txt || true'
@@ -93,4 +116,6 @@ test:
 
 stages:
   - ci_build
+  - build
+  - tag
   - test

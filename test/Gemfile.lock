@@ -1,0 +1,154 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    activesupport (7.0.3)
+      concurrent-ruby (~> 1.0, >= 1.0.2)
+      i18n (>= 1.6, < 2)
+      minitest (>= 5.1)
+      tzinfo (~> 2.0)
+    addressable (2.8.0)
+      public_suffix (>= 2.0.2, < 5.0)
+    ast (2.4.0)
+    capybara (3.37.1)
+      addressable
+      matrix
+      mini_mime (>= 0.1.3)
+      nokogiri (~> 1.8)
+      rack (>= 1.6.0)
+      rack-test (>= 0.6.3)
+      regexp_parser (>= 1.5, < 3.0)
+      xpath (~> 3.2)
+    capybara-playwright-driver (0.2.0)
+      capybara
+      playwright-ruby-client (>= 1.16.0)
+    concurrent-ruby (1.1.10)
+    diff-lcs (1.3)
+    docker-api (2.0.0)
+      excon (>= 0.47.0)
+      multi_json
+    domain_name (0.5.20190701)
+      unf (>= 0.0.5, < 1.0.0)
+    dotenv (2.7.5)
+    emp_json (1.2.1.pre.g7126641c2)
+    excon (0.78.0)
+    faraday (1.0.0)
+      multipart-post (>= 1.2, < 3)
+    faraday-multipart (1.0.3)
+      multipart-post (>= 1.2, < 3)
+    http-cookie (1.0.3)
+      domain_name (~> 0.5)
+    httparty (0.18.1)
+      mime-types (~> 3.0)
+      multi_xml (>= 0.5.2)
+    i18n (1.10.0)
+      concurrent-ruby (~> 1.0)
+    jaro_winkler (1.5.4)
+    link_header (0.0.8)
+    mail (2.7.1)
+      mini_mime (>= 0.1.1)
+    mailcatcher-api (0.2.0)
+      mail
+    matrix (0.4.2)
+    mime-types (3.4.1)
+      mime-types-data (~> 3.2015)
+    mime-types-data (3.2022.0105)
+    mini_mime (1.1.2)
+    mini_portile2 (2.8.0)
+    minitest (5.15.0)
+    multi_json (1.15.0)
+    multi_xml (0.6.0)
+    multipart-post (2.1.1)
+    nokogiri (1.13.8)
+      mini_portile2 (~> 2.8.0)
+      racc (~> 1.4)
+    oj (3.10.15)
+    parallel (1.19.1)
+    parser (2.7.0.2)
+      ast (~> 2.4.0)
+    playwright-ruby-client (1.23.0)
+      concurrent-ruby (>= 1.1.6)
+      mime-types (>= 3.0)
+    public_suffix (4.0.7)
+    racc (1.6.0)
+    rack (2.2.4)
+    rack-test (2.0.2)
+      rack (>= 1.3)
+    rainbow (3.0.0)
+    rake (13.0.6)
+    rdf (3.2.7)
+      link_header (~> 0.0, >= 0.0.8)
+    rdf-vocab (3.2.1)
+      rdf (~> 3.2, >= 3.2.4)
+    redis (4.3.1)
+    regexp_parser (2.5.0)
+    rspec (3.9.0)
+      rspec-core (~> 3.9.0)
+      rspec-expectations (~> 3.9.0)
+      rspec-mocks (~> 3.9.0)
+    rspec-core (3.9.1)
+      rspec-support (~> 3.9.1)
+    rspec-expectations (3.9.0)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.9.0)
+    rspec-instafail (1.0.0)
+      rspec
+    rspec-mocks (3.9.1)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.9.0)
+    rspec-retry (0.6.2)
+      rspec-core (> 3.3)
+    rspec-support (3.9.2)
+    rspec-wait (0.0.9)
+      rspec (>= 3, < 4)
+    rspec_junit_formatter (0.4.1)
+      rspec-core (>= 2, < 4, != 2.12.0)
+    rubocop (0.79.0)
+      jaro_winkler (~> 1.5.1)
+      parallel (~> 1.10)
+      parser (>= 2.7.0.1)
+      rainbow (>= 2.2.2, < 4.0)
+      ruby-progressbar (~> 1.7)
+      unicode-display_width (>= 1.4.0, < 1.7)
+    ruby-progressbar (1.10.1)
+    tzinfo (2.0.4)
+      concurrent-ruby (~> 1.0)
+    unf (0.1.4)
+      unf_ext
+    unf_ext (0.0.7.6)
+    unicode-display_width (1.6.0)
+    xpath (3.2.0)
+      nokogiri (~> 1.8)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  activesupport
+  capybara
+  capybara-playwright-driver
+  docker-api
+  dotenv
+  emp_json (= 1.2.1.pre.g7126641c2)
+  faraday
+  faraday-multipart
+  http-cookie
+  httparty
+  mailcatcher-api
+  oj
+  playwright-ruby-client
+  rake
+  rdf
+  rdf-vocab
+  redis
+  rspec
+  rspec-instafail
+  rspec-retry
+  rspec-wait
+  rspec_junit_formatter
+  rubocop
+
+RUBY VERSION
+   ruby 3.0.2p107
+
+BUNDLED WITH
+   2.2.22

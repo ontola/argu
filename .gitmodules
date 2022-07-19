@@ -1,0 +1,39 @@
+[submodule "services/libro-server"]
+	path = services/libro-server
+	url = ../cache.git
+[submodule "services/libro-client"]
+	path = services/libro-client
+	url = ../libro.git
+[submodule "services/token_service"]
+	path = services/token_service
+	url = ../token_service.git
+[submodule "services/email_service"]
+	path = services/email_service
+	url = ../email_service.git
+[submodule "services/apex"]
+	path = services/apex
+	url = ../apex.git
+[submodule "packages/rdf-serializers"]
+	path = packages/rdf-serializers
+	url = https://github.com/ontola/rdf-serializers.git
+[submodule "packages/active_response"]
+	path = packages/active_response
+	url = https://github.com/ontola/active_response.git
+[submodule "packages/linked_rails"]
+	path = packages/linked_rails
+	url = https://github.com/ontola/linked_rails.git
+[submodule "packages/linked_rails-auth"]
+	path = packages/linked_rails-auth
+	url = https://github.com/ontola/linked_rails-auth.git
+[submodule "packages/link-lib"]
+	path = packages/link-lib
+	url = https://github.com/rescribet/link-lib.git
+[submodule "packages/link-redux"]
+	path = packages/link-redux
+	url = https://github.com/rescribet/link-redux.git
+[submodule "packages/emp_json"]
+	path = packages/emp_json
+	url = https://github.com/empathy-tools/emp_json_rb.git
+[submodule "infrastructure"]
+	path = infrastructure
+	url = ../infrastructure.git
