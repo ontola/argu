@@ -4,6 +4,8 @@ require 'active_support'
 require 'faraday/multipart'
 require 'http-cookie'
 require 'mailcatcher/api'
+require 'empathy/emp_json/helpers/primitives'
+require 'empathy/emp_json/helpers/hash'
 
 module TestMethods # rubocop:disable Metrics/ModuleLength
   HEALTH_CHECKS = [
@@ -41,12 +43,13 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
   end
 
   def login_body(actor, password, location)
-    body = <<-FOO
-    <http://purl.org/link-lib/targetResource> <http://schema.org/email> "#{actor}" .
-    <http://purl.org/link-lib/targetResource> <https://ns.ontola.io/core#password> "#{password}" .
-    <http://purl.org/link-lib/targetResource> <https://ns.ontola.io/core#redirectUrl> <#{location}> .
-    FOO
-    Faraday::UploadIO.new(StringIO.new(body), 'application/n-triples')
+    {
+      '.' => {
+        'http://schema.org/email' => actor,
+        'https://ns.ontola.io/core#password' => password,
+        'https://ns.ontola.io/core#redirectUrl' => location,
+      }
+    }.to_emp_json.to_json
   end
 
   def as(actor, location: '/argu/freetown', password: 'password')
@@ -64,12 +67,12 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
       response = conn.post do |req|
         req.headers.merge!(
           'Accept': 'application/empathy+json',
-          'Content-Type': 'multipart/form-data',
+          'Content-Type': 'application/empathy+json',
           'Cookie' => HTTP::Cookie.cookie_value(cookies),
           'X-CSRF-Token' => csrf,
           'Website-IRI' => 'https://argu.localtest/argu'
         )
-        req.body = {'<http://purl.org/link-lib/graph>' => login_body(actor, password, location)}
+        req.body = login_body(actor, password, location)
       end
 
       expect(response.status).to eq(200)

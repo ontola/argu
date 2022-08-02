@@ -29,7 +29,7 @@ GEM
     domain_name (0.5.20190701)
       unf (>= 0.0.5, < 1.0.0)
     dotenv (2.7.5)
-    emp_json (1.1.0)
+    emp_json (1.2.1.pre.g7126641c2)
     excon (0.78.0)
     faraday (1.0.0)
       multipart-post (>= 1.2, < 3)
@@ -128,7 +128,7 @@ DEPENDENCIES
   capybara-playwright-driver
   docker-api
   dotenv
-  emp_json
+  emp_json (= 1.2.1.pre.g7126641c2)
   faraday
   faraday-multipart
   http-cookie

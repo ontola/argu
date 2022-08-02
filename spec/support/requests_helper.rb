@@ -35,12 +35,12 @@ module RequestsHelper
     response = conn.put do |req|
       req.headers.merge!(
         'Accept': 'application/empathy+json',
-        'Content-Type': 'multipart/form-data',
+        'Content-Type': 'application/empathy+json',
         'Cookie' => HTTP::Cookie.cookie_value(cookies),
         'X-CSRF-Token' => csrf,
         'Website-IRI' => 'https://argu.localtest/argu'
       )
-      req.body = {'<http://purl.org/link-lib/graph>' => change_language_body(language)}
+      req.body = change_language_body(language)
     end
 
     @cookies = HTTP::CookieJar.new.parse(response.headers['set-cookie'], 'https://argu.localtest')
@@ -61,10 +61,11 @@ module RequestsHelper
   private
 
   def change_language_body(language)
-    body = <<-FOO
-    <http://purl.org/link-lib/targetResource> <http://schema.org/language> <https://argu.localtest/argu/enums/users/language##{language}> .
-    FOO
-    Faraday::UploadIO.new(StringIO.new(body), 'application/n-triples')
+    {
+      '.' => {
+        'http://schema.org/language' => "https://argu.localtest/argu/enums/users/language##{language}"
+      }
+    }.to_emp_json.to_json
   end
 
   def requested_iri
