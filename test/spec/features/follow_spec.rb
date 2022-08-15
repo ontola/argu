@@ -28,18 +28,14 @@ RSpec.describe 'Follow', type: :feature do
     expect(mailcatcher_email).to be_nil
     rails_runner(
       :apex,
-      'Apartment::Tenant.switch(\'argu\') do '\
-        'ActsAsTenant.with_tenant(Page.find_via_shortname(\'argu\')) do '\
-          'User.find(3).update(notifications_viewed_at: 1.year.ago) '\
-        'end '\
-      'end'
+      'ActsAsTenant.with_tenant(Page.find_via_shortname(\'argu\')) do '\
+        'User.find(3).update(notifications_viewed_at: 1.year.ago) '\
+      'end '
     )
     rails_runner(
       :apex,
-      'Apartment::Tenant.switch(\'argu\') do '\
-        'ActsAsTenant.with_tenant(Page.find_via_shortname(\'argu\')) do '\
-          'SendActivityNotificationsWorker.new.perform(3, User.reactions_emails[:direct_reactions_email]) '\
-        'end '\
+      'ActsAsTenant.with_tenant(Page.find_via_shortname(\'argu\')) do '\
+        'SendActivityNotificationsWorker.new.perform(3, User.reactions_emails[:direct_reactions_email]) '\
       'end'
     )
 
@@ -62,14 +58,12 @@ RSpec.describe 'Follow', type: :feature do
     expect(mailcatcher_email).to be_nil
     rails_runner(
       :apex,
-      'Apartment::Tenant.switch(\'argu\') { User.find(3).update(notifications_viewed_at: 1.year.ago) }'
+      'User.find(3).update(notifications_viewed_at: 1.year.ago)'
     )
     rails_runner(
       :apex,
-      'Apartment::Tenant.switch(\'argu\') do '\
-        'ActsAsTenant.with_tenant(Page.find_via_shortname(\'argu\')) do '\
-          'SendActivityNotificationsWorker.new.perform(3, User.reactions_emails[:direct_reactions_email]) '\
-        'end '\
+      'ActsAsTenant.with_tenant(Page.find_via_shortname(\'argu\')) do '\
+        'SendActivityNotificationsWorker.new.perform(3, User.reactions_emails[:direct_reactions_email]) '\
       'end'
     )
 

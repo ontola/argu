@@ -27,9 +27,7 @@ RSpec.describe 'iri prefix', type: :feature do
   def change_iri_prefix(iri_prefix)
     rails_runner(
       :apex,
-      'Apartment::Tenant.switch(\'argu\') do '\
-        "Page.find_via_shortname(\'argu\').update(iri_prefix: '#{iri_prefix}') "\
-      'end'
+      "Page.find_via_shortname(\'argu\').update(iri_prefix: '#{iri_prefix}') "
     )
   end
 end

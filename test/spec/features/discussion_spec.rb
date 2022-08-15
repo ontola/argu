@@ -86,10 +86,8 @@ RSpec.describe 'Discussions', type: :feature do
   example 'Member posts a motion with required setup' do
     rails_runner(
       :apex,
-      'Apartment::Tenant.switch(\'argu\') do'\
-      '  User.update_all(display_name: nil, finished_intro: false);'\
-      '  Page.argu.update(requires_intro: true) '\
-      'end'
+      'User.update_all(display_name: nil, finished_intro: false);'\
+      'Page.argu.update(requires_intro: true) '
     )
     as 'member@example.com', location: '/argu/holland/m/new'
     cancel_setup

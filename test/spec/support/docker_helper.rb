@@ -14,7 +14,7 @@ BEGIN
     || string_agg(quote_ident(schemaname) || '.' || quote_ident(tablename), ', ')
     || ' CASCADE'
    FROM pg_tables
-   WHERE schemaname IN ('public', 'argu')
+   WHERE schemaname IN ('public')
   );
 END
 $func$;
@@ -153,7 +153,7 @@ END_HEREDOC
   end
 
   def var_from_rails_console(command)
-    rails_runner(:apex, "Apartment::Tenant.switch('argu') { puts #{command} }")
+    rails_runner(:apex, "puts #{command}")
       .split("\n")
       .last
   end
