@@ -256,7 +256,7 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
     item_list.locator("li[role='option']:has-text('#{with}')").click
   end
 
-  def go_to_menu_item(text, menu: :actions, resource: page.current_url)
+  def go_to_menu_item(text, menu: :actions, resource: playwright_page.url)
     wait_until_loaded
     resource_selector("#{resource}/menus/#{menu}").click
     wait_until_loaded

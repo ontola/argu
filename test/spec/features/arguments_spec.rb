@@ -12,7 +12,7 @@ RSpec.describe 'Arguments', type: :feature do
     expect_argument_posted
   end
   let(:result_element) { "#{test_id_selector('column')} > div" }
-  let(:parent_resource) { page.current_url }
+  let(:parent_resource) { playwright_page.url }
   let(:expect_argument_content) { true }
 
   before do

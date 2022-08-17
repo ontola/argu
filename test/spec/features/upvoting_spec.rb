@@ -84,7 +84,7 @@ RSpec.describe 'Upvoting', type: :feature do
   end
 
   def expect_voted
-    pro_column = resource_selector("#{page.current_url}/pros", element: "#{test_id_selector('column')} > div")
+    pro_column = resource_selector("#{playwright_page.url}/pros", element: "#{test_id_selector('column')} > div")
     wait_for { pro_column.locator('button[aria-pressed=true][title=Upvote]').visible? }.to be_truthy
     button = pro_column.locator('button[aria-pressed=true][title=Upvote]')
 
@@ -92,7 +92,7 @@ RSpec.describe 'Upvoting', type: :feature do
   end
 
   def expect_not_voted
-    pro_column = resource_selector("#{page.current_url}/pros", element: "#{test_id_selector('column')} > div")
+    pro_column = resource_selector("#{playwright_page.url}/pros", element: "#{test_id_selector('column')} > div")
     wait_for { pro_column.locator('button[aria-pressed=true]').count }.to eq 0
     button = pro_column.locator('button[title=Upvote]')
 

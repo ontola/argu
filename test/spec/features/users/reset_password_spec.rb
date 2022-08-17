@@ -13,7 +13,7 @@ RSpec.describe 'User reset password', type: :feature do
       have_snackbar('You will receive an email shortly with instructions to reset your password.')
     )
     expect(page).to have_content('Sign in or register')
-    expect(page.current_url).to include('/argu/u/session/new')
+    expect(playwright_page.url).to include('/argu/u/session/new')
     expect_email(:password_reset_email)
 
     visit password_reset_email.links.last
