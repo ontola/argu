@@ -21,25 +21,23 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
   end
 
   def accept_token(result: :success)
-    Capybara.current_session.driver.with_playwright_page do |page|
-      page.expect_navigation do
-        page.locator('button:has-text("Accept")').click
-      end
-
-      # @todo snackbars are shown, but the page is instantly reloaded.
-      # This prevents the matcher from seeing the snackbar
-      # case result
-      # when :success
-      #   wait_for { page }.to have_snackbar("You have joined the group 'Members'")
-      # when :already_member
-      #   wait_for { page }.to have_snackbar('You are already member of this group')
-      # end
-
-      navbar_tabs.locator('text=Holland')
-      main_content.locator('text=Holland')
-
-      verify_logged_in
+    playwright_page.expect_navigation do
+      playwright_page.locator('button:has-text("Accept")').click
     end
+
+    # @todo snackbars are shown, but the page is instantly reloaded.
+    # This prevents the matcher from seeing the snackbar
+    # case result
+    # when :success
+    #   wait_for { page }.to have_snackbar("You have joined the group 'Members'")
+    # when :already_member
+    #   wait_for { page }.to have_snackbar('You are already member of this group')
+    # end
+
+    navbar_tabs.locator('text=Holland')
+    main_content.locator('text=Holland')
+
+    verify_logged_in
   end
 
   def login_body(actor, password, location)
@@ -78,22 +76,20 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
       expect(response.status).to eq(200)
 
       login_cookies = HTTP::CookieJar.new.parse(response.headers['set-cookie'], 'https://argu.localtest')
-      Capybara.current_session.driver.with_playwright_page do |page|
-        playwright_cookies = (cookies + login_cookies).map do |cookie|
-          {
-            "sameSite": "Strict",
-            "name": cookie.name,
-            "value": cookie.value,
-            "domain": cookie.domain,
-            "path": cookie.path,
-            "expires": cookie.expires.to_f,
-            "httpOnly": cookie.httponly,
-            "secure": cookie.secure
-          }
-        end
-
-        page.context.add_cookies(playwright_cookies)
+      playwright_cookies = (cookies + login_cookies).map do |cookie|
+        {
+          "sameSite": "Strict",
+          "name": cookie.name,
+          "value": cookie.value,
+          "domain": cookie.domain,
+          "path": cookie.path,
+          "expires": cookie.expires.to_f,
+          "httpOnly": cookie.httponly,
+          "secure": cookie.secure
+        }
       end
+
+      playwright_page.context.add_cookies(playwright_cookies)
     end
 
     visit "https://argu.localtest#{location}"
@@ -103,9 +99,7 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
     scope = resource_selector('https://argu.localtest/argu/c_a', parent: navbar)
     scope.locator("button[title='User settings']").click(position: { x: 1, y: 1 })
 
-    Capybara.current_session.driver.with_playwright_page do |page|
-      page.locator('.CID-AppMenu').locator("text=#{button}").click
-    end
+    playwright_page.locator('.CID-AppMenu').locator("text=#{button}").click
   end
 
   def current_tenant
@@ -140,23 +134,17 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
     JAVASCRIPT
 
     wait_for do
-      Capybara.current_session.driver.with_playwright_page do |page|
-        page.evaluate(is_done)
-      end
+      playwright_page.evaluate(is_done)
     end.to be_truthy
     sleep(0.2)
   end
 
   def login(email, password = 'password', modal: true, open_modal: true, two_fa: false)
-    Capybara.current_session.driver.with_playwright_page do |page|
-      page.locator('text=Log in / sign up')
-    end
+    playwright_page.locator('text=Log in / sign up')
     wait_until_loaded
-    Capybara.current_session.driver.with_playwright_page do |page|
-      page.locator('text=Log in / sign up').click if modal && open_modal
+    playwright_page.locator('text=Log in / sign up').click if modal && open_modal
 
-      page.locator('text=Sign in or register')
-    end
+    playwright_page.locator('text=Sign in or register')
 
     fill_in_login_form email, password, modal: modal, two_fa: two_fa
 
@@ -164,10 +152,8 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
   end
 
   def logout(user: 'user_name_2')
-    Capybara.current_session.driver.with_playwright_page do |page|
-      page.expect_navigation do
-        click_user_menu_button('Sign out')
-      end
+    playwright_page.expect_navigation do
+      click_user_menu_button('Sign out')
     end
   end
 
@@ -192,26 +178,20 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
     end
 
     wrapper = modal ? ".MuiModal-root[role='presentation']" : 'form[action=\'/argu/login\']'
-    Capybara.current_session.driver.with_playwright_page do |page|
-      wait_for { page.locator(wrapper).count }.to be 1
-    end
+    wait_for { playwright_page.locator(wrapper).count }.to be 1
 
     within wrapper do
-      Capybara.current_session.driver.with_playwright_page do |page|
-        page.fill(field_selector('https://ns.ontola.io/core#password'), password)
-      end
+      playwright_page.fill(field_selector('https://ns.ontola.io/core#password'), password)
 
       if two_fa
         click_button 'Continue'
       else
-        Capybara.current_session.driver.with_playwright_page do |page|
-          if expect_reload
-            page.expect_navigation do
-              click_button 'Continue'
-            end
-          else
+        if expect_reload
+          playwright_page.expect_navigation do
             click_button 'Continue'
           end
+        else
+          click_button 'Continue'
         end
       end
     end
@@ -220,15 +200,13 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
 
     wait_for { page }.to have_content('Two factor authentication')
     otp = var_from_rails_console("EmailAddress.find_by(email: '#{email}').user.otp_secret.otp_code")
-    Capybara.current_session.driver.with_playwright_page do |page|
-      page.fill(field_selector('https://argu.co/ns/core#otp'), otp)
-      if expect_reload
-        page.expect_navigation do
-          click_button 'Continue'
-        end
-      else
+    playwright_page.fill(field_selector('https://argu.co/ns/core#otp'), otp)
+    if expect_reload
+      playwright_page.expect_navigation do
         click_button 'Continue'
       end
+    else
+      click_button 'Continue'
     end
   end
 
@@ -245,25 +223,19 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
 
     wait_for_terms_notice
 
-    Capybara.current_session.driver.with_playwright_page do |page|
-      page.expect_navigation do
-        click_button 'Confirm'
-      end
+    playwright_page.expect_navigation do
+      click_button 'Confirm'
     end
   end
 
   def finish_setup
-    Capybara.current_session.driver.with_playwright_page do |page|
-      page.locator('text=Welcome!')
-    end
+    playwright_page.locator('text=Welcome!')
     within_dialog do
       fill_in field_name('https://argu.co/ns/core#name'), with: 'New user'
       wait_for { page }.to have_button 'Continue'
       click_button 'Continue'
     end
-    Capybara.current_session.driver.with_playwright_page do |page|
-      wait_for { page.locator('text=Welcome!').count }.to be 0
-    end
+    wait_for { playwright_page.locator('text=Welcome!').count }.to be 0
   end
 
   def cancel_setup
@@ -276,14 +248,12 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
   end
 
   def fill_in_select(name, with:)
-    Capybara.current_session.driver.with_playwright_page do |page|
-      input = page.locator("input.MuiInputBase-input[id='#{name}']")
-      input.click
+    input = playwright_page.locator("input.MuiInputBase-input[id='#{name}']")
+    input.click
 
-      with.split('').each { |key| input.type key }
-      item_list = page.locator('ul[role="listbox"]')
-      item_list.locator("li[role='option']:has-text('#{with}')").click
-    end
+    with.split('').each { |key| input.type key }
+    item_list = playwright_page.locator('ul[role="listbox"]')
+    item_list.locator("li[role='option']:has-text('#{with}')").click
   end
 
   def go_to_menu_item(text, menu: :actions, resource: page.current_url)
@@ -314,10 +284,8 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
   end
 
   def select_tab(tab)
-    Capybara.current_session.driver.with_playwright_page do |page|
-      tabs = page.locator('.MuiTabs-root')
-      tabs.locator("text=#{tab}").click
-    end
+    tabs = playwright_page.locator('.MuiTabs-root')
+    tabs.locator("text=#{tab}").click
   end
 
   def switch_organization(organization)
@@ -325,9 +293,7 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
   end
 
   def verify_logged_in(email = nil)
-    Capybara.current_session.driver.with_playwright_page do |page|
-      page.wait_for_selector("div[resource=\"#{current_tenant}/c_a\"]")
-    end
+    playwright_page.wait_for_selector("div[resource=\"#{current_tenant}/c_a\"]")
 
     return unless email
 

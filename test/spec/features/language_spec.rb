@@ -7,58 +7,40 @@ RSpec.describe 'Language', type: :feature do
     # @todo Currently there is no way to go to the language page as guest
     as :guest, location: '/argu/user/language'
 
-    Capybara.current_session.driver.with_playwright_page do |page|
-      wait_for { page.locator('input[value="English"]').visible? }.to be_truthy
-    end
+    wait_for { playwright_page.locator('input[value="English"]').visible? }.to be_truthy
     fill_in_select(field_name('http://schema.org/language'), with: 'Nederlands')
 
-    Capybara.current_session.driver.with_playwright_page do |page|
-      page.expect_navigation(waitUntil: 'networkidle') do
-        page.locator('text=Save').click
-      end
+    playwright_page.expect_navigation(waitUntil: 'networkidle') do
+      playwright_page.locator('text=Save').click
     end
-    Capybara.current_session.driver.with_playwright_page do |page|
-      page.expect_navigation(waitUntil: 'networkidle')
-    end
+    playwright_page.expect_navigation(waitUntil: 'networkidle')
 
     wait_for {
-      Capybara.current_session.driver.with_playwright_page do |page|
-        page.locator('text=Taal instellen').visible?
-      end
+      playwright_page.locator('text=Taal instellen').visible?
     }.to be_truthy
     wait_for {
-      Capybara.current_session.driver.with_playwright_page do |page|
-        page.locator('input[value="Nederlands"]').visible?
-      end
+      playwright_page.locator('input[value="Nederlands"]').visible?
     }.to be_truthy
   end
 
   example 'User changes language' do
     as 'user1@example.com'
 
-    Capybara.current_session.driver.with_playwright_page do |page|
-      click_user_menu_button('Set language')
+    click_user_menu_button('Set language')
 
-      wait_for { page.locator('input[value="English"]').visible? }.to be_truthy
+    wait_for { playwright_page.locator('input[value="English"]').visible? }.to be_truthy
 
-      page.expect_navigation do
-        fill_in_select(field_name('http://schema.org/language'), with: 'Nederlands')
-        page.locator('text=Save').click
-      end
+    playwright_page.expect_navigation do
+      fill_in_select(field_name('http://schema.org/language'), with: 'Nederlands')
+      playwright_page.locator('text=Save').click
     end
-    Capybara.current_session.driver.with_playwright_page do |page|
-      page.expect_navigation(waitUntil: 'networkidle')
-    end
+    playwright_page.expect_navigation(waitUntil: 'networkidle')
 
     wait_for {
-      Capybara.current_session.driver.with_playwright_page do |page|
-        page.locator('text=Taal instellen').visible?
-      end
+      playwright_page.locator('text=Taal instellen').visible?
     }.to be_truthy
     wait_for {
-      Capybara.current_session.driver.with_playwright_page do |page|
-        page.locator('input[value="Nederlands"]').visible?
-      end
+      playwright_page.locator('input[value="Nederlands"]').visible?
     }.to be_truthy
   end
 end

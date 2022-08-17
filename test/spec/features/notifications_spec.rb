@@ -15,14 +15,12 @@ RSpec.describe 'Notifications', type: :feature do
 
     wait_until_loaded
 
-    Capybara.current_session.driver.with_playwright_page do |page|
-      wait_for { page.locator(test_selector('Notification-Unread')).count }.to eq 5
-      page.locator(test_selector('Notification-Unread')).first.click
+    wait_for { playwright_page.locator(test_selector('Notification-Unread')).count }.to eq 5
+    playwright_page.locator(test_selector('Notification-Unread')).first.click
 
-      count_bubble_count.locator("text=4")
+    count_bubble_count.locator("text=4")
 
-      wait_for { page.locator(test_selector('Notification-Unread')).count }.to eq 4
-      expect(page.locator(test_selector('Notification-Unread')).count).to eq 4
-    end
+    wait_for { playwright_page.locator(test_selector('Notification-Unread')).count }.to eq 4
+    expect(playwright_page.locator(test_selector('Notification-Unread')).count).to eq 4
   end
 end

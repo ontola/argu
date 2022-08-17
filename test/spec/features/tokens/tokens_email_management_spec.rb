@@ -8,7 +8,7 @@ RSpec.describe 'Token email management', type: :feature do
     select_tab('Invite by email')
 
     wait_for { page }.to have_content 'Email invites'
-    find('h2', text: 'Email invites').click
+    playwright_page.locator('h2', hasText: 'Email invites').click
 
     collection_float_button('New email invite').click
 

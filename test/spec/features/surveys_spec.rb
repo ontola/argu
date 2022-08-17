@@ -65,12 +65,10 @@ RSpec.describe 'Surveys', type: :feature do
   end
 
   def expect_submitted
-    Capybara.current_session.driver.with_playwright_page do |page|
-      expect_no_dialog
-      wait_for { page.locator('text=Thank you for your response').visible? }.to be_truthy
-      visit survey_path
-      wait_for { page.locator('text=Thank you for your response').visible? }.to be_truthy
-    end
+    expect_no_dialog
+    wait_for { playwright_page.locator('text=Thank you for your response').visible? }.to be_truthy
+    visit survey_path
+    wait_for { playwright_page.locator('text=Thank you for your response').visible? }.to be_truthy
   end
 
   def fill_in_survey

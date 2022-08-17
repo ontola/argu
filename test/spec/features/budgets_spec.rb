@@ -21,12 +21,10 @@ RSpec.describe 'Budgets', type: :feature do
     expect_draft_message('Budget')
     expect_budget_content
     wait_until_loaded
-    find('h2', text: 'Options').click
+    playwright_page.locator('h2', hasText: 'Options').click
     collection_float_button('New option', collection: "https://argu.localtest/argu/budgets/#{next_id}/offers").click
 
-    Capybara.current_session.driver.with_playwright_page do |page|
-      page.locator('text=New option')
-    end
+    playwright_page.locator('text=New option')
     fill_in_select field_name('http://schema.org/itemOffered'), with: motion_title
     fill_in field_name('https://argu.co/ns/core#price'), with: 100
     click_button('Save')
@@ -120,16 +118,14 @@ RSpec.describe 'Budgets', type: :feature do
   end
 
   def submit_cart(coupon = 'COUPON1')
-    Capybara.current_session.driver.with_playwright_page do |page|
-      page.expect_navigation do
-        cart.locator('text=Finish').click
-      end
-
-      page.locator("text=Question_motion-title")
-      page.locator("text=Freetown_motion-title")
-      page.fill(field_selector('https://argu.co/ns/core#coupon'), coupon)
-      page.locator('text=Save').click
+    playwright_page.expect_navigation do
+      cart.locator('text=Finish').click
     end
+
+    playwright_page.locator("text=Question_motion-title")
+    playwright_page.locator("text=Freetown_motion-title")
+    playwright_page.fill(field_selector('https://argu.co/ns/core#coupon'), coupon)
+    playwright_page.locator('text=Save').click
   end
 
   def verify_order(user, value)

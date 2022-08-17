@@ -116,12 +116,10 @@ RSpec.describe 'Arguments', type: :feature do
       )
     )
     wait_until_loaded
-    Capybara.current_session.driver.with_playwright_page do |page|
-      page.locator("text=#{title}")
+    playwright_page.locator("text=#{title}")
 
-      scope = resource_selector("#{parent_resource}/#{@side}s", element: result_element)
-      scope.locator("text=#{title}")
-      scope.locator("text=#{content}") if expect_argument_content
-    end
+    scope = resource_selector("#{parent_resource}/#{@side}s", element: result_element)
+    scope.locator("text=#{title}")
+    scope.locator("text=#{content}") if expect_argument_content
   end
 end

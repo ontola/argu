@@ -110,8 +110,6 @@ RSpec.describe 'Comments', type: :feature do
       have_snackbar('Comment published.')
     )
     wait_until_loaded
-    Capybara.current_session.driver.with_playwright_page do |page|
-      wait_for { page.locator("text=#{content}").visible? }.to be_truthy
-    end
+    wait_for { playwright_page.locator("text=#{content}").visible? }.to be_truthy
   end
 end

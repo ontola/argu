@@ -34,9 +34,7 @@ RSpec.describe 'Disabled actions', type: :feature do
     let(:location) { '/argu/q/expired_question' }
     let(:state_expectation) { expect(page).to have_css('.fa-lock') }
     let(:vote_buttons_expectation) do
-      Capybara.current_session.driver.with_playwright_page do |page|
-        wait_for { page.locator('.Button[disabled][title="Voting is no longer possible"]').count }.to eq 3
-      end
+      wait_for { playwright_page.locator('.Button[disabled][title="Voting is no longer possible"]').count }.to eq 3
     end
 
     it_behaves_like 'cannot perform actions'
@@ -52,9 +50,7 @@ RSpec.describe 'Disabled actions', type: :feature do
   context 'motion of expired question' do
     let(:location) { '/argu/m/expired_motion' }
     let(:vote_buttons_expectation) do
-      Capybara.current_session.driver.with_playwright_page do |page|
-        wait_for { page.locator('.Button[disabled][title="Voting is no longer possible"]').count }.to be >= 3
-      end
+      wait_for { playwright_page.locator('.Button[disabled][title="Voting is no longer possible"]').count }.to be >= 3
     end
 
     it_behaves_like 'cannot perform actions'

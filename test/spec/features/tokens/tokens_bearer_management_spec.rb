@@ -7,8 +7,8 @@ RSpec.describe 'Token bearer management', type: :feature do
     as('staff@example.com', location: '/argu/g/111/settings')
     select_tab('Invite by link')
 
-    find('h2', text: 'Invite links').click
     wait_for { page }.to have_content 'Invite links'
+    playwright_page.locator('h2', hasText: 'Invite links').click
 
     collection_float_button('New invite link').click
 

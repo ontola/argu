@@ -94,10 +94,8 @@ RSpec.describe 'Follow', type: :feature do
   end
 
   def expect_following(index)
-    Capybara.current_session.driver.with_playwright_page do |page|
-      3.times do |i| button = page.locator("[role='menuitem']:nth-child(#{i + 2}) .fa-circle#{i == index ? '' : '-o'}")
-        expect(button.visible?).to be_truthy
-      end
+    3.times do |i| button = playwright_page.locator("[role='menuitem']:nth-child(#{i + 2}) .fa-circle#{i == index ? '' : '-o'}")
+      expect(button.visible?).to be_truthy
     end
   end
 

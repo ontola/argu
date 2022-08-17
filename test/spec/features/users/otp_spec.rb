@@ -19,10 +19,8 @@ RSpec.describe 'Otp', type: :feature do
 
       fill_in field_name('https://argu.co/ns/core#otp'), with: otp, fill_options: {clear: :backspace}
 
-      Capybara.current_session.driver.with_playwright_page do |page|
-        page.expect_navigation do
-          click_button 'Continue'
-        end
+      playwright_page.expect_navigation do
+        click_button 'Continue'
       end
       visit_settings
 

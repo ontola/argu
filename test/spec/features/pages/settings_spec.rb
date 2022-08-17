@@ -24,7 +24,7 @@ RSpec.describe 'Page settings', type: :feature do
       components_row(1).locator('text=Holland')
       components_row(2).locator('text=Freetown')
 
-      find('h2', text: 'Components').click
+      playwright_page.locator('h2', hasText: 'Components').click
 
       collection_float_button('Add item').click
 
@@ -96,7 +96,7 @@ RSpec.describe 'Page settings', type: :feature do
       shortnames_row(1).locator('text=No items yet')
 
       wait_until_loaded
-      find('h2', text: 'Redirects').click
+      playwright_page.locator('h2', hasText: 'Redirects').click
 
       collection_float_button('New redirect').click
       wait_for { page }.to have_content('New redirect')
@@ -134,9 +134,7 @@ RSpec.describe 'Page settings', type: :feature do
   end
 
   def visit_settings
-    Capybara.current_session.driver.with_playwright_page do |page|
-      page.locator('text=Manage').click
-    end
+    playwright_page.locator('text=Manage').click
     select_tab(tab) if tab
   end
 end
