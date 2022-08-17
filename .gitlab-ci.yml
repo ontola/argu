@@ -47,31 +47,16 @@ libro_build:
     - docker push $CI_REGISTRY_IMAGE/libro:$CI_COMMIT_SHA
     - docker push $CI_REGISTRY_IMAGE/libro:latest
 
-tag_production:
+tag:
   stage: tag
-  image: docker:18.09.8
-  services:
-    - docker:18.09.8-dind
+  rules:
+    - if: $CI_COMMIT_TAG
   before_script:
     - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" "$CI_REGISTRY" --password-stdin
   script:
-    - apk add git
     - docker pull $CI_REGISTRY_IMAGE/libro:$CI_COMMIT_SHA
-    - docker tag $CI_REGISTRY_IMAGE/libro:$CI_COMMIT_SHA $CI_REGISTRY_IMAGE/libro:production
-    - docker push $CI_REGISTRY_IMAGE/libro:production
-    - APEX_TAG=$(git submodule status --cached services/apex | awk '{print $1;}' | tr -cd '[:alnum:]')
-    - docker pull registry.gitlab.com/ontola/apex:$APEX_TAG
-    - docker tag registry.gitlab.com/ontola/apex:$APEX_TAG registry.gitlab.com/ontola/apex:production
-    - docker push registry.gitlab.com/ontola/apex:production
-    - EMAIL_TAG=$(git submodule status --cached services/email_service | awk '{print $1;}' | tr -cd '[:alnum:]')
-    - docker pull registry.gitlab.com/ontola/email_service:$EMAIL_TAG
-    - docker tag registry.gitlab.com/ontola/email_service:$EMAIL_TAG registry.gitlab.com/ontola/email_service:production
-    - docker push registry.gitlab.com/ontola/email_service:production
-    - TOKEN_TAG=$(git submodule status --cached services/token_service | awk '{print $1;}' | tr -cd '[:alnum:]')
-    - docker pull registry.gitlab.com/ontola/token_service:$TOKEN_TAG
-    - docker tag registry.gitlab.com/ontola/token_service:$TOKEN_TAG registry.gitlab.com/ontola/token_service:production
-    - docker push registry.gitlab.com/ontola/token_service:production
-  when: manual
+    - docker tag $CI_REGISTRY_IMAGE/libro:$CI_COMMIT_SHA $CI_REGISTRY_IMAGE/libro:$CI_COMMIT_TAG
+    - docker push $CI_REGISTRY_IMAGE/libro:$CI_COMMIT_TAG
 
 test:
   stage: test
