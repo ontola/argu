@@ -286,6 +286,9 @@ services:
     environment:
       - HOSTNAME=argu.localtest
       - PIDFILE=/tmp/server.pid
+    healthcheck:
+      interval: 10s
+      test: 'apk add curl && curl -H "Host: argu.localtest" -f http://localhost:3003/argu/tokens/d/health'
     ports:
       - 3003:3003
       - 1235:1234
@@ -347,6 +350,9 @@ services:
     environment:
       - HOSTNAME=argu.localtest
       - PIDFILE=/tmp/server.pid
+    healthcheck:
+      interval: 10s
+      test: 'apk add curl && curl -H "Host: argu.localtest" -f http://localhost:3002/argu/email/d/health'
     ports:
       - 3002:3002
       - 1236:1234
