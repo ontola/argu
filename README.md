@@ -163,6 +163,10 @@ Set the max [timeout](https://www.man7.org/linux/man-pages/man1/timeout.1.html)
 of the test run by setting the TEST_TIMEOUT env. This can be useful to gather
 artifacts quickly or when otherwise unavailable due to CI timeout.
 
+## Troubleshooting
+- `.env:NN: permission denied:` Unquoted keys in the .env file.
+- `Pool overlaps with other one on this address space` An old set of compose containers are still present.
+
 ## Contributing
 
 Want to contribute to this project?
