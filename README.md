@@ -2,7 +2,7 @@
 
 **Open source e-democracy and community platform.**
 
-See [argu.co](https://argu.co/info)
+See [argu.co](https://argu.co/info) and read the [docs](https://ontola.gitlab.io/argu-docs)
 
 ## Features
 
@@ -10,6 +10,7 @@ See [argu.co](https://argu.co/info)
 - **Designed for engagement**: Responsive, accessible, easy to use. Creating an account takes as little clicks as possible.
 - **Groups and rights management**: invite people with e-mails or unique URLs, have great control over what they are allowed to do
 - **Powerful REST Linked Data API**: all data is re-usable, exportable and queryable
+- For a complete list, [see the docs](https://ontola.gitlab.io/argu-docs)
 
 ## Free managed hosting
 You can use Argu for free! We host the software for you. [Click here to get started.](https://argu.co/argu/u/session/new?redirect_url=https%3A%2F%2Fargu.co%2Fargu%2Fo%2Fnew)
