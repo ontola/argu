@@ -9,9 +9,18 @@ services:
     networks:
       default:
     volumes:
-      - ${PWD}/test/spec:/usr/src/app/spec
-      - ${PWD}/test/Rakefile:/usr/src/app/Rakefile
-      - /var/run/docker.sock:/var/run/docker.sock
+      - type: bind
+        source: ${PWD}/test/spec
+        target: /usr/src/app/spec
+      - type: bind
+        source: ${PWD}/test/Rakefile
+        target: /usr/src/app/Rakefile
+      - type: bind
+        source: ${PWD}/docker/nginx/ssl
+        target: /etc/nginx/ssl
+      - type: bind
+        source: /var/run/docker.sock
+        target: /var/run/docker.sock
       - /dev/shm:/dev/shm
   nginx:
     image: nginx:latest
@@ -27,8 +36,12 @@ services:
       - 80:80
     restart: unless-stopped
     volumes:
-      - ${PWD}/docker/nginx/nginx.conf:/etc/nginx/nginx.conf
-      - ${PWD}/docker/nginx/ssl:/etc/nginx/ssl
+      - type: bind
+        source: ${PWD}/docker/nginx/nginx.conf
+        target: /etc/nginx/nginx.conf
+      - type: bind
+        source: ${PWD}/docker/nginx/ssl
+        target: /etc/nginx/ssl
   postgres:
     image: postgis/postgis:14-master
     env_file:
@@ -83,7 +96,9 @@ services:
     ports:
       - 9090:9090
     volumes:
-      - ${PWD}/docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - type: bind
+        source: ${PWD}/docker/prometheus/prometheus.yml
+        target: /etc/prometheus/prometheus.yml
       - promdata:/prometheus
   grafana:
     image: grafana/grafana
@@ -116,7 +131,9 @@ services:
       - token.svc.cluster.localdev:${HOST_IP:-host-gateway}
       - email.svc.cluster.localdev:${HOST_IP:-host-gateway}
     volumes:
-      - ./docker/nginx/devproxyCA/cacert.p12:/opt/graalvm-ce-java17-21.3.0/lib/security/cacerts
+      - type: bind
+        source: ./docker/nginx/devproxyCA/cacert.p12
+        target: /opt/graalvm-ce-java17-21.3.0/lib/security/cacerts
     command: java -Djavax.net.ssl.trustStorePassword=password -jar libro.jar
   libro_server_dev:
     platform: linux/amd64
@@ -168,7 +185,9 @@ services:
       - token.svc.cluster.localdev:${HOST_IP:-host-gateway}
       - email.svc.cluster.localdev:${HOST_IP:-host-gateway}
     volumes:
-      - ${PWD}/docker/nginx/devproxyCA/cacert.pem:${PWD}/docker/nginx/devproxyCA/cacert.pem
+      - type: bind
+        source: ${PWD}/docker/nginx/devproxyCA/cacert.pem
+        target: ${PWD}/docker/nginx/devproxyCA/cacert.pem
     command: bundle exec sidekiq
   token_worker:
     platform: linux/amd64
@@ -187,7 +206,9 @@ services:
       - token.svc.cluster.localdev:${HOST_IP:-host-gateway}
       - email.svc.cluster.localdev:${HOST_IP:-host-gateway}
     volumes:
-      - ${PWD}/docker/nginx/devproxyCA/cacert.pem:${PWD}/docker/nginx/devproxyCA/cacert.pem
+      - type: bind
+        source: ${PWD}/docker/nginx/devproxyCA/cacert.pem
+        target: ${PWD}/docker/nginx/devproxyCA/cacert.pem
     command: bundle exec sidekiq - staging
   apex:
     platform: linux/amd64
@@ -217,7 +238,9 @@ services:
       - token.svc.cluster.localdev:${HOST_IP:-host-gateway}
       - email.svc.cluster.localdev:${HOST_IP:-host-gateway}
     volumes:
-      - ${PWD}/docker/nginx/devproxyCA/cacert.pem:${PWD}/docker/nginx/devproxyCA/cacert.pem
+      - type: bind
+        source: ${PWD}/docker/nginx/devproxyCA/cacert.pem
+        target: ${PWD}/docker/nginx/devproxyCA/cacert.pem
     tmpfs:
       - /tmp/pids/
   apex_dev:
@@ -274,7 +297,9 @@ services:
       - token.svc.cluster.localdev:${HOST_IP:-host-gateway}
       - email.svc.cluster.localdev:${HOST_IP:-host-gateway}
     volumes:
-      - ${PWD}/docker/nginx/devproxyCA/cacert.pem:${PWD}/docker/nginx/devproxyCA/cacert.pem
+      - type: bind
+        source: ${PWD}/docker/nginx/devproxyCA/cacert.pem
+        target: ${PWD}/docker/nginx/devproxyCA/cacert.pem
     tmpfs:
       - /tmp/pids/
     command: ./bin/rails server -b 0.0.0.0 -p 3003
@@ -304,7 +329,9 @@ services:
       - email.svc.cluster.localdev:${HOST_IP:-host-gateway}
     volumes:
       - ./services/token_service:/usr/src/app
-      - ${PWD}/docker/nginx/devproxyCA/cacert.pem:${PWD}/docker/nginx/devproxyCA/cacert.pem
+      - type: bind
+        source: ${PWD}/docker/nginx/devproxyCA/cacert.pem
+        target: ${PWD}/docker/nginx/devproxyCA/cacert.pem
     tmpfs:
       - /tmp/pids/
   email:
@@ -331,7 +358,9 @@ services:
       - token.svc.cluster.localdev:${HOST_IP:-host-gateway}
       - email.svc.cluster.localdev:${HOST_IP:-host-gateway}
     volumes:
-      - ${PWD}/docker/nginx/devproxyCA/cacert.pem:${PWD}/docker/nginx/devproxyCA/cacert.pem
+      - type: bind
+        source: ${PWD}/docker/nginx/devproxyCA/cacert.pem
+        target: ${PWD}/docker/nginx/devproxyCA/cacert.pem
     tmpfs:
       - /tmp/pids/
     command: ./bin/rails server -b 0.0.0.0 -p 3002
@@ -360,7 +389,9 @@ services:
       - email.svc.cluster.localdev:${HOST_IP:-host-gateway}
     volumes:
       - ./services/email_service:/usr/src/app
-      - ${PWD}/docker/nginx/devproxyCA/cacert.pem:${PWD}/docker/nginx/devproxyCA/cacert.pem
+      - type: bind
+        source: ${PWD}/docker/nginx/devproxyCA/cacert.pem
+        target: ${PWD}/docker/nginx/devproxyCA/cacert.pem
     tmpfs:
       - /tmp/pids/
 networks:
