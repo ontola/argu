@@ -166,6 +166,7 @@ artifacts quickly or when otherwise unavailable due to CI timeout.
 ## Troubleshooting
 - `.env:NN: permission denied:` Unquoted keys in the .env file.
 - `Pool overlaps with other one on this address space` An old set of compose containers are still present.
+- `cannot load certificate key ... Permission denied:fopen('/etc/nginx/ssl/nginx.key','r')` Check if the ssl files aren't empty. OSX uses libreSSL.
 
 ## Contributing
 

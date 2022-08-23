@@ -3,8 +3,24 @@
 parent_path=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
 cd $parent_path/../docker/nginx
 
+if [ ! -f $PWD/devproxyCA/private/.gitkeep ]; then
+  mkdir -p $PWD/devproxyCA/private
+  touch $PWD/devproxyCA/private/.gitkeep
+fi
+
+if [ ! -d $PWD/devproxyCA/.gitkeep ]; then
+  mkdir -p $PWD/devproxyCA/
+  touch $PWD/devproxyCA/.gitkeep
+fi
+
+if [ ! -d $PWD/ssl/.gitkeep ]; then
+  mkdir -p $PWD/ssl/
+  touch $PWD/ssl/.gitkeep
+fi
+
 # Generate root certificate
 if [ ! -f $PWD/devproxyCA/cacert.pem ]; then
+  echo "Generating cacert.pem, cakey.pem"
   sudo openssl req -x509 -nodes -days 365 \
        -config openssl.cfg \
        -newkey rsa:4096 \
