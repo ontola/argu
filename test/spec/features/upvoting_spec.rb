@@ -25,7 +25,9 @@ RSpec.describe 'Upvoting', type: :feature do
 
     example 'change upvote' do
       upvote
+      link_race_condition_patch
       downvote
+      link_race_condition_patch
       upvote
     end
   end
@@ -64,38 +66,47 @@ RSpec.describe 'Upvoting', type: :feature do
   private
 
   def upvote(success: true)
-    wait_for { page }.to have_css 'button[title=Upvote]'
-    playwright_page.click('button[title=Upvote]')
+    wait_for { page }.to have_css upvote_button
+    playwright_page.click(upvote_button)
     return unless success
 
     wait_for { page }.to have_snackbar succeed_message
-    playwright_page.click('button[title=Upvote]')
     expect_voted
   end
 
   def downvote(success: true)
-    wait_for { page }.to have_css 'button[title=Upvote]'
-    playwright_page.click('button[title=Upvote]')
+    wait_for { page }.to have_css downvote_button
+    playwright_page.click(downvote_button)
     return unless success
 
     wait_for { page }.to have_snackbar 'Vote deleted successfully'
-    playwright_page.click('button[title=Upvote]')
     expect_not_voted
   end
 
   def expect_voted
     pro_column = resource_selector("#{playwright_page.url}/pros", element: "#{test_id_selector('column')} > div")
-    wait_for { pro_column.locator('button[aria-pressed=true][title=Upvote]').visible? }.to be_truthy
-    button = pro_column.locator('button[aria-pressed=true][title=Upvote]')
+    wait_for { pro_column.locator(downvote_button).visible? }.to be_truthy
+    button = pro_column.locator(downvote_button)
 
     button.locator("text=#{expected_count}")
   end
 
   def expect_not_voted
     pro_column = resource_selector("#{playwright_page.url}/pros", element: "#{test_id_selector('column')} > div")
-    wait_for { pro_column.locator('button[aria-pressed=true]').count }.to eq 0
-    button = pro_column.locator('button[title=Upvote]')
+    wait_for { pro_column.locator(upvote_button).visible? }.to be_truthy
+    button = pro_column.locator(upvote_button)
 
     button.locator("text=1")
+  end
+
+  def downvote_button
+    'button[aria-pressed=true][title=Upvote]'
+  end
+  def upvote_button
+    'button[aria-pressed=false][title=Upvote]'
+  end
+
+  def link_race_condition_patch
+    sleep(2)
   end
 end
