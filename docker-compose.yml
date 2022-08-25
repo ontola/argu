@@ -127,7 +127,7 @@ services:
     restart: unless-stopped
     extra_hosts:
       - libro.svc.cluster.localdev:${HOST_IP:-host-gateway}
-      - apex.svc.cluster.localdev:${HOST_IP:-host-gateway}
+      - data.svc.cluster.localdev:${HOST_IP:-host-gateway}
       - token.svc.cluster.localdev:${HOST_IP:-host-gateway}
       - email.svc.cluster.localdev:${HOST_IP:-host-gateway}
     volumes:
@@ -181,7 +181,7 @@ services:
     restart: unless-stopped
     extra_hosts:
       - libro.svc.cluster.localdev:${HOST_IP:-host-gateway}
-      - apex.svc.cluster.localdev:${HOST_IP:-host-gateway}
+      - data.svc.cluster.localdev:${HOST_IP:-host-gateway}
       - token.svc.cluster.localdev:${HOST_IP:-host-gateway}
       - email.svc.cluster.localdev:${HOST_IP:-host-gateway}
     volumes:
@@ -202,7 +202,7 @@ services:
     restart: unless-stopped
     extra_hosts:
       - libro.svc.cluster.localdev:${HOST_IP:-host-gateway}
-      - apex.svc.cluster.localdev:${HOST_IP:-host-gateway}
+      - data.svc.cluster.localdev:${HOST_IP:-host-gateway}
       - token.svc.cluster.localdev:${HOST_IP:-host-gateway}
       - email.svc.cluster.localdev:${HOST_IP:-host-gateway}
     volumes:
@@ -234,7 +234,7 @@ services:
     restart: unless-stopped
     extra_hosts:
       - libro.svc.cluster.localdev:${HOST_IP:-host-gateway}
-      - apex.svc.cluster.localdev:${HOST_IP:-host-gateway}
+      - data.svc.cluster.localdev:${HOST_IP:-host-gateway}
       - token.svc.cluster.localdev:${HOST_IP:-host-gateway}
       - email.svc.cluster.localdev:${HOST_IP:-host-gateway}
     volumes:
@@ -265,7 +265,7 @@ services:
     restart: unless-stopped
     extra_hosts:
       - libro.svc.cluster.localdev:${HOST_IP:-host-gateway}
-      - apex.svc.cluster.localdev:${HOST_IP:-host-gateway}
+      - data.svc.cluster.localdev:${HOST_IP:-host-gateway}
       - token.svc.cluster.localdev:${HOST_IP:-host-gateway}
       - email.svc.cluster.localdev:${HOST_IP:-host-gateway}
     volumes:
@@ -296,7 +296,7 @@ services:
     restart: unless-stopped
     extra_hosts:
       - libro.svc.cluster.localdev:${HOST_IP:-host-gateway}
-      - apex.svc.cluster.localdev:${HOST_IP:-host-gateway}
+      - data.svc.cluster.localdev:${HOST_IP:-host-gateway}
       - token.svc.cluster.localdev:${HOST_IP:-host-gateway}
       - email.svc.cluster.localdev:${HOST_IP:-host-gateway}
     volumes:
@@ -327,7 +327,7 @@ services:
     restart: unless-stopped
     extra_hosts:
       - libro.svc.cluster.localdev:${HOST_IP:-host-gateway}
-      - apex.svc.cluster.localdev:${HOST_IP:-host-gateway}
+      - data.svc.cluster.localdev:${HOST_IP:-host-gateway}
       - token.svc.cluster.localdev:${HOST_IP:-host-gateway}
       - email.svc.cluster.localdev:${HOST_IP:-host-gateway}
     volumes:
@@ -360,7 +360,7 @@ services:
     restart: unless-stopped
     extra_hosts:
       - libro.svc.cluster.localdev:${HOST_IP:-host-gateway}
-      - apex.svc.cluster.localdev:${HOST_IP:-host-gateway}
+      - data.svc.cluster.localdev:${HOST_IP:-host-gateway}
       - token.svc.cluster.localdev:${HOST_IP:-host-gateway}
       - email.svc.cluster.localdev:${HOST_IP:-host-gateway}
     volumes:
@@ -390,7 +390,7 @@ services:
       - 26168:26168
     extra_hosts:
       - libro.svc.cluster.localdev:${HOST_IP:-host-gateway}
-      - apex.svc.cluster.localdev:${HOST_IP:-host-gateway}
+      - data.svc.cluster.localdev:${HOST_IP:-host-gateway}
       - token.svc.cluster.localdev:${HOST_IP:-host-gateway}
       - email.svc.cluster.localdev:${HOST_IP:-host-gateway}
     volumes:
