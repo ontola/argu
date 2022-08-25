@@ -65,21 +65,21 @@ RSpec.describe 'Upvoting', type: :feature do
 
   def upvote(success: true)
     wait_for { page }.to have_css 'button[title=Upvote]'
-    find('button[title=Upvote]').click
+    playwright_page.click('button[title=Upvote]')
     return unless success
 
     wait_for { page }.to have_snackbar succeed_message
-    click_link class: 'MuiIconButton-root'
+    playwright_page.click('button[title=Upvote]')
     expect_voted
   end
 
   def downvote(success: true)
     wait_for { page }.to have_css 'button[title=Upvote]'
-    find('button[title=Upvote]').click
+    playwright_page.click('button[title=Upvote]')
     return unless success
 
     wait_for { page }.to have_snackbar 'Vote deleted successfully'
-    click_link class: 'MuiIconButton-root'
+    playwright_page.click('button[title=Upvote]')
     expect_not_voted
   end
 
