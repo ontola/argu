@@ -7,7 +7,8 @@ RSpec.describe 'Invites', type: :feature do
     as 'staff@example.com', location: '/argu/m/freetown_motion'
     go_to_menu_item('Invite', menu: :share)
     wait_for { page }.to have_content 'Invite people'
-    fill_in field_name('https://argu.co/ns/core#emailAddresses'), with: 'invitee1@example.com invitee2@example.com '
+    fill_in_email_input field_name('https://argu.co/ns/core#emailAddresses'),
+                        with: ['invitee1@example.com', 'invitee2@example.com']
     fill_in field_name('https://argu.co/ns/core#message'), with: 'Example body'
     fill_in_select field_name('https://argu.co/ns/core#groupId'), with: 'custom'
     fill_in field_name('https://ns.ontola.io/core#redirectUrl'), with: 'https://www.example.com'
@@ -27,7 +28,8 @@ RSpec.describe 'Invites', type: :feature do
     as 'staff@example.com', location: '/argu/m/freetown_motion'
     go_to_menu_item('Invite', menu: :share)
     wait_for { page }.to have_content 'Invite people'
-    fill_in field_name('https://argu.co/ns/core#emailAddresses'), with: 'invitee1@example.com invitee2@example.com '
+    fill_in_email_input field_name('https://argu.co/ns/core#emailAddresses'),
+                        with: ['invitee1@example.com', 'invitee2@example.com']
     fill_in field_name('https://argu.co/ns/core#message'), with: 'Example body'
     fill_in field_name('https://ns.ontola.io/core#redirectUrl'), with: 'https://www.example.com'
 

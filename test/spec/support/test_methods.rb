@@ -247,6 +247,16 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
     wait_for { page }.not_to have_content 'Welcome!'
   end
 
+  def fill_in_email_input(name, with:)
+    input = playwright_page.locator("textarea[name='#{name}']")
+    input.click
+
+    with.each do |email|
+      email.split('').each { |c| input.type c }
+      input.type(' ')
+    end
+  end
+
   def fill_in_select(name, with:)
     input = playwright_page.locator("input.MuiInputBase-input[id='#{name}']")
     input.click
