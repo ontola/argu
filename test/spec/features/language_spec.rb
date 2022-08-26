@@ -13,7 +13,7 @@ RSpec.describe 'Language', type: :feature do
     playwright_page.expect_navigation(waitUntil: 'networkidle') do
       playwright_page.locator('text=Save').click
     end
-    playwright_page.expect_navigation(waitUntil: 'networkidle')
+    sleep(2)
 
     wait_for {
       playwright_page.locator('text=Taal instellen').visible?
@@ -29,12 +29,12 @@ RSpec.describe 'Language', type: :feature do
     click_user_menu_button('Set language')
 
     wait_for { playwright_page.locator('input[value="English"]').visible? }.to be_truthy
+    fill_in_select(field_name('http://schema.org/language'), with: 'Nederlands')
 
     playwright_page.expect_navigation do
-      fill_in_select(field_name('http://schema.org/language'), with: 'Nederlands')
       playwright_page.locator('text=Save').click
     end
-    playwright_page.expect_navigation(waitUntil: 'networkidle')
+    sleep(2)
 
     wait_for {
       playwright_page.locator('text=Taal instellen').visible?
