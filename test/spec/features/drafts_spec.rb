@@ -4,20 +4,20 @@ require 'spec_helper'
 
 RSpec.describe 'Drafts', type: :feature do
   example 'User shows drafts' do
-    as 'user55@example.com', location: '/argu/freetown/q/new'
+    as 'user54@example.com', location: '/argu/freetown/q/new'
     expect_form('/argu/freetown/q')
     fill_in field_name('http://schema.org/name'), with: 'Draft title'
     fill_in_markdown field_name('http://schema.org/text'), with: 'Draft content'
     click_button 'Save'
     wait_for { page }.to have_content('Draft version, not yet published.')
 
-    go_to_user_page(tab: 'My drafts', user: 'user_name_57')
+    go_to_user_page(tab: 'My drafts', user: 'user_name_56')
 
     wait_for { page }.to have_css('.CID-Heading', text: 'My drafts')
     wait_for { page }.to have_content 'Unpublished_question-title'
     wait_for { page }.to have_content 'Draft title'
 
-    drafts = resource_selector('https://argu.localtest/argu/u/58/settings#drafts')
+    drafts = resource_selector('https://argu.localtest/argu/u/57/settings#drafts')
     draft_count = drafts.locator('.CID-Card').count
     expect(draft_count).to eq 2
 
@@ -28,7 +28,7 @@ RSpec.describe 'Drafts', type: :feature do
   end
 
   example 'Publish draft through action' do
-    as 'user55@example.com', location: '/argu/q/unpublished_question'
+    as 'user54@example.com', location: '/argu/q/unpublished_question'
     expect_publish_action
     within 'form[action="/argu/q/unpublished_question"]' do
       click_button 'Publish'

@@ -11,7 +11,7 @@ RSpec.describe 'Notifications', type: :feature do
 
     wait_for { page }.to have_content 'user_name_36 posted a challenge in Freetown'
     expect(page).to have_content 'user_name_34 posted a idea in Freetown'
-    expect(page).to have_content 'user_name_63 posted a thread in Freetown'
+    expect(page).to have_content 'user_name_62 posted a thread in Freetown'
 
     wait_until_loaded
 

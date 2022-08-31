@@ -4,10 +4,13 @@ require 'spec_helper'
 
 RSpec.describe 'Page create', type: :feature do
   example 'user creates page' do
+    self.current_tenant = 'https://argu.localtest/other_page'
+    as 'user1@example.com', location: '/other_page'
+    self.current_tenant = 'https://argu.localtest/argu'
     as 'user1@example.com', location: '/argu/u/3/o'
-    wait_for { page }.to have_content 'First page'
-    find('h1', text: 'Organizations').click
-    collection_float_button('New website').click
+    wait_for { main_content.locator('text=Other page').visible? }.to be_truthy
+    find('h1', text: 'Communities').click
+    collection_float_button('Get started').click
 
     wait_until_loaded
 
@@ -21,7 +24,7 @@ RSpec.describe 'Page create', type: :feature do
     expect(page).to have_title "My Website"
 
     visit('https://argu.localtest/argu/u/3/o')
-    wait_for { main_content.locator('text=First page').visible? }.to be_truthy
+    wait_for { main_content.locator('text=Other page').visible? }.to be_truthy
     wait_for { main_content.locator('text=My Website').visible? }.to be_truthy
   end
 end

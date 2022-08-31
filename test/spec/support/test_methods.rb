@@ -29,7 +29,7 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
     # This prevents the matcher from seeing the snackbar
     # case result
     # when :success
-    #   wait_for { page }.to have_snackbar("You have joined the group 'Members'")
+    #   wait_for { page }.to have_snackbar("You have joined the group 'Invitees'")
     # when :already_member
     #   wait_for { page }.to have_snackbar('You are already member of this group')
     # end
@@ -58,7 +58,7 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
       end
       cookies, csrf = authentication_values
 
-      conn = Faraday.new(url: 'https://argu.localtest/argu/login') do |faraday|
+      conn = Faraday.new(url: "#{current_tenant}/login") do |faraday|
         faraday.request :multipart
         faraday.adapter :net_http
       end
@@ -68,7 +68,7 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
           'Content-Type': 'application/empathy+json',
           'Cookie' => HTTP::Cookie.cookie_value(cookies),
           'X-CSRF-Token' => csrf,
-          'Website-IRI' => 'https://argu.localtest/argu'
+          'Website-IRI' => current_tenant
         )
         req.body = login_body(actor, password, location)
       end
@@ -276,7 +276,7 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
   end
 
   def next_id
-    124
+    123
   end
 
   def go_to_user_page(tab: nil, user: 'user_name_2')

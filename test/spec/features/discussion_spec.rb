@@ -33,8 +33,6 @@ RSpec.describe 'Discussions', type: :feature do
     finish_setup
     expect(page).to have_current_path('/argu/freetown/q/new')
     wait_for { page }.to have_button 'Save'
-    select_cover_photo
-    select_attachment
     submit_form
     expect_draft_message('Challenge')
     expect_content("q/#{next_id}", creator: 'New user', images: false)
@@ -47,8 +45,6 @@ RSpec.describe 'Discussions', type: :feature do
     login('user1@example.com', open_modal: false)
     expect(page).to have_current_path('/argu/freetown/q/new')
     wait_for { page }.to have_button 'Save'
-    select_cover_photo
-    select_attachment
     submit_form
     expect_draft_message('Challenge')
     expect_content("q/#{next_id}", creator: 'user_name_2', images: false)

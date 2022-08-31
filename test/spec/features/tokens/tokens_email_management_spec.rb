@@ -40,7 +40,7 @@ RSpec.describe 'Token email management', type: :feature do
 
     expect_email(:invite_email)
 
-    expect(invite_email.body).to include("I invite you to join the group 'Members'.")
+    expect(invite_email.body).to include("I invite you to join the group 'Invitees'.")
   end
 
   # @todo send invite as different actor

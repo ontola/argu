@@ -3,13 +3,12 @@
 module Matchers
   RSpec::Matchers.define :have_snackbar do |expected|
     match do |actual|
-      @actual = actual.evaluate_script('window.logging.logs')
+      @actual =
+        actual.driver.evaluate_script('window.logging.logs')
+              .select(&method(:is_snackbar_action?))
+              .map(&method(:action_log_snackbar_message))
 
-      messages = @actual
-                   .select(&method(:is_snackbar_action?))
-                   .map(&method(:action_log_snackbar_message))
-
-      messages.include?(expected)
+      @actual.include?(expected)
     end
 
     diffable

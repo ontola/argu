@@ -80,7 +80,6 @@ RSpec.describe 'User settings', type: :feature do
       collection_float_button('New email address').click
       fill_in field_name('http://schema.org/email'), with: new_email
       click_button 'Add'
-      expand_form_group form_group
       expect_email_row(1, new_email, false, false)
       expect_email_row(2, 'user1@example.com', true, true)
 
@@ -99,6 +98,7 @@ RSpec.describe 'User settings', type: :feature do
 
       find('a .fa-circle-o').click
       wait_for { page }.to have_snackbar('Email address saved successfully')
+      expand_form_group form_group
       expect_email_row(1, new_email, true, true)
       expect_email_row(2, 'user1@example.com', false, true)
     end

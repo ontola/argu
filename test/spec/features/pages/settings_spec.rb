@@ -37,12 +37,7 @@ RSpec.describe 'Page settings', type: :feature do
       fill_in field_name('http://schema.org/name'), with: 'New Forum'
       fill_in field_name('https://argu.co/ns/core#shortname'), with: 'new_forum'
       wait_until_loaded
-      add_child_to_form('Grants')
-      wait_until_loaded
-      fill_in_select(
-        field_name('https://argu.co/ns/core#grants', 0, 'https://argu.co/ns/core#group'),
-        with: 'Public'
-      )
+      expand_form_group 'Rights'
       fill_in_select(
         field_name('https://argu.co/ns/core#grants', 0, 'https://argu.co/ns/core#grantSet'),
         with: 'Participate'
@@ -68,7 +63,7 @@ RSpec.describe 'Page settings', type: :feature do
       end
       expect_no_dialog
       # @todo fix stale element error for window.logging
-      # wait_for { page }.to have_snackbar 'Forum deleted successfully'
+      wait_for { page }.to have_snackbar 'Forum deleted successfully'
 
       wait_for {page}.not_to have_content('New Forum')
       components_row(1).locator('text=Holland')

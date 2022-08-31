@@ -9,7 +9,7 @@ RSpec.describe 'Token email show', type: :feature do
     example 'new user visits token' do
       as(:guest, location: token)
 
-      wait_for { page }.to have_content("invitee@example.com is invited for the group 'Members'")
+      wait_for { page }.to have_content("invitee@example.com is invited for the group 'Invitees'")
 
       accept_token
     end
@@ -52,7 +52,7 @@ RSpec.describe 'Token email show', type: :feature do
 
       fill_in_login_form
 
-      wait_for { page }.to have_content("You have been invited for the group 'Members'")
+      wait_for { page }.to have_content("You have been invited for the group 'Invitees'")
 
       accept_token
     end
@@ -61,7 +61,7 @@ RSpec.describe 'Token email show', type: :feature do
       as('user1@example.com')
       visit "https://argu.localtest#{token}"
 
-      wait_for { page }.to have_content("You have been invited for the group 'Members'")
+      wait_for { page }.to have_content("You have been invited for the group 'Invitees'")
       accept_token
     end
 
@@ -78,7 +78,7 @@ RSpec.describe 'Token email show', type: :feature do
 
       fill_in_login_form modal: false
 
-      wait_for { page }.to have_content("You have been invited for the group 'Members'")
+      wait_for { page }.to have_content("You have been invited for the group 'Invitees'")
 
       accept_token
     end
