@@ -113,7 +113,7 @@ services:
     platform: linux/amd64
     profiles:
       - libro
-    image: registry.gitlab.com/ontola/argu/libro:${LIBRO_TAG:-latest}
+    image: argu/libro:${LIBRO_TAG:-latest}
     depends_on:
       - redis
     env_file:

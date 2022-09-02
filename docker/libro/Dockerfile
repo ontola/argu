@@ -1,9 +1,9 @@
 ARG LIBRO_CLIENT_TAG
 ARG LIBRO_SERVER_TAG=master
 
-FROM registry.gitlab.com/ontola/libro:${LIBRO_CLIENT_TAG} as builder
+FROM argu/libro-client:${LIBRO_CLIENT_TAG} as builder
 
-FROM registry.gitlab.com/ontola/cache:${LIBRO_SERVER_TAG}
+FROM argu/libro-server:${LIBRO_SERVER_TAG}
 WORKDIR /app
 
 COPY --from=builder /app/assets /app/assets
