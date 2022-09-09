@@ -19,7 +19,7 @@ RSpec.describe 'Projects', type: :feature do
     expect_phase_resource_content('Comments')
     add_phase
     select_phase('New phase')
-    expect_phase_resource_content('New phase')
+    expect_phase_resource_content('Collect ideas')
   end
 
   private
@@ -53,7 +53,7 @@ RSpec.describe 'Projects', type: :feature do
     wait_for { page }.to have_content('New phase')
     fill_in field_name('http://schema.org/name'), with: 'New phase'
     fill_in_markdown field_name('http://schema.org/text'), with: 'Phase content'
-    fill_in_select(field_name('https://argu.co/ns/core#resourceType'), with: 'Vocabulary')
+    fill_in_select(field_name('https://argu.co/ns/core#resourceType'), with: 'Challenge')
     click_button 'Save'
   end
 end

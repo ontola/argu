@@ -20,6 +20,11 @@ RSpec.describe 'Page create', type: :feature do
     click_button 'Save'
 
     wait_for(page).to have_current_path('/my_website')
+
+    wait_for { page }.to have_content('This item is hidden')
+    expect(main_content.locator('[role="heading"]:has-text("My Website")').visible?).not_to be_truthy
+    playwright_page.locator('main a:has-text("Log in / sign up")').click
+    fill_in_login_form 'user1@example.com', 'password', modal: true
     wait_for { main_content.locator('[role="heading"]:has-text("My Website")').visible? }.to be_truthy
     expect(page).to have_title "My Website"
 

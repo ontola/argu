@@ -19,7 +19,7 @@ module RequestsHelper
 
   def bulk(resources, **opts)
     set_result HTTParty.post(
-      'https://argu.localtest/link-lib/bulk',
+      'https://argu.localtest/argu/link-lib/bulk',
       headers: request_headers.merge(opts[:headers] || {}),
       body: Array(resources).to_query('resource'))
     verify_result
