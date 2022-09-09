@@ -113,7 +113,7 @@ services:
     platform: linux/amd64
     profiles:
       - libro
-    image: registry.gitlab.com/ontola/argu/libro:${LIBRO_TAG:-latest}
+    image: argu/libro:${LIBRO_TAG:-latest}
     depends_on:
       - redis
     env_file:
@@ -133,8 +133,8 @@ services:
     volumes:
       - type: bind
         source: ./docker/nginx/devproxyCA/cacert.p12
-        target: /opt/graalvm-ce-java17-21.3.0/lib/security/cacerts
-    command: java -Djavax.net.ssl.trustStorePassword=password -jar libro.jar
+        target: /app/cacert
+    command: java -Djavax.net.ssl.trustStore=/app/cacert -Djavax.net.ssl.trustStorePassword=password -jar libro.jar
   libro_server_dev:
     platform: linux/amd64
     profiles:
