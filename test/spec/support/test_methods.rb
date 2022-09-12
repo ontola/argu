@@ -9,7 +9,7 @@ require 'empathy/emp_json/helpers/hash'
 
 module TestMethods # rubocop:disable Metrics/ModuleLength
   HEALTH_CHECKS = [
-    'Redis connectivity', 'Backend connectivity', 'Backend data fetching'
+    'Redis connectivity', 'Backend connectivity', 'Backend data fetching', 'Bulk endpoint'
   ].freeze
 
   attr_writer :current_tenant
@@ -52,7 +52,7 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
 
   def as(actor, location: '/argu/freetown', password: 'password')
     if actor != :guest
-      visit 'https://argu.localtest/d/health'
+      visit 'https://argu.localtest/argu/d/health'
       HEALTH_CHECKS.each do |check|
         expect(page.find_by_id(check.downcase.gsub(' ', '-'))).to have_text("pass")
       end
@@ -78,7 +78,7 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
       login_cookies = HTTP::CookieJar.new.parse(response.headers['set-cookie'], 'https://argu.localtest')
       playwright_cookies = (cookies + login_cookies).map do |cookie|
         {
-          "sameSite": "Strict",
+          "sameSite": "Lax",
           "name": cookie.name,
           "value": cookie.value,
           "domain": cookie.domain,
@@ -299,7 +299,9 @@ module TestMethods # rubocop:disable Metrics/ModuleLength
   end
 
   def switch_organization(organization)
-    visit "https://argu.localtest/#{organization}"
+    self.current_tenant = "https://argu.localtest/#{organization}"
+
+    visit "https://argu.localtest/#{organization}/feed"
   end
 
   def verify_logged_in(email = nil)

@@ -92,6 +92,7 @@ RSpec.configure do |config|
       upload_container_logs(example)
       upload_browser_logs(example)
       raise_catched_emails
+      puts 'Finished uploading exception details'
     end
   end
 end

@@ -91,7 +91,7 @@ test:
     - docker ps --no-trunc -a > $CI_PROJECT_DIR/test-results/docker-ps.txt || true
     - docker-compose logs > $CI_PROJECT_DIR/test-results/docker-compose-logs.txt || true
     - 'curl -H "Host: argu.localtest" -f http://localhost:3080/link-lib/cache/status > cache_health.txt || true'
-    - 'curl -H "Host: argu.localtest" -f http://localhost:3080/d/health > libro_health.txt || true'
+    - 'curl -H "Host: argu.localtest" -f http://localhost:3080/argu/d/health > libro_health.txt || true'
     - ls -la $CI_PROJECT_DIR/test-results
   artifacts:
     paths:

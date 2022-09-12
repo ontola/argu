@@ -19,7 +19,7 @@ RSpec.describe 'Projects', type: :feature do
     expect_phase_resource_content('Comments')
     add_phase
     select_phase('New phase')
-    expect_phase_resource_content('Collect ideas')
+    expect_phase_resource_content('Do you have a good idea?')
   end
 
   private

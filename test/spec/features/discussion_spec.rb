@@ -22,6 +22,7 @@ RSpec.describe 'Discussions', type: :feature do
     wait_for { page }.to have_content 'Freetown'
     wait_for { page }.to have_content 'New idea'
     expect(page).to have_content 'New challenge'
+    verify_not_logged_in
   end
 
   example 'Guest posts a question as new user' do
