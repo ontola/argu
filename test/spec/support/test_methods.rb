@@ -9,7 +9,7 @@ require 'empathy/emp_json/helpers/hash'
 
 module TestMethods # rubocop:disable Metrics/ModuleLength
   HEALTH_CHECKS = [
-    'Redis connectivity', 'Backend connectivity', 'Backend data fetching', 'Bulk endpoint'
+    'Redis connectivity', 'Backend connectivity', 'Backend data fetching'
   ].freeze
 
   attr_writer :current_tenant
