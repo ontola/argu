@@ -43,7 +43,7 @@ services:
         source: ${PWD}/docker/nginx/ssl
         target: /etc/nginx/ssl
   postgres:
-    image: postgis/postgis:14-master
+    image: postgres:14-alpine
     env_file:
       - ./.env
     volumes:
@@ -110,7 +110,6 @@ services:
       - grafanadata:/var/lib/grafana
       - ./docker/grafana/:/etc/grafana/provisioning/
   libro_server:
-    platform: linux/amd64
     profiles:
       - libro
     image: argu/libro:${LIBRO_TAG:-latest}
@@ -136,7 +135,6 @@ services:
         target: /app/cacert
     command: java -Djavax.net.ssl.trustStore=/app/cacert -Djavax.net.ssl.trustStorePassword=password -jar libro.jar
   libro_server_dev:
-    platform: linux/amd64
     profiles:
       - libro-dev
     depends_on:
@@ -155,7 +153,6 @@ services:
       - $HOME/.gradle:/root/.gradle
       - ./services/libro-server:/usr/src/app
   libro_client:
-    platform: linux/amd64
     profiles:
       - libro-dev
     build:
