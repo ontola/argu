@@ -9,7 +9,7 @@
 	url = ../argu-token-service.git
 [submodule "services/email_service"]
 	path = services/email_service
-	url = ../email_service.git
+	url = ../argu-email-service.git
 [submodule "services/apex"]
 	path = services/apex
 	url = ../argu-backend.git
