@@ -1,18 +1,18 @@
 [submodule "services/libro-server"]
 	path = services/libro-server
-	url = ../cache.git
+	url = ../libro-cache.git
 [submodule "services/libro-client"]
 	path = services/libro-client
 	url = ../libro.git
 [submodule "services/token_service"]
 	path = services/token_service
-	url = ../token_service.git
+	url = ../argu-token-service.git
 [submodule "services/email_service"]
 	path = services/email_service
 	url = ../email_service.git
 [submodule "services/apex"]
 	path = services/apex
-	url = ../apex.git
+	url = ../argu-backend.git
 [submodule "packages/rdf-serializers"]
 	path = packages/rdf-serializers
 	url = https://github.com/ontola/rdf-serializers.git
@@ -36,4 +36,4 @@
 	url = https://github.com/empathy-tools/emp_json_rb.git
 [submodule "infrastructure"]
 	path = infrastructure
-	url = ../infrastructure.git
+	url = ../argu-infrastructure.git
